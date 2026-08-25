@@ -284,9 +284,47 @@
   }
   .page-loader {
     position: fixed; inset: 0; z-index: 999;
-    background: var(--accent);
+    background: var(--loader-navy, #0B1E3F);
     display: flex; align-items: center; justify-content: center;
     pointer-events: none;
+    /* own compositor layer for the whole subtree, kept alive for the
+       animation's duration - without this WebKit can leave a stale tile
+       of the progress bar's last-painted pixels behind in the corner
+       once the curtain has animated away and the layer is torn down. */
+    will-change: transform;
+  }
+  /* thin bar along the very top of the tab while the curtain is up. Width
+     is driven from JS against the same load signal that dismisses the
+     curtain, not a canned animation, so it always reaches the far edge
+     exactly as the reveal fires - never stalls short, never finishes and
+     sits waiting.
+
+     Positioned absolute (against .page-loader, itself positioned) rather
+     than fixed - fixed descendants inside a transform-animated ancestor
+     are supposed to travel with it, but that combination is exactly what
+     produced the stale corner tile above; absolute against a positioned
+     parent is the unambiguous, no-special-case way to move as one paint
+     unit with the curtain.
+
+     Hidden by default and only ever switched on by JS for the one first-
+     paint load it times - the curtain is reused for in-page nav (Home <->
+     Book) with no real asset load behind it, and toggling this off the
+     idle/enter/exit classes those transitions share left a stale width
+     from the last real load flashing in, static, top-left, every time
+     that curtain came back up. */
+  .page-loader__progress {
+    display: none;
+    position: absolute; top: 0; left: 0; width: 100%; height: 3px;
+    z-index: 1000;
+    overflow: hidden;
+    background: rgba(255, 255, 255, 0.12);
+  }
+  .page-loader__progress i {
+    display: block; height: 100%; width: 0%;
+    background: var(--accent);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .page-loader__progress i { transition: none !important; width: 100% !important; }
   }
   /* the domes have to paint in the panel's own colour, and they sit outside
      its box, so they cannot be clipped by it - hence a strip each side */
@@ -299,7 +337,7 @@
     position: absolute; left: 50%;
     width: 125%; height: 500%;
     border-radius: 50%;
-    background: var(--accent);
+    background: var(--loader-navy, #0B1E3F);
     transform: translateX(-50%);
   }
   /* each strip laps 1px into the panel rather than butting against it. Two
@@ -1882,6 +1920,7 @@
      click on "Let's talk" reads as one continuous wipe rather than an
      instant DOM swap. See the curtain script beside the router, below. -->
 <div class="page-loader" data-page-loader aria-hidden="true">
+  <span class="page-loader__progress"><i></i></span>
   <span class="page-loader__arc page-loader__arc--top"><i></i></span>
   <span class="page-loader__arc page-loader__arc--bot"><i></i></span>
   <i class="page-loader__icon"></i>
@@ -2510,15 +2549,45 @@
   (function () {
     var el = document.querySelector('[data-page-loader]');
     if (!el) return;
+    var barWrap = el.querySelector('.page-loader__progress');
+    var bar = barWrap ? barWrap.querySelector('i') : null;
 
     var MIN_MS = 420;
     var MAX_MS = 4000;
+    var SNAP_MS = 180; // time the bar takes to finish its dash to the edge
+                        // once the real load signal has actually arrived
     var done = false;
+
+    // crawl toward (not to) the far edge for as long as we might be
+    // waiting, so the bar is always mid-flight rather than stalled full -
+    // whatever the real duration turns out to be, the snap below covers
+    // the remaining distance in a fixed, honest amount of time. Only this
+    // one real load gets a bar - it's switched on here and switched off
+    // for good once used, so it can't reappear stale on later in-page
+    // "curtain" transitions that have no load behind them to measure.
+    if (bar && !reduceMotion) {
+      barWrap.style.display = 'block';
+      bar.style.transition = 'none';
+      bar.style.width = '0%';
+      requestAnimationFrame(function () {
+        bar.style.transition = 'width ' + MAX_MS + 'ms cubic-bezier(0.15, 0.6, 0.35, 1)';
+        bar.style.width = '88%';
+      });
+    }
 
     function revealFirstPaint() {
       if (done) return;
       done = true;
-      el.classList.add('page-loader--exit');
+      if (bar && !reduceMotion) {
+        bar.style.transition = 'width ' + SNAP_MS + 'ms ease-out';
+        bar.style.width = '100%';
+        setTimeout(function () {
+          el.classList.add('page-loader--exit');
+          barWrap.style.display = 'none';
+        }, SNAP_MS);
+      } else {
+        el.classList.add('page-loader--exit');
+      }
     }
 
     var started = Date.now();
