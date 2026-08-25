@@ -1696,13 +1696,27 @@
     color: var(--muted);
     margin-bottom: var(--s-4);
   }
+  /* a steady dot with a ring that breathes outward from it and fades --
+     not the dot itself scaling/dimming (that reads as flickering), a soft
+     halo expanding away from a mark that stays put. Not gated by --play
+     like the diagram dots further down: this one is above the fold from
+     the first frame, so there is no "off screen" state worth pausing for. */
   .avail i {
+    position: relative;
     width: 7px; height: 7px; border-radius: 50%;
     background: var(--accent); flex: none;
-    /* always on, not gated by --play like the diagram dots further down --
-       this one is above the fold from the first frame, so there is no
-       "off screen" state where pausing it would save anything */
-    animation: acctPulse 2.8s var(--ease-out) infinite;
+  }
+  .avail i::after {
+    content: "";
+    position: absolute; inset: 0;
+    border-radius: 50%;
+    background: var(--accent);
+    opacity: 0.5;
+    animation: availPing 2.4s cubic-bezier(0.16, 1, 0.3, 1) infinite;
+  }
+  @keyframes availPing {
+    0%   { transform: scale(1); opacity: 0.5; }
+    100% { transform: scale(3.2); opacity: 0; }
   }
 
   /* ---------- the numbers ---------- */
@@ -1833,14 +1847,16 @@
     .acct-live, .acct-row i, .rc-frame, .rc-tags span,
     .mgr-row.add,
     .mgr-row.cut, .mgr-row.cut .mgr-tgl, .mgr-row.cut .mgr-tgl::after,
-    .mgr-row.cut .mgr-st span, .avail i { animation: none; }
+    .mgr-row.cut .mgr-st span, .avail i::after { animation: none; }
     /* the portal rests on three finished uploads, pointer and folder gone */
     .prtl-hand, .prtl-hint { opacity: 0; }
     .prtl-stack { transform: none; }
     .prtl-up, .prtl-sent { opacity: 1; }
     .prtl-up-bar i { transform: scaleX(1); }
     /* delivery dots hold lit rather than breathing */
-    .acct-live, .acct-row i, .avail i { opacity: 1; }
+    .acct-live, .acct-row i { opacity: 1; }
+    /* ring off entirely rather than parked mid-expansion */
+    .avail i::after { opacity: 0; }
     /* the frame rests on the widest crop with its label showing */
     .rc-frame { width: 168px; height: 95px; }
     .rc-tags span:nth-child(4) { opacity: 1; }
@@ -1891,9 +1907,9 @@
 <!-- ============ HERO ============ -->
 <section class="hero center">
   <div class="shell">
-    <p class="avail"><i></i><span>Nelson &middot; two spots a month &middot; booking <span data-month>August</span></span></p>
+    <p class="avail"><i></i><span>Two spots remaining this month</span></p>
     <h1 tabindex="-1">Bringing you leads<br>through video ads.</h1>
-    <p class="lede">I plan it, film it, edit it, and run the ads. One person, start to finish. No retainer, no lock-in.</p>
+    <p class="lede">Based in Nelson. I plan it, film it, edit it, and run the ads. One person, start to finish. No retainer, no lock-in.</p>
     <div class="btn-row">
       <a class="btn" href="#book" data-route="book">
         <span class="btn-label"><span>Start a conversation</span><span aria-hidden="true">Start a conversation</span></span>
@@ -2599,9 +2615,6 @@
 
   var yearEl = document.querySelector('[data-year]');
   if (yearEl) yearEl.textContent = new Date().getFullYear();
-
-  var monthEl = document.querySelector('[data-month]');
-  if (monthEl) monthEl.textContent = new Date().toLocaleString('en-NZ', { month: 'long' });
 
   var heroVideo = document.querySelector('[data-hero-video]');
 
