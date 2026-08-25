@@ -596,12 +596,16 @@
     flex-direction: column;
     justify-content: center;
     min-height: calc(100svh - var(--nav-h) - var(--frame) * 2);
-    /* symmetric on purpose: justify-content:center only centres the shell
-       within the space padding leaves it, so unequal top/bottom padding
-       (this used to be --s-6 over --s-4, a 40px difference) shows up as
-       the content sitting visibly high, not centred, on any screen taller
-       than the content itself. */
-    padding-block: var(--s-4);
+    /* padding-block was symmetric here, which centres the shell exactly -
+       correct on paper, but the eyebrow and two-line heading carry far
+       more visual weight than the single button below them, so a
+       geometric centre reads as sitting low. Biasing a bit of padding
+       off the top and onto the bottom pulls the optical centre up to
+       where the eye actually expects it, without touching the box's
+       total height (and so without touching the calc above). */
+    --hero-bias: clamp(8px, 2.4vh, 28px);
+    padding-top: calc(var(--s-4) - var(--hero-bias));
+    padding-bottom: calc(var(--s-4) + var(--hero-bias));
   }
 
   /* landscape phones and short laptops have no room to spare once the nav is
@@ -957,6 +961,50 @@
     transition: border-color 200ms ease, box-shadow 200ms ease;
   }
   input::placeholder, textarea::placeholder { color: var(--muted); opacity: 0.7; }
+
+  /* ---------- floating-label fields ----------
+     No "e.g. ..." example text any more - the label itself sits inside the
+     box where a placeholder would, then shrinks and lifts into the top of
+     the box on focus or once there's a value, uncovering what's typed
+     underneath it. Needs the label AFTER the input in the markup (it's
+     positioned absolute over it, so visual order doesn't move) so the
+     :focus / :not(:placeholder-shown) sibling selectors below can read
+     the input's state; the input needs a real placeholder (a single
+     space) for :placeholder-shown to ever match. */
+  .field--float { display: block; position: relative; }
+  .field--float input,
+  .field--float textarea {
+    padding-top: 1.5rem;
+    padding-bottom: 0.55rem;
+  }
+  .field--float textarea { padding-top: 1.65rem; min-height: 132px; }
+  .field--float label {
+    position: absolute;
+    left: var(--s-3);
+    top: 1.05rem;
+    font-size: 1rem;
+    font-weight: 400;
+    letter-spacing: normal;
+    text-transform: none;
+    color: var(--muted);
+    pointer-events: none;
+    transform-origin: left top;
+    transition: transform 180ms ease, top 180ms ease, color 180ms ease;
+  }
+  .field--float textarea + label { top: 1.15rem; }
+  .field--float input:focus + label,
+  .field--float input:not(:placeholder-shown) + label,
+  .field--float textarea:focus + label,
+  .field--float textarea:not(:placeholder-shown) + label {
+    top: 0.5rem;
+    transform: scale(0.72);
+    color: var(--accent);
+  }
+  .field--float input:required + label::after,
+  .field--float textarea:required + label::after {
+    content: " *";
+    color: var(--accent);
+  }
 
   /* The global focus ring sits 3px outside the control on a 4px radius, which
      against a 22px pill read as a second, detached box. Form controls opt out
@@ -2428,24 +2476,24 @@
 
   <form data-form novalidate>
     <div class="split">
-      <div class="field">
+      <div class="field field--float">
+        <input id="f-name" name="name" type="text" placeholder=" " autocomplete="name" required>
         <label for="f-name">Your name</label>
-        <input id="f-name" name="name" type="text" placeholder="e.g. Sam Whitely" autocomplete="name" required>
       </div>
-      <div class="field">
+      <div class="field field--float">
+        <input id="f-business" name="business" type="text" placeholder=" " autocomplete="organization" required>
         <label for="f-business">Business</label>
-        <input id="f-business" name="business" type="text" placeholder="e.g. Whitely Plumbing" autocomplete="organization" required>
       </div>
     </div>
 
-    <div class="field">
+    <div class="field field--float">
+      <input id="f-email" name="email" type="email" placeholder=" " autocomplete="email" required>
       <label for="f-email">Email</label>
-      <input id="f-email" name="email" type="email" placeholder="e.g. sam@whitelyplumbing.co.nz" autocomplete="email" required>
     </div>
 
-    <div class="field">
+    <div class="field field--float">
+      <input id="f-sell" name="sell" type="text" placeholder=" " required>
       <label for="f-sell">What do you sell?</label>
-      <input id="f-sell" name="sell" type="text" placeholder="e.g. Bathroom renovations, Nelson homes" required>
     </div>
 
     <div class="field">
@@ -2513,9 +2561,9 @@
       </div>
     </div>
 
-    <div class="field">
-      <label for="f-notes">Anything else?</label>
-      <textarea id="f-notes" name="notes" placeholder="Optional. e.g. Flat out over summer, dead by June. Want to even that out."></textarea>
+    <div class="field field--float">
+      <textarea id="f-notes" name="notes" placeholder=" "></textarea>
+      <label for="f-notes">Anything else? (optional)</label>
     </div>
 
     <button class="btn" type="submit">
