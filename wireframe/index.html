@@ -1949,9 +1949,9 @@
     <p class="reveal" data-reveal>A lot of video looks nice and does nothing. This is built to bring in actual work. No guarantees, because nobody can promise results. But I'm the one filming it, editing it and running the ads myself, not collecting a fee and handing it off.</p>
 
     <div class="stat-row">
-      <div class="stat-cell" data-anim><b>60+</b><span>Videos delivered</span></div>
-      <div class="stat-cell" data-anim><b>30+</b><span>Businesses worked with</span></div>
-      <div class="stat-cell" data-anim><b>4 yrs</b><span>Behind the camera</span></div>
+      <div class="stat-cell" data-anim><b data-count="60" data-suffix="+">0+</b><span>Videos delivered</span></div>
+      <div class="stat-cell" data-anim><b data-count="30" data-suffix="+">0+</b><span>Businesses worked with</span></div>
+      <div class="stat-cell" data-anim><b data-count="4" data-suffix=" yrs">0 yrs</b><span>Behind the camera</span></div>
     </div>
   </div>
 </section>
@@ -2712,11 +2712,34 @@
 
   var pending = animEls.slice();
 
+  /* ---------- stat counters ----------------------------------------------
+     Counts from 0 to the real figure once, the same moment the cell fades
+     in -- reuses the reveal it would have had anyway rather than adding a
+     second observer. Eased with the cubic tail everything else on the page
+     shares, so it settles rather than snapping to a stop. */
+  function countUp(b) {
+    var target = parseFloat(b.getAttribute('data-count'));
+    if (!isFinite(target)) return;
+    var suffix = b.getAttribute('data-suffix') || '';
+    if (reduceMotion) { b.textContent = target + suffix; return; }
+    var duration = 1400, start = null;
+    function tick(t) {
+      if (start === null) start = t;
+      var p = Math.min(1, (t - start) / duration);
+      var eased = 1 - Math.pow(1 - p, 3);
+      b.textContent = Math.round(target * eased) + suffix;
+      if (p < 1) requestAnimationFrame(tick);
+    }
+    requestAnimationFrame(tick);
+  }
+
   function reveal(el, instant) {
     if (instant) el.style.setProperty('--anim-delay', '0ms');
     el.classList.add('in');
     var i = pending.indexOf(el);
     if (i > -1) pending.splice(i, 1);
+    var counter = el.querySelector('[data-count]');
+    if (counter) countUp(counter);
   }
 
   /* Anything already scrolled past is shown outright. Covers anchor jumps,
