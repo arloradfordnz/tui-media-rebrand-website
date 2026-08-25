@@ -552,6 +552,20 @@
     padding-block: var(--s-6) var(--s-4);
   }
 
+  /* the hero sits on its own paper-coloured shelf, spanning its full
+     min-height, so its rounded bottom corners land right where the story
+     panel starts and overlap it -- same trick as .closing's rounded top,
+     upside down. The extra padding-bottom is pulled straight back off the
+     panel below via a matching negative margin, so page flow is unaffected. */
+  .hero-frame {
+    position: relative;
+    z-index: 2;
+    background: var(--paper);
+    border-radius: 0 0 var(--radius) var(--radius);
+    padding-bottom: calc(var(--s-4) + var(--radius));
+    margin-bottom: calc(-1 * var(--radius));
+  }
+
   /* landscape phones and short laptops have no room to spare once the nav is
      paid for, and centring already does the spacing, so the padding goes. */
   @media (max-height: 700px) {
@@ -562,18 +576,15 @@
   .hero .lede { margin-top: var(--s-3); max-width: 54ch; }
   .hero .btn-row { margin-top: var(--s-4); }
 
-  /* ---------- brand strip ---------- */
-
-  .brands { padding-block: var(--s-6); }
   /* ---------- story panel ----------
      One surface card holding the logo strip, the numbers, and the reveal
-     line — same background as the closing footer, so the two dark panels
-     on the page read as a matched pair, not an arbitrary colour choice. */
-  .story { padding-block: var(--s-6); }
+     line — same background as the closing footer, full width edge to edge,
+     tucked in behind the hero's rounded bottom corners. */
+  .story { padding-block: 0 var(--s-6); }
   .story-panel {
+    position: relative;
     background: var(--surface);
-    border-radius: var(--radius);
-    padding-block: clamp(2.5rem, 5vw, var(--s-7));
+    padding-block: calc(clamp(2.5rem, 5vw, var(--s-7)) + var(--radius)) clamp(2.5rem, 5vw, var(--s-7));
     display: grid;
     gap: clamp(2.5rem, 5vw, var(--s-7));
   }
@@ -589,14 +600,14 @@
   .logo-track { display: flex; align-items: center; gap: clamp(2.5rem, 5vw, 4rem); width: max-content; will-change: transform; }
   /* logos out of their own boxes: no card, no fixed frame, just the mark
      at a height that keeps every logo's optical weight even */
-  .logo-item { flex: none; display: grid; place-items: center; height: 34px; }
+  .logo-item { flex: none; display: flex; align-items: center; justify-content: center; height: 34px; }
   .logo-item img {
-    max-height: 100%;
-    max-width: 132px;
+    /* height drives the box -- width follows the logo's own aspect ratio,
+       so nothing gets stretched, squashed, or clipped against a fixed cell */
+    height: 100%;
     width: auto;
-    object-fit: contain;
+    max-width: 140px;
     filter: brightness(0) invert(1);
-    opacity: 0.7;
   }
 
   /* ---------- reveal statement ---------- */
@@ -1894,7 +1905,7 @@
 <main data-view="home">
 
 <!-- ============ HERO ============ -->
-<section class="hero center">
+<section class="hero center hero-frame">
   <div class="shell">
     <p class="avail"><i></i>Video ads, Nelson &middot; a handful of clients at a time</p>
     <h1 tabindex="-1">Bringing you leads<br>through video ads.</h1>
@@ -1907,18 +1918,14 @@
     </div>
   </div>
 
-
 </section>
 
-<!-- ============ BRAND STRIP ============ -->
 <!-- ============ STORY PANEL ============
      Logo strip, the three numbers, and the reveal line share one surface
-     panel — the same background as the closing footer — so the run from
-     "who we've worked with" to "why" reads as one held breath, not three
-     separate sections stacked with hairline seams between them. -->
+     panel — the same background as the closing footer, full width, tucked
+     in behind the hero's rounded bottom corners like a shelf. -->
 <section class="story">
-  <div class="shell">
-    <div class="story-panel">
+  <div class="story-panel">
 
       <div class="logo-marquee">
         <div class="logo-track" data-marquee-logos>
@@ -1933,15 +1940,18 @@
         </div>
       </div>
 
-      <div class="stat-row">
-        <div class="stat-cell" data-anim><b>60+</b><span>Videos delivered</span></div>
-        <div class="stat-cell" data-anim><b>30+</b><span>Businesses worked with</span></div>
-        <div class="stat-cell" data-anim><b>4 yrs</b><span>Behind the camera</span></div>
+      <div class="shell">
+        <div class="stat-row">
+          <div class="stat-cell" data-anim><b>60+</b><span>Videos delivered</span></div>
+          <div class="stat-cell" data-anim><b>30+</b><span>Businesses worked with</span></div>
+          <div class="stat-cell" data-anim><b>4 yrs</b><span>Behind the camera</span></div>
+        </div>
       </div>
 
-      <p class="reveal" data-reveal>Most video gets made to look good. This gets made to bring you work. It's for the owner who is tired of quoting people who were never going to say yes.</p>
+      <div class="shell">
+        <p class="reveal" data-reveal>Most video gets made to look good. This gets made to bring you work. It's for the owner who is tired of quoting people who were never going to say yes.</p>
+      </div>
 
-    </div>
   </div>
 </section>
 
