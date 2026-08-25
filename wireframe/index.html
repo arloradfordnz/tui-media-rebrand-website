@@ -143,6 +143,8 @@
     /* delivery/connected states in the Ads Manager diagram — the one green
        in the palette, kept for "this is live and it is yours" and nothing else */
     --ok: #45C97A;
+    /* the "Sent" pill behind the green, same recipe as --accent-soft */
+    --ok-soft: rgba(69, 201, 122, 0.15);
 
     /* nav pill: translucent so content reads through it while it floats */
     --nav-bg:   rgba(15, 25, 48, 0.40);
@@ -212,6 +214,7 @@
 
     --error: #FFA0A0;
     --ok: #4FD08A;
+    --ok-soft: rgba(79, 208, 138, 0.15);
     --nav-bg:   rgba(27, 19, 41, 0.40);
   }
 
@@ -552,18 +555,15 @@
     padding-block: var(--s-6) var(--s-4);
   }
 
-  /* the hero sits on its own paper-coloured shelf, spanning its full
-     min-height, so its rounded bottom corners land right where the story
-     panel starts and overlap it -- same trick as .closing's rounded top,
-     upside down. The extra padding-bottom is pulled straight back off the
-     panel below via a matching negative margin, so page flow is unaffected. */
+  /* the hero keeps its own paper-coloured shelf and the bottom padding that
+     gives the panel below something to ride up into. No radius of its own:
+     the story panel sits ON TOP and its rounded top corners are what you
+     see at the seam, so a curve here would only fight it. */
   .hero-frame {
     position: relative;
-    z-index: 2;
+    z-index: 1;
     background: var(--paper);
-    border-radius: 0 0 var(--radius) var(--radius);
     padding-bottom: calc(var(--s-4) + var(--radius));
-    margin-bottom: calc(-1 * var(--radius));
   }
 
   /* landscape phones and short laptops have no room to spare once the nav is
@@ -579,12 +579,20 @@
   /* ---------- story panel ----------
      One surface card holding the logo strip, the numbers, and the reveal
      line — same background as the closing footer, full width edge to edge,
-     tucked in behind the hero's rounded bottom corners. */
-  .story { padding-block: 0 var(--s-6); }
+     rounded on all four corners, and sat ON TOP of the hero so the hero's
+     bottom edge disappears under it. The negative margin is what does the
+     overlapping; the z-index is what puts this card in front. */
+  .story {
+    position: relative;
+    z-index: 2;
+    margin-top: calc(-1 * var(--radius));
+    padding-block: 0 var(--s-6);
+  }
   .story-panel {
     position: relative;
     background: var(--surface);
-    padding-block: calc(clamp(2.5rem, 5vw, var(--s-7)) + var(--radius)) clamp(2.5rem, 5vw, var(--s-7));
+    border-radius: var(--radius);
+    padding-block: clamp(2.5rem, 5vw, var(--s-7));
     display: grid;
     gap: clamp(2.5rem, 5vw, var(--s-7));
   }
@@ -1188,15 +1196,23 @@
 
   .prtl-up-head { display: flex; align-items: center; gap: 8px; }
   .prtl-up-head b { font-size: 0.75rem; font-weight: 500; color: var(--ink); }
-  .prtl-tick { margin-left: auto; width: 13px; height: 13px; opacity: 0; }
-  .prtl-tick svg {
-    width: 100%; height: 100%; display: block;
-    fill: none; stroke: var(--ok); stroke-width: 3.4;
-    stroke-linecap: round; stroke-linejoin: round;
+  /* a word beats a tick here: "Sent" says the file left your machine and
+     landed, which is the promise the copy is making. Sized off the row's
+     own type so it stays a label, not a badge shouting over the filename. */
+  .prtl-sent {
+    margin-left: auto; flex: none;
+    padding: 2px 7px;
+    border-radius: var(--radius-pill);
+    background: var(--ok-soft);
+    font-size: 0.5625rem; font-weight: 700;
+    letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--ok);
+    line-height: 1.5;
+    opacity: 0;
   }
-  .prtl-up-1 .prtl-tick { animation: prtlTick1 8s var(--ease-out) infinite; animation-play-state: var(--play); }
-  .prtl-up-2 .prtl-tick { animation: prtlTick2 8s var(--ease-out) infinite; animation-play-state: var(--play); }
-  .prtl-up-3 .prtl-tick { animation: prtlTick3 8s var(--ease-out) infinite; animation-play-state: var(--play); }
+  .prtl-up-1 .prtl-sent { animation: prtlSent1 8s var(--ease-out) infinite; animation-play-state: var(--play); }
+  .prtl-up-2 .prtl-sent { animation: prtlSent2 8s var(--ease-out) infinite; animation-play-state: var(--play); }
+  .prtl-up-3 .prtl-sent { animation: prtlSent3 8s var(--ease-out) infinite; animation-play-state: var(--play); }
 
   .prtl-up-bar { position: relative; height: 4px; border-radius: 3px; background: var(--rule); overflow: hidden; }
   .prtl-up-bar i {
@@ -1212,12 +1228,23 @@
   .prtl-up-2 .prtl-up-bar i { animation-name: prtlFill2; }
   .prtl-up-3 .prtl-up-bar i { animation-name: prtlFill3; }
 
-  /* one moving part carrying both the pointer and what it holds */
+  /* One moving part carrying both the pointer and what it holds.
+
+     The resting place is set once in left/top (percentages, so it centres
+     at any cell width) and the TRAVEL is a transform. Animating left/top
+     directly, as this used to, relayouts the cell every frame and lands on
+     sub-pixel positions -- that was the stutter near the end of the drag.
+     A transform is composited, so the same path runs clean. */
   .prtl-hand {
     position: absolute;
+    left: calc(50% + 30.5px);
+    top: calc(50% + 7.5px);
     width: 0; height: 0;
     z-index: 3;
-    animation: prtlHand 8s var(--ease-out) infinite;
+    /* deliberately NOT --ease-out: that curve dumps nearly all its distance
+       in the first third and crawls the rest, which read as "fast then
+       stuck". This one accelerates once and coasts in. */
+    animation: prtlHand 8s cubic-bezier(0.45, 0.05, 0.25, 1) infinite;
     animation-play-state: var(--play);
   }
   /* anchored by its bottom-right corner to the pointer, so the pointer reads
@@ -1256,17 +1283,13 @@
     animation-play-state: var(--play);
   }
 
-  /* Carries in from outside the frame, releases over the zone, and is gone.
-     Driven by left/top rather than a pixel translate: the cell is ~390px wide
-     on a desktop and ~310px on a phone, so a fixed translate that centred the
-     chip on one landed it well off-centre on the other. The chip hangs up-left
-     of the pointer, and its centre sits 30.5px left and 7.5px above the
-     pointer, so parking the pointer that far past the middle centres the chip
-     at any width. */
+  /* Carries in from off the bottom-right, releases over the zone, and is
+     gone. The offset only has to clear the widest the cell ever gets
+     (~390px, so ~195px from centre); 260/190 is past that on desktop and
+     far past it on a phone, so the chip always starts out of frame. */
   @keyframes prtlHand {
-    0%        { left: calc(100% + 62px); top: calc(100% + 72px); }
-    26%, 30%  { left: calc(50% + 30.5px); top: calc(50% + 7.5px); }
-    100%      { left: calc(50% + 30.5px); top: calc(50% + 7.5px); }
+    0%         { transform: translate(260px, 190px); }
+    26%, 100%  { transform: translate(0, 0); }
   }
   @keyframes prtlHeld {
     0%, 26%   { opacity: 1; transform: scale(1); }
@@ -1289,34 +1312,35 @@
     100%      { opacity: 1; }
   }
 
-  /* the block rises as the second and third rows arrive */
+  /* The three uploads run as a relay: each row's bar finishes exactly where
+     the next row appears, so there is never a beat of dead air and never
+     two bars filling at once. Handover points are 45% and 61%.
+
+     The block also rides up by half a row each time one arrives (a row is
+     ~40px, so its centre moves 20px), which keeps the stack optically
+     centred instead of growing downward off the bottom of the zone. Those
+     shifts are timed to START just before the new row fades in, so the row
+     slides into a space that has already opened rather than shoving the
+     ones above it out of the way -- that shove was the "jumping". */
   @keyframes prtlStack {
-    0%, 40%   { transform: translateY(38px); }
-    50%, 56%  { transform: translateY(19px); }
+    0%, 44%   { transform: translateY(38px); }
+    50%, 60%  { transform: translateY(19px); }
     66%, 94%  { transform: translateY(0); }
     100%      { transform: translateY(38px); }
   }
-  /* each row lands sooner and fills faster than the one before it */
-  @keyframes prtlRow1 { 0%, 30% { opacity: 0; } 34%, 94% { opacity: 1; } 98%, 100% { opacity: 0; } }
-  @keyframes prtlRow2 { 0%, 46% { opacity: 0; } 50%, 94% { opacity: 1; } 98%, 100% { opacity: 0; } }
-  @keyframes prtlRow3 { 0%, 62% { opacity: 0; } 66%, 94% { opacity: 1; } 98%, 100% { opacity: 0; } }
 
-  @keyframes prtlFill1 { 0%, 34% { transform: scaleX(0); } 48%, 100% { transform: scaleX(1); } }
-  @keyframes prtlFill2 { 0%, 50% { transform: scaleX(0); } 62%, 100% { transform: scaleX(1); } }
-  @keyframes prtlFill3 { 0%, 66% { transform: scaleX(0); } 76%, 100% { transform: scaleX(1); } }
+  @keyframes prtlRow1 { 0%, 28% { opacity: 0; } 32%, 94% { opacity: 1; } 97%, 100% { opacity: 0; } }
+  @keyframes prtlRow2 { 0%, 45% { opacity: 0; } 50%, 94% { opacity: 1; } 97%, 100% { opacity: 0; } }
+  @keyframes prtlRow3 { 0%, 61% { opacity: 0; } 66%, 94% { opacity: 1; } 97%, 100% { opacity: 0; } }
 
-  @keyframes prtlTick1 { 0%, 48% { opacity: 0; } 52%, 94% { opacity: 1; } 98%, 100% { opacity: 0; } }
-  @keyframes prtlTick2 { 0%, 62% { opacity: 0; } 66%, 94% { opacity: 1; } 98%, 100% { opacity: 0; } }
-  @keyframes prtlTick3 { 0%, 76% { opacity: 0; } 80%, 94% { opacity: 1; } 98%, 100% { opacity: 0; } }
-    80%, 92%  { opacity: 1; }
-    96%, 100% { opacity: 0; }
-  }
-    26%, 78%  { opacity: 1; }
-    85%, 100% { opacity: 0; }
-  }
-    33%, 80%  { opacity: 1; }
-    87%, 100% { opacity: 0; }
-  }
+  /* linear, and each one starts on the frame the previous one ended */
+  @keyframes prtlFill1 { 0%, 32% { transform: scaleX(0); } 45%, 100% { transform: scaleX(1); } }
+  @keyframes prtlFill2 { 0%, 50% { transform: scaleX(0); } 61%, 100% { transform: scaleX(1); } }
+  @keyframes prtlFill3 { 0%, 66% { transform: scaleX(0); } 78%, 100% { transform: scaleX(1); } }
+
+  @keyframes prtlSent1 { 0%, 45% { opacity: 0; } 49%, 94% { opacity: 1; } 97%, 100% { opacity: 0; } }
+  @keyframes prtlSent2 { 0%, 61% { opacity: 0; } 65%, 94% { opacity: 1; } 97%, 100% { opacity: 0; } }
+  @keyframes prtlSent3 { 0%, 78% { opacity: 0; } 82%, 94% { opacity: 1; } 97%, 100% { opacity: 0; } }
 
   /* The file list earned its keep by looking like a real artifact of the
      work, so the other three speak the same language: an account activity
@@ -1453,15 +1477,53 @@
   }
 
 
-  /* the assets. They stretch to fill whatever height the cell has left,
-     so the panel never opens a hole between the list and the footer. */
-  .acct-rows { flex: 1; display: grid; gap: 6px; align-content: stretch; min-height: 0; }
+  /* account fields, hairline-divided. The 1px grid gap over a --rule
+     background is what draws the dividers, so there is one border to
+     round instead of six to line up. */
+  .acct-meta {
+    display: grid; grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1px;
+    background: var(--rule);
+    border: 1px solid var(--rule);
+    border-radius: var(--dg-r-3);
+    overflow: hidden;
+  }
+  .acct-meta > div {
+    background: var(--surface);
+    padding: 7px 9px;
+    display: grid; gap: 2px; min-width: 0;
+  }
+  .acct-meta em {
+    font-style: normal;
+    font-size: 0.5625rem; font-weight: 700;
+    letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--muted);
+  }
+  .acct-meta b {
+    font-size: 0.6875rem; font-weight: 600; color: var(--ink);
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+
+  /* The assets. These used to stretch to fill the cell's leftover height,
+     which is why the rows looked wrong next to the other three cells: in a
+     tall column a five-row list turned into five fat bands. Rows are a
+     fixed size now and the slack is taken up above the note instead. */
+  /* Rows take up the slack, but only so far. Unbounded stretch is what made
+     five rows read as five fat bands in a tall cell; a minmax cap lets them
+     breathe into the space and then stop, leaving the remainder as margin
+     above the note rather than baked into the rows. */
+  .acct-rows {
+    flex: 1;
+    display: grid; gap: 6px;
+    grid-auto-rows: minmax(34px, 44px);
+    align-content: stretch;
+    min-height: 0;
+  }
   .acct-row {
     display: grid;
     grid-template-columns: 7px minmax(0, 1fr) auto;
     gap: 9px; align-items: center;
     padding: 0 10px;
-    min-height: 38px;
     border-radius: var(--dg-r-4);
     background: var(--surface);
   }
@@ -1487,25 +1549,26 @@
   /* the point of the cell, said once, at the foot */
   .acct-note {
     display: grid; grid-template-columns: 13px minmax(0, 1fr); gap: 9px; align-items: start;
+    /* auto top margin drops it to the foot of the panel; the shorthand that
+       used to sit below this was silently resetting it back to 0 */
+    margin: auto 0 0;
     padding-top: var(--s-2);
     border-top: 1px solid var(--rule);
-    margin: 0;
     font-size: 0.75rem !important;
     color: var(--muted);
   }
   .acct-note svg { width: 13px; height: 13px; color: var(--accent); display: block; margin-top: 2px; }
 
-  /* --- the ads: one frame recropping through every placement -----------
-     The queue this replaces showed four bars filling, which said "files are
-     being made" but not the thing the copy claims: that it is ONE shoot cut
-     four ways. So the shot is a single fixed layer and only the frame around
-     it changes shape. Because the shot never moves or scales, the frame
-     visibly crops rather than squashes, which is the whole point.
+  /* --- the ads: one block morphing through every placement -------------
+     One flat rectangle that changes shape, nothing else. It had a gradient
+     wash and a circular "subject" inside it before, which dressed it up as
+     a photograph and pulled against the flat language the rest of the page
+     speaks -- the shape change alone carries the idea.
 
-     Width and height are animated rather than transformed on purpose: a
-     scale would distort the picture inside, which is exactly the "cropped
-     badly after the fact" outcome the copy is promising you avoid. The frame
-     is absolutely positioned, so the layout it dirties is its own. */
+     Width and height are animated rather than scaled on purpose: a scale
+     would distort, and "the same thing squashed to fit" is precisely the
+     outcome the copy promises you avoid. Absolutely positioned, so the only
+     layout it invalidates is its own. */
   .rc { margin-top: auto; display: grid; gap: 12px; }
 
   .rc-stage { position: relative; height: 140px; }
@@ -1513,28 +1576,12 @@
     position: absolute; left: 50%; top: 50%;
     transform: translate(-50%, -50%);
     border-radius: var(--dg-r-4);
-    overflow: hidden;
-    box-shadow: 0 0 0 1px var(--rule-2);
-    animation: rcFrame 12s var(--ease-out) infinite;
+    background: var(--accent-soft);
+    box-shadow: inset 0 0 0 1px var(--accent);
+    /* a symmetric ease reads as a deliberate morph; --ease-out front-loads
+       the whole change and then sits still, which looked like a jump */
+    animation: rcFrame 12s cubic-bezier(0.65, 0, 0.35, 1) infinite;
     animation-play-state: var(--play);
-  }
-  /* larger than the widest frame in both axes, so no crop ever runs off it */
-  .rc-shot {
-    position: absolute; left: 50%; top: 50%;
-    width: 190px; height: 190px;
-    margin: -95px 0 0 -95px;
-    background:
-      radial-gradient(70% 55% at 50% 88%, rgba(110, 155, 247, 0.35) 0%, transparent 70%),
-      linear-gradient(170deg, var(--slot-4) 0%, var(--slot-2) 52%, var(--slot-1) 100%);
-  }
-  /* a subject that stays put, so the reframing is legible as movement */
-  .rc-sub {
-    position: absolute; left: 50%; top: 44%;
-    width: 46px; height: 46px; margin: -23px 0 0 -23px;
-    border-radius: 50%;
-    background: var(--accent);
-    opacity: 0.9;
-    box-shadow: 0 10px 26px rgba(0, 0, 0, 0.4);
   }
 
   .rc-tags { position: relative; height: 1.05em; }
@@ -1598,6 +1645,18 @@
   .mgr-st span { grid-area: 1 / 1; text-align: right; }
   .mgr-st span:first-child { color: var(--accent); }
   .mgr-st span:nth-child(2) { color: var(--muted); opacity: 0; }
+  /* The cell used to do one thing: switch the middle ad off. The copy
+     promises more than that -- things get cut AND the work continues -- so
+     a replacement now arrives after the cut. It holds its row from the
+     start at zero opacity, so the arrival costs no layout. */
+  .mgr-row.add {
+    opacity: 0;
+    animation: mgrAdd 10s var(--ease-out) infinite;
+    animation-play-state: var(--play);
+  }
+  .mgr-row.add .mgr-st span { color: var(--accent); }
+  @keyframes mgrAdd { 0%, 60% { opacity: 0; } 68%, 95% { opacity: 1; } 98%, 100% { opacity: 0; } }
+
   /* the middle ad gets cut partway through the loop and comes back on reset */
   .mgr-row.cut,
   .mgr-row.cut .mgr-tgl,
@@ -1837,15 +1896,16 @@
     /* the four diagrams loop; hold them at a legible resting state */
     .nav-menu:not([hidden]) { animation: none; }
     .nav-burger i { transition: none; }
-    .prtl-zone, .prtl-hint, .prtl-drag, .prtl-up, .prtl-up-bar i, .prtl-tick,
+    .prtl-zone, .prtl-hint, .prtl-drag, .prtl-up, .prtl-up-bar i, .prtl-sent,
     .prtl-stack, .prtl-hand, .prtl-cursor,
     .acct-live, .acct-row i, .rc-frame, .rc-tags span,
+    .mgr-row.add,
     .mgr-row.cut, .mgr-row.cut .mgr-tgl, .mgr-row.cut .mgr-tgl::after,
     .mgr-row.cut .mgr-st span { animation: none; }
     /* the portal rests on three finished uploads, pointer and folder gone */
     .prtl-hand, .prtl-hint { opacity: 0; }
     .prtl-stack { transform: none; }
-    .prtl-up, .prtl-tick { opacity: 1; }
+    .prtl-up, .prtl-sent { opacity: 1; }
     .prtl-up-bar i { transform: scaleX(1); }
     /* delivery dots hold lit rather than breathing */
     .acct-live, .acct-row i { opacity: 1; }
@@ -1857,6 +1917,8 @@
     .mgr-row.cut .mgr-tgl::after { transform: translateX(-10px); }
     .mgr-row.cut .mgr-st span:first-child { opacity: 0; }
     .mgr-row.cut .mgr-st span:nth-child(2) { opacity: 1; }
+    /* the replacement rests visible: the cut already happened */
+    .mgr-row.add { opacity: 1; }
   }
 </style>
 </head>
@@ -2085,9 +2147,9 @@
             <div class="prtl-zone">
               <span class="prtl-hint">Drop footage here</span>
               <div class="prtl-stack">
-                <div class="prtl-up prtl-up-1"><span class="prtl-up-head"><svg class="pt-fold" viewBox="0 0 48 40" aria-hidden="true"><path class="fld-back" d="M3 10a5 5 0 0 1 5-5h10.7a3 3 0 0 1 2.1.9l3.4 3.3a3 3 0 0 0 2.1.9H40a5 5 0 0 1 5 5v2H3z"/><path class="fld-front" d="M3 16h42v14a5 5 0 0 1-5 5H8a5 5 0 0 1-5-5z"/></svg><b>B-roll</b><span class="prtl-tick"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12.5 9.5 18 20 6.5"/></svg></span></span><span class="prtl-up-bar"><i></i></span></div>
-                <div class="prtl-up prtl-up-2"><span class="prtl-up-head"><svg class="pt-fold" viewBox="0 0 48 40" aria-hidden="true"><path class="fld-back" d="M3 10a5 5 0 0 1 5-5h10.7a3 3 0 0 1 2.1.9l3.4 3.3a3 3 0 0 0 2.1.9H40a5 5 0 0 1 5 5v2H3z"/><path class="fld-front" d="M3 16h42v14a5 5 0 0 1-5 5H8a5 5 0 0 1-5-5z"/></svg><b>Hero takes</b><span class="prtl-tick"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12.5 9.5 18 20 6.5"/></svg></span></span><span class="prtl-up-bar"><i></i></span></div>
-                <div class="prtl-up prtl-up-3"><span class="prtl-up-head"><svg class="pt-fold" viewBox="0 0 48 40" aria-hidden="true"><path class="fld-back" d="M3 10a5 5 0 0 1 5-5h10.7a3 3 0 0 1 2.1.9l3.4 3.3a3 3 0 0 0 2.1.9H40a5 5 0 0 1 5 5v2H3z"/><path class="fld-front" d="M3 16h42v14a5 5 0 0 1-5 5H8a5 5 0 0 1-5-5z"/></svg><b>Interview</b><span class="prtl-tick"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12.5 9.5 18 20 6.5"/></svg></span></span><span class="prtl-up-bar"><i></i></span></div>
+                <div class="prtl-up prtl-up-1"><span class="prtl-up-head"><svg class="pt-fold" viewBox="0 0 48 40" aria-hidden="true"><path class="fld-back" d="M3 10a5 5 0 0 1 5-5h10.7a3 3 0 0 1 2.1.9l3.4 3.3a3 3 0 0 0 2.1.9H40a5 5 0 0 1 5 5v2H3z"/><path class="fld-front" d="M3 16h42v14a5 5 0 0 1-5 5H8a5 5 0 0 1-5-5z"/></svg><b>B-roll</b><span class="prtl-sent">Sent</span></span><span class="prtl-up-bar"><i></i></span></div>
+                <div class="prtl-up prtl-up-2"><span class="prtl-up-head"><svg class="pt-fold" viewBox="0 0 48 40" aria-hidden="true"><path class="fld-back" d="M3 10a5 5 0 0 1 5-5h10.7a3 3 0 0 1 2.1.9l3.4 3.3a3 3 0 0 0 2.1.9H40a5 5 0 0 1 5 5v2H3z"/><path class="fld-front" d="M3 16h42v14a5 5 0 0 1-5 5H8a5 5 0 0 1-5-5z"/></svg><b>Hero takes</b><span class="prtl-sent">Sent</span></span><span class="prtl-up-bar"><i></i></span></div>
+                <div class="prtl-up prtl-up-3"><span class="prtl-up-head"><svg class="pt-fold" viewBox="0 0 48 40" aria-hidden="true"><path class="fld-back" d="M3 10a5 5 0 0 1 5-5h10.7a3 3 0 0 1 2.1.9l3.4 3.3a3 3 0 0 0 2.1.9H40a5 5 0 0 1 5 5v2H3z"/><path class="fld-front" d="M3 16h42v14a5 5 0 0 1-5 5H8a5 5 0 0 1-5-5z"/></svg><b>Interview</b><span class="prtl-sent">Sent</span></span><span class="prtl-up-bar"><i></i></span></div>
               </div>
             </div>
             <div class="prtl-hand">
@@ -2129,6 +2191,15 @@
               <span class="own-pill">Owner</span>
             </div>
 
+            <!-- the fields a real Ads Manager account screen leads with.
+                 Billing says "Your card" on purpose: it is the same claim
+                 the rest of the cell makes, stated as a settings value. -->
+            <div class="acct-meta">
+              <div><em>Currency</em><b>NZD</b></div>
+              <div><em>Time zone</em><b>Auckland</b></div>
+              <div><em>Billing</em><b>Your card</b></div>
+            </div>
+
             <div class="acct-head"><span>Sits under the account</span><span>Status</span></div>
             <div class="acct-rows">
               <div class="acct-row"><i></i><b>Pixel</b><span>Firing</span></div>
@@ -2150,9 +2221,7 @@
              underneath never changes, only the window onto it -->
         <div class="rc">
           <div class="rc-stage">
-            <div class="rc-frame">
-              <div class="rc-shot"><span class="rc-sub"></span></div>
-            </div>
+            <div class="rc-frame"></div>
           </div>
           <div class="rc-tags">
             <span>Reels <i>9:16</i></span>
@@ -2172,6 +2241,9 @@
           <div class="mgr-row"><span class="mgr-tgl"></span><span class="mgr-name">Hook A</span><span class="mgr-st"><span>Active</span></span></div>
           <div class="mgr-row cut"><span class="mgr-tgl"></span><span class="mgr-name">Hook B</span><span class="mgr-st"><span>Active</span><span>Off</span></span></div>
           <div class="mgr-row"><span class="mgr-tgl"></span><span class="mgr-name">Hook C</span><span class="mgr-st"><span>Active</span></span></div>
+          <!-- the replacement. Holds its space from the start so the cell
+               never changes height when it arrives. -->
+          <div class="mgr-row add"><span class="mgr-tgl"></span><span class="mgr-name">Hook D</span><span class="mgr-st"><span>New</span></span></div>
         </div>
       </div>
 
