@@ -780,6 +780,7 @@
   .case-video {
     position: absolute;
     inset: 0;
+    z-index: 0;   /* an explicit level, so the overlay below is ordered against it rather than against `auto` */
     width: 100%;
     height: 100%;
     object-fit: cover;
@@ -790,7 +791,12 @@
   .case-detail {
     position: absolute;
     left: 0; right: 0; top: 0;
-    z-index: 1;   /* Safari lets <video> paint over regular siblings unless this sits in its own, higher stacking context */
+    /* Safari promotes the <video> to its own composited layer and then paints
+       it over ordinary siblings whatever their z-index says. Promoting the
+       overlay too puts both in the same league, and the z-index sticks. */
+    z-index: 2;
+    transform: translateZ(0);
+    will-change: transform;
     padding: var(--s-2) var(--s-3) var(--s-4);
     display: grid;
     gap: 2px;
@@ -989,15 +995,23 @@
     color: var(--muted);
     pointer-events: none;
     transform-origin: left top;
-    transition: transform 180ms ease, top 180ms ease, color 180ms ease;
+    /* lift and shrink in ONE transform. `top` was animated alongside the
+       scale before, and the two properties settle on different pixel grids
+       mid-flight, so the label visibly hitched on its way up. A single
+       composited transform has nothing to disagree with. */
+    will-change: transform;
+    transform: translateY(0) scale(1);
+    transition: transform 180ms var(--ease-out), color 180ms ease;
   }
   .field--float textarea + label { top: 1.15rem; }
   .field--float input:focus + label,
-  .field--float input:not(:placeholder-shown) + label,
+  .field--float input:not(:placeholder-shown) + label {
+    transform: translateY(-0.55rem) scale(0.72);
+    color: var(--accent);
+  }
   .field--float textarea:focus + label,
   .field--float textarea:not(:placeholder-shown) + label {
-    top: 0.5rem;
-    transform: scale(0.72);
+    transform: translateY(-0.65rem) scale(0.72);
     color: var(--accent);
   }
   .field--float input:required + label::after,
@@ -1653,9 +1667,11 @@
     border-radius: var(--dg-r-4);
     background: var(--accent-soft);
     box-shadow: inset 0 0 0 1px var(--accent);
-    /* a symmetric ease reads as a deliberate morph; --ease-out front-loads
-       the whole change and then sits still, which looked like a jump */
-    animation: rcFrame 12s cubic-bezier(0.65, 0, 0.35, 1) infinite;
+    /* the morph used to take 0.84s out of a 12s loop and then sit still for
+       two seconds, which read as slow and heavy. Same four stops, a 9s loop,
+       and the change itself happens in 0.45s on a curve that arrives fast
+       and settles, so it snaps between placements instead of grinding. */
+    animation: rcFrame 9s cubic-bezier(0.33, 1, 0.4, 1) infinite;
     animation-play-state: var(--play);
   }
 
@@ -1666,7 +1682,7 @@
     font-size: 0.6875rem; font-weight: 600; color: var(--ink);
     white-space: nowrap;
     opacity: 0;
-    animation-duration: 12s;
+    animation-duration: 9s;
     animation-timing-function: var(--ease-out);
     animation-iteration-count: infinite;
     animation-play-state: var(--play);
@@ -1679,16 +1695,18 @@
 
   /* every size fits inside the 171x140 the cell gives it at its narrowest */
   @keyframes rcFrame {
-    0%,   18% { width: 79px;  height: 140px; }
-    25%,  43% { width: 106px; height: 132px; }
-    50%,  68% { width: 118px; height: 118px; }
-    75%,  93% { width: 168px; height: 95px;  }
+    0%,   20% { width: 79px;  height: 140px; }
+    25%,  45% { width: 106px; height: 132px; }
+    50%,  70% { width: 118px; height: 118px; }
+    75%,  95% { width: 168px; height: 95px;  }
     100%      { width: 79px;  height: 140px; }
   }
-  @keyframes rcTag1 { 0%, 18% { opacity: 1; } 23%, 95% { opacity: 0; } 100% { opacity: 1; } }
-  @keyframes rcTag2 { 0%, 20% { opacity: 0; } 25%, 43% { opacity: 1; } 48%, 100% { opacity: 0; } }
-  @keyframes rcTag3 { 0%, 45% { opacity: 0; } 50%, 68% { opacity: 1; } 73%, 100% { opacity: 0; } }
-  @keyframes rcTag4 { 0%, 70% { opacity: 0; } 75%, 93% { opacity: 1; } 98%, 100% { opacity: 0; } }
+  /* each label hands over inside its own morph, so the word changes while
+     the shape is moving rather than before or after it */
+  @keyframes rcTag1 { 0%, 20% { opacity: 1; } 23%, 97% { opacity: 0; } 100% { opacity: 1; } }
+  @keyframes rcTag2 { 0%, 22% { opacity: 0; } 25%, 45% { opacity: 1; } 48%, 100% { opacity: 0; } }
+  @keyframes rcTag3 { 0%, 47% { opacity: 0; } 50%, 70% { opacity: 1; } 73%, 100% { opacity: 0; } }
+  @keyframes rcTag4 { 0%, 72% { opacity: 0; } 75%, 95% { opacity: 1; } 97%, 100% { opacity: 0; } }
 
   /* --- a campaign that ran: Ads Manager rows, one gets switched off ---- */
   .mgr { margin-top: auto; display: grid; gap: 6px; }
@@ -1720,17 +1738,6 @@
   .mgr-st span { grid-area: 1 / 1; text-align: right; }
   .mgr-st span:first-child { color: var(--accent); }
   .mgr-st span:nth-child(2) { color: var(--muted); opacity: 0; }
-  /* The cell used to do one thing: switch the middle ad off. The copy
-     promises more than that -- things get cut AND the work continues -- so
-     a replacement now arrives after the cut. It holds its row from the
-     start at zero opacity, so the arrival costs no layout. */
-  .mgr-row.add {
-    opacity: 0;
-    animation: mgrAdd 10s var(--ease-out) infinite;
-    animation-play-state: var(--play);
-  }
-  .mgr-row.add .mgr-st span { color: var(--accent); }
-  @keyframes mgrAdd { 0%, 60% { opacity: 0; } 68%, 95% { opacity: 1; } 98%, 100% { opacity: 0; } }
 
   /* the middle ad gets cut partway through the loop and comes back on reset */
   .mgr-row.cut,
@@ -2267,9 +2274,6 @@
           <div class="mgr-row"><span class="mgr-tgl"></span><span class="mgr-name">Hook A</span><span class="mgr-st"><span>Active</span></span></div>
           <div class="mgr-row cut"><span class="mgr-tgl"></span><span class="mgr-name">Hook B</span><span class="mgr-st"><span>Active</span><span>Off</span></span></div>
           <div class="mgr-row"><span class="mgr-tgl"></span><span class="mgr-name">Hook C</span><span class="mgr-st"><span>Active</span></span></div>
-          <!-- the replacement. Holds its space from the start so the cell
-               never changes height when it arrives. -->
-          <div class="mgr-row add"><span class="mgr-tgl"></span><span class="mgr-name">Hook D</span><span class="mgr-st"><span>New</span></span></div>
         </div>
       </div>
 
@@ -2347,15 +2351,15 @@
     <div class="says">
       <figure class="say" data-anim>
         <blockquote><p>We had a great experience working with Tui Media. Arlo was professional, organised, and took the time to fully understand the brief and what we needed to achieve. He was also flexible and responsive throughout the editing process. We're really pleased with the final video content and would happily recommend him.</p></blockquote>
-        <figcaption><b>Karenna Wood</b><span>Google review</span></figcaption>
+        <figcaption><b>Karenna Wood</b><span>Elevate Consultancy</span></figcaption>
       </figure>
       <figure class="say" data-anim>
         <blockquote><p>Tui Media were a pleasure to work with on the Nelson City Council New Year's Eve celebrations, with Arlo delivering a polished and engaging highlight reel that perfectly captured the energy and atmosphere of the event.</p></blockquote>
         <figcaption><b>Stu Dalton</b><span>Nelson City Council</span></figcaption>
       </figure>
       <figure class="say" data-anim>
-        <blockquote><p>We found Arlo great to work with. Quick, professional, responsive. His photography and videography matched our brief. Highly recommend.</p></blockquote>
-        <figcaption><b>Dot Kettle</b><span>Google review</span></figcaption>
+        <blockquote><p>Arlo was recommended to us by a friend. So we had a very big event coming up and thought let's do it. Arlo floated around the event seamlessly and captured everything absolutely spot on. We are absolutely stoked with what he produced for us. He put in a tremendous amount of work and has created a stunning memory that we are over the moon we got him to capture for us.</p></blockquote>
+        <figcaption><b>Brent McGlashen</b><span>Mac Hops</span></figcaption>
       </figure>
     </div>
   </div>
@@ -2438,7 +2442,10 @@
         <div class="faq-panel" id="faq-a6" role="region" aria-labelledby="faq-q6" inert><div><p class="faq-a">No retainer and no lock-in, so there's no contract to get stuck in. The ad account's opened in your name, and the footage and the account both stay yours if we stop. You also deal with us direct, the ones actually filming and editing it, not an account manager passing messages along.</p></div></div>
       </div>
 
-      <div class="faq-end"></div>
+      <!-- the rule that closes the list. It carries data-anim like the rows
+           above it so it arrives last in the same cascade; without it the
+           line was simply always there, and read as animating in first. -->
+      <div class="faq-end" data-anim></div>
     </div>
   </div>
 </section>
@@ -2854,7 +2861,7 @@
      its own, arriving well after the cascade above it had finished. They
      reveal as one group instead, keyed off the block as a whole, so the
      stagger is always the only thing spacing them. */
-  var faqItems = [].slice.call(document.querySelectorAll('.faq-item[data-anim]'));
+  var faqItems = [].slice.call(document.querySelectorAll('.faq[data-faq] > [data-anim]'));
   function isFaqItem(el) { return faqItems.indexOf(el) > -1; }
 
   if ('IntersectionObserver' in window) {
@@ -2938,31 +2945,90 @@
      drives both this and the first-paint reveal above, so there is a
      single source of truth for what the curtain is doing. */
   var curtainPending = false;
+  /* a section the click asked for while the book view was up. The home view
+     is hidden at that point, so there is nothing to scroll to until the
+     route has actually been applied - it gets honoured on the far side of
+     the curtain instead of being dropped. */
+  var pendingAnchor = null;
 
   function applyRoute(name) {
     show(name, true);
+    var anchor = pendingAnchor;
+    pendingAnchor = null;
+    var hash = name === 'book' ? '#book' : '#home';
+    if (anchor) {
+      var target = null;
+      try { target = document.querySelector(anchor); } catch (err) {}
+      if (target) {
+        hash = anchor;
+        /* the home view came out of `hidden` a moment ago, so the document is
+           still the height of the short book page as far as the scroller is
+           concerned and the destination clamps to almost nothing. Force the
+           reflow, then land again next frame once the real height is in. */
+        void document.documentElement.offsetHeight;
+        scrollToCentre(target, false);
+        requestAnimationFrame(function () { scrollToCentre(target, false); });
+      }
+    }
     if (location.protocol !== 'data:' && location.protocol !== 'about:') {
-      try { history.replaceState(null, '', name === 'book' ? '#book' : '#home'); } catch (err) {}
+      try { history.replaceState(null, '', hash); } catch (err) {}
+    }
+  }
+
+  /* Every state change here used to hang entirely off `animationend`. If
+     that event is ever swallowed - a backgrounded tab throttling rAF, a
+     browser quirk, the animation getting interrupted - curtainPending
+     never clears and every route click after it is silently ignored: the
+     site looks dead until a reload. A timer backs up the event so the
+     curtain always finishes one way or another. Whichever fires first
+     wins; the other is a no-op against state that's already moved on.
+     Declared at the top level (not nested in `if (curtainEl)`) so startRoute
+     further down can reach them - in strict mode a function declared inside
+     a block is scoped to that block. */
+  var curtainTimer = null;
+  function clearCurtainTimer() {
+    if (curtainTimer) { clearTimeout(curtainTimer); curtainTimer = null; }
+  }
+  function armCurtainTimer(fn, ms) {
+    clearCurtainTimer();
+    curtainTimer = setTimeout(fn, ms);
+  }
+  /* requestAnimationFrame doesn't just throttle in a backgrounded tab like
+     setTimeout does - it stops firing outright, so a bare rAF call can hang
+     indefinitely. Race it against a short timer instead: whichever fires
+     first runs the callback, and a flag stops the loser from running it
+     twice. */
+  function nextFrame(fn) {
+    var done = false;
+    function run() { if (done) return; done = true; fn(); }
+    requestAnimationFrame(run);
+    setTimeout(run, 120);
+  }
+
+  function advanceCurtain() {
+    if (!curtainEl) return;
+    clearCurtainTimer();
+    if (curtainEl.classList.contains('page-loader--enter')) {
+      var name = curtainPending;
+      curtainPending = false;
+      curtainEl.classList.remove('page-loader--enter');
+      if (name) applyRoute(name);
+      /* next frame, so the browser has registered --enter coming off
+         before --exit's animation is asked to start */
+      nextFrame(function () {
+        curtainEl.classList.add('page-loader--exit');
+        armCurtainTimer(advanceCurtain, 1500);
+      });
+    } else if (curtainEl.classList.contains('page-loader--exit')) {
+      curtainEl.classList.remove('page-loader--exit');
+      curtainEl.classList.add('page-loader--idle');
     }
   }
 
   if (curtainEl) {
     curtainEl.addEventListener('animationend', function (e) {
       if (e.target !== e.currentTarget) return;
-      if (curtainEl.classList.contains('page-loader--enter')) {
-        var name = curtainPending;
-        curtainPending = false;
-        curtainEl.classList.remove('page-loader--enter');
-        if (name) applyRoute(name);
-        /* next frame, so the browser has registered --enter coming off
-           before --exit's animation is asked to start */
-        requestAnimationFrame(function () {
-          curtainEl.classList.add('page-loader--exit');
-        });
-      } else if (curtainEl.classList.contains('page-loader--exit')) {
-        curtainEl.classList.remove('page-loader--exit');
-        curtainEl.classList.add('page-loader--idle');
-      }
+      advanceCurtain();
     });
   }
 
@@ -2972,11 +3038,18 @@
     e.preventDefault();
     var name = link.getAttribute('data-route');
 
-    if (!curtainEl || curtainPending) return;
+    pendingAnchor = null;
+    startRoute(name);
+  });
+
+  function startRoute(name) {
+    if (!curtainEl || curtainPending) return false;
     curtainPending = name;
     curtainEl.classList.remove('page-loader--idle');
     curtainEl.classList.add('page-loader--enter');
-  });
+    armCurtainTimer(advanceCurtain, 1200);
+    return true;
+  }
 
   /* In-page nav links (Work / Process / Fit / What you get / About / Questions)
      land their target section centred in the viewport rather than tucked
@@ -2986,19 +3059,25 @@
      for the top-aligned cases below), which drags the centred position down
      by that same offset - computing the destination by hand sidesteps it.
 
-     Every section centres on its own full height - except "What you get",
-     which runs on well past a screen's worth of cards, so centring the
-     whole section would bury the heading above the fold. That one centres
-     on its heading block instead, and sits a little above true centre
-     rather than dead centre, so the cards below it read as "more to see". */
+     Every section centres on its own full height - except the two that run
+     on well past a screen's worth of content ("What you get" and "The
+     process we follow"), where centring the whole section would bury the
+     heading above the fold and leave the section before it still on screen.
+     Those centre on their heading block instead, and sit a little above true
+     centre rather than dead centre, so what follows reads as "more to see". */
   function scrollToCentre(target, animate) {
-    var tall = target.id === 'handover';
+    var tall = target.id === 'handover' || target.id === 'process';
     var ref = tall ? (target.querySelector('.section-head') || target) : target;
     var viewportFraction = tall ? 0.3 : 0.5;
     var rect = ref.getBoundingClientRect();
     var docTop = window.scrollY || document.documentElement.scrollTop;
     var dest = Math.max(0, docTop + rect.top + rect.height / 2 - window.innerHeight * viewportFraction);
-    window.scrollTo({ top: dest, behavior: animate ? 'smooth' : 'auto' });
+    /* 'auto' defers to the CSS scroll-behavior, which is smooth here - so the
+       jumps that are meant to be instant (arriving from the book view, or a
+       hashchange onto a section that was hidden a frame ago) were animating
+       from the top of a nine-screen page. Ask for instant explicitly. */
+    try { window.scrollTo({ top: dest, behavior: animate ? 'smooth' : 'instant' }); }
+    catch (err) { window.scrollTo(0, dest); }
   }
 
   document.addEventListener('click', function (e) {
@@ -3010,6 +3089,16 @@
     try { target = document.querySelector(hash); } catch (err) {}
     if (!target) return;
     e.preventDefault();
+
+    /* clicked from the book view: the section is in the hidden home view, so
+       a scroll here would land on nothing and the link read as dead. Play the
+       same curtain the CTA uses, then land on the section once home is up. */
+    if (views.book && !views.book.hidden) {
+      pendingAnchor = hash;
+      if (!startRoute('home')) pendingAnchor = null;
+      return;
+    }
+
     scrollToCentre(target, !reduceMotion);
     try { history.pushState(null, '', hash); } catch (err) {}
   });
