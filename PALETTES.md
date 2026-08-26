@@ -1,13 +1,12 @@
 # Palettes
 
-Two full sets, kept in sync tone for tone. Blue is live. To switch, put
-`data-palette="purple"` on the `<html>` tag in `wireframe/index.html`:
+Two full sets, kept in sync tone for tone. Blue is live.
 
-```html
-<html lang="en" data-palette="purple">
-```
-
-Nothing else changes. Every surface, rule and placeholder reads from these tokens.
+**Only the blue set ships.** The purple block used to sit in the stylesheet under
+`[data-palette="purple"]`, downloaded by every visitor and used by none of them, so
+it lives here instead. To switch, paste the purple values over the ones in `:root`
+in `wireframe/index.html` — nothing else changes. Every surface, rule and form
+control reads from these tokens.
 
 | Token | Blue (live) | Purple (saved) | Used for |
 | --- | --- | --- | --- |
@@ -18,10 +17,7 @@ Nothing else changes. Every surface, rule and placeholder reads from these token
 | `--accent` | `#6E9BF7` | `#9B87F5` | Buttons, process lines, fit icons, focus, selection |
 | `--accent-ink` | `#0A1428` | `#150F24` | Text and glyphs sitting on the accent |
 | `--accent-soft` | `rgba(110,155,247,.16)` | `rgba(155,135,245,.16)` | Fit icon backgrounds |
-| `--slot-1` | `#111B33` | `#1D1530` | Media placeholder, state 1 |
-| `--slot-2` | `#192747` | `#291E40` | Media placeholder, state 2 |
-| `--slot-3` | `#22355C` | `#372950` | Media placeholder, state 3 |
-| `--slot-4` | `#2D4573` | `#473662` | Media placeholder, state 4 |
+| `--slot-1` | `#111B33` | `#1D1530` | Ground under a media block before it paints |
 
 Rules and hairlines are alphas of `--ink` in both sets, so they follow automatically.
 

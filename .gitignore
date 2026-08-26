@@ -3,10 +3,7 @@ node_modules/
 *.log
 .DS_Store
 .claude/
+
+# source video masters — the web-ready cuts live in wireframe/media/
 videos/
 videos-compressed/
-wireframe/index.html.bak
-wireframe/index.html.preblento
-wireframe/index.html.prepatch
-wireframe/index.html.reverted-2026-08-24
-wireframe/index 2.html
