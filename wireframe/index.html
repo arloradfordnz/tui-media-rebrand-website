@@ -957,6 +957,20 @@
   form { display: grid; gap: var(--s-3); }
   .field { display: grid; gap: var(--s-1); }
 
+  /* ---------- boxed-label selects ----------
+     Matches the floating-label inputs: no caption sitting above the box.
+     The <label> stays in the DOM (screen readers, the .sel-btn's
+     aria-labelledby wiring) but is visually clipped; what a sighted user
+     reads instead is the select's own placeholder option, painted by
+     .sel-val same as any other choice. */
+  .field--boxed label {
+    position: absolute;
+    width: 1px; height: 1px;
+    margin: -1px; padding: 0; border: 0;
+    clip-path: inset(50%);
+    overflow: hidden;
+  }
+
   label {
     font-size: var(--t-micro);
     font-weight: 700;
@@ -2472,7 +2486,7 @@
 
 <!-- ============ BOOK VIEW (the filter form) ============ -->
 <main class="page" data-view="book" hidden>
-  <div class="page-head">
+  <div class="page-head" data-page-head>
     <h2 tabindex="-1">Let's see if we're a fit</h2>
     <p class="lede">Two minutes. If we can't help, we'll say so and point you at someone who can.</p>
   </div>
@@ -2499,11 +2513,11 @@
       <label for="f-sell">What do you sell?</label>
     </div>
 
-    <div class="field">
+    <div class="field field--boxed">
       <label for="f-value">What's a customer worth to you?</label>
       <div class="select-wrap">
         <select id="f-value" name="value" required>
-          <option value="" selected disabled>Choose one</option>
+          <option value="" selected disabled>What's a customer worth to you?</option>
           <option>Under $1k</option>
           <option>$1k to $5k</option>
           <option>$5k to $20k</option>
@@ -2514,11 +2528,11 @@
     </div>
 
     <div class="split">
-      <div class="field">
+      <div class="field field--boxed">
         <label for="f-spend">Monthly ad spend</label>
         <div class="select-wrap">
           <select id="f-spend" name="spend" required>
-            <option value="" selected disabled>Choose one</option>
+            <option value="" selected disabled>Monthly ad spend</option>
             <option>Not running ads yet</option>
             <option>Under $2k / month</option>
             <option>$2k to $10k / month</option>
@@ -2526,11 +2540,11 @@
           </select>
         </div>
       </div>
-      <div class="field">
+      <div class="field field--boxed">
         <label for="f-when">When do you want ads live?</label>
         <div class="select-wrap">
           <select id="f-when" name="when" required>
-            <option value="" selected disabled>Choose one</option>
+            <option value="" selected disabled>When do you want ads live?</option>
             <option>Within a month</option>
             <option>Next quarter</option>
             <option>Just researching</option>
@@ -2540,22 +2554,22 @@
     </div>
 
     <div class="split">
-      <div class="field">
+      <div class="field field--boxed">
         <label for="f-decision">Who signs this off?</label>
         <div class="select-wrap">
           <select id="f-decision" name="decision" required>
-            <option value="" selected disabled>Choose one</option>
+            <option value="" selected disabled>Who signs this off?</option>
             <option>Me</option>
             <option>Me and a business partner</option>
             <option>Someone else</option>
           </select>
         </div>
       </div>
-      <div class="field">
+      <div class="field field--boxed">
         <label for="f-capacity">Could you handle more work right now?</label>
         <div class="select-wrap">
           <select id="f-capacity" name="capacity" required>
-            <option value="" selected disabled>Choose one</option>
+            <option value="" selected disabled>Got room for more work?</option>
             <option>Yes, plenty of room</option>
             <option>Some room</option>
             <option>Not yet, planning ahead</option>
@@ -2579,7 +2593,7 @@
   </form>
 
   <div class="done" data-done hidden tabindex="-1" aria-live="polite">
-    <h2>Got it.</h2>
+    <h2>Received.</h2>
     <p class="lede">We'll come back within one working day. If it looks like a fit, the reply has a booking link in it.</p>
   </div>
 </main>
@@ -2924,7 +2938,6 @@
 
     navCta.setAttribute('href', book ? '#home' : '#book');
     navCta.setAttribute('data-route', book ? 'home' : 'book');
-    navCta.classList.toggle('light', book);
     navCta.classList.toggle('back', book);
     ctaText.forEach(function (t) { t.textContent = book ? 'Back to Site' : "Let's talk"; });
 
@@ -3150,6 +3163,7 @@
      through Resend. Swaps to the success panel once that's confirmed. */
 
   var bookForm     = document.querySelector('[data-form]');
+  var pageHead     = document.querySelector('[data-page-head]');
   var done         = document.querySelector('[data-done]');
   var submitError  = document.querySelector('[data-submit-error]');
   var submitBtn    = bookForm.querySelector('button[type="submit"]');
@@ -3229,6 +3243,7 @@
       if (!res.ok) throw new Error('send failed');
 
       bookForm.hidden = true;
+      if (pageHead) pageHead.hidden = true;
       done.hidden = false;
       try { window.scrollTo({ top: 0, behavior: 'instant' }); }
       catch (err) { window.scrollTo(0, 0); }
