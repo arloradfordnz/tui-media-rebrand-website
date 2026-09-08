@@ -28,6 +28,40 @@ function escapeHtml(str) {
     .replace(/"/g, '&quot;');
 }
 
+// Needs CRM_ENQUIRY_URL (https://<crm>/api/enquiry) and CRM_ENQUIRY_SECRET set
+// in the Vercel project. With either missing this is a no-op, which is the
+// right behaviour for a preview deployment that has no business writing to the
+// live CRM.
+async function postToCrm(data) {
+  const url = process.env.CRM_ENQUIRY_URL;
+  const secret = process.env.CRM_ENQUIRY_SECRET;
+  if (!url || !secret) {
+    console.warn('CRM_ENQUIRY_URL/CRM_ENQUIRY_SECRET not set — enquiry emailed but not filed in the CRM');
+    return;
+  }
+
+  // A slow CRM must not hold up the visitor's form submission. The email has
+  // already gone by this point, so abandoning the write costs a record, not
+  // the lead.
+  const abort = new AbortController();
+  const timer = setTimeout(() => abort.abort(), 5000);
+  try {
+    const resp = await fetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'x-enquiry-secret': secret },
+      body: JSON.stringify(data),
+      signal: abort.signal
+    });
+    if (!resp.ok) {
+      console.error('CRM enquiry write failed', resp.status, await resp.text());
+    }
+  } catch (err) {
+    console.error('CRM enquiry write failed', err);
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
 module.exports = async function handler(req, res) {
   if (req.method !== 'POST') {
     res.setHeader('Allow', 'POST');
@@ -82,6 +116,16 @@ module.exports = async function handler(req, res) {
       console.error('Resend error', resp.status, body);
       return res.status(502).json({ ok: false, error: 'Failed to send email' });
     }
+
+    // Also file it in the CRM, so the answers land against a client record
+    // instead of only in an inbox.
+    //
+    // Deliberately after the email and deliberately non-fatal. The email is
+    // what guarantees a human sees the enquiry; the CRM write is what makes it
+    // workable. If the CRM is down, mid-deploy, or the secret is wrong, the
+    // visitor must still get a success — they did their part, and the enquiry
+    // is not lost. The failure is logged for whoever reads the function logs.
+    await postToCrm(data);
 
     return res.status(200).json({ ok: true });
   } catch (err) {
