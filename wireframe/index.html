@@ -346,9 +346,6 @@
     display: block; height: 100%; width: 0%;
     background: var(--accent);
   }
-  @media (prefers-reduced-motion: reduce) {
-    .page-loader__progress i { transition: none !important; width: 100% !important; }
-  }
   /* the domes have to paint in the panel's own colour, and they sit outside
      its box, so they cannot be clipped by it - hence a strip each side */
   .page-loader__arc {
@@ -388,10 +385,14 @@
     /* same mark as the navbar wordmark, full colour, no tint */
     background: var(--logo-bird) no-repeat center / contain;
   }
+  @keyframes loader-fade-out { to { opacity: 0; visibility: hidden; } }
+  @keyframes loader-fade-in  { from { opacity: 0; } to { opacity: 1; } }
   @media (prefers-reduced-motion: reduce) {
-    /* shortened rather than removed: animationend still has to fire or the
-       curtain never advances out of its covering state */
-    .page-loader--exit, .page-loader--enter { animation-duration: 1ms; }
+    /* a cross-fade rather than a 1ms flash - no travel, but the page still
+       arrives instead of snapping into place. animationend fires either way,
+       which the curtain's state machine depends on. */
+    .page-loader--exit  { animation: loader-fade-out 420ms ease forwards; }
+    .page-loader--enter { animation: loader-fade-in 320ms ease both; }
   }
 
   body {
@@ -767,15 +768,36 @@
 
   /* ---------- case studies (continuous marquee) ---------- */
 
-  .marquee { overflow: hidden; width: 100%; }
+  .marquee {
+    overflow: hidden;
+    width: 100%;
+    /* the strip is its own paint unit - without this every frame of the
+       track's transform invalidates the sections stacked around it */
+    contain: paint;
+    /* feather both ends so cards arrive and leave instead of being sliced
+       off at the viewport edge. That hard cut is most of what reads as
+       "jumpy" even when the loop itself is running clean. */
+    -webkit-mask-image: linear-gradient(to right, transparent 0, #000 clamp(24px, 7vw, 120px), #000 calc(100% - clamp(24px, 7vw, 120px)), transparent 100%);
+            mask-image: linear-gradient(to right, transparent 0, #000 clamp(24px, 7vw, 120px), #000 calc(100% - clamp(24px, 7vw, 120px)), transparent 100%);
+  }
   .marquee-track {
     display: flex;
     gap: var(--frame);
     width: max-content;
-    animation: marquee 30s linear infinite;
+    /* A flex row of 2N cards has 2N-1 gaps, so -50% of the track lands half
+       a gap short of where the duplicate run begins and the loop hitches
+       once per cycle. The trailing pad is a 2Nth gap: the track is then two
+       identical (card + gap) runs and -50% is exactly one of them. */
+    padding-right: var(--frame);
+    animation: marquee 56s linear infinite;
     will-change: transform;
+    transform: translate3d(0, 0, 0);
+    backface-visibility: hidden;
   }
-  @keyframes marquee { to { transform: translate3d(-50%, 0, 0); } }
+  @keyframes marquee {
+    from { transform: translate3d(0, 0, 0); }
+    to   { transform: translate3d(-50%, 0, 0); }
+  }
 
   .case {
     width: clamp(210px, 19vw, 300px);
@@ -808,7 +830,6 @@
        overlay too puts both in the same league, and the z-index sticks. */
     z-index: 2;
     transform: translateZ(0);
-    will-change: transform;
     padding: var(--s-2) var(--s-3) var(--s-4);
     display: grid;
     gap: 2px;
@@ -1944,42 +1965,33 @@
     .closing { padding-inline: var(--s-3); }
   }
 
+  /* ---------- reduced motion ---------------------------------------------
+     Calmed down, not switched off. Windows reports `reduce` for the OS-wide
+     Accessibility > Visual effects > "Animation effects" toggle, which a lot
+     of people have off for performance rather than for motion sensitivity -
+     honouring it literally left the entire site dead on those machines, right
+     down to the loader. So what stays is the motion that is opacity-led,
+     small-travel, or user-initiated; what goes is the long travel and the
+     decorative pulsing, and the auto-running strips drop to a crawl. */
   @media (prefers-reduced-motion: reduce) {
-    /* keep what aids comprehension (accordion height), drop what moves */
-    .marquee-track { animation: none; }
-    [data-anim] { transform: none; transition: opacity 200ms ease; }
+    /* still moving, but at a reading pace rather than a scroll */
+    .marquee-track { animation-duration: 140s; }
+    /* a 6px settle instead of a 16px rise */
+    [data-anim] { transform: translateY(6px); }
+    /* the two-layer label swap is a vertical wipe - land on the first copy */
     .btn-label > span:nth-child(2) { display: none; }
     .nav-links .nav-label > span:nth-child(2) { display: none; }
-    .faq-icon, .faq-icon svg { transition: none; }
-    .btn:active { transform: none; }
-    .faq-row:hover .faq-q { transform: none; }
-    /* the bento diagrams draw themselves in — land them already drawn */
-    /* the four diagrams loop; hold them at a legible resting state */
+    /* purely decorative pulses, nothing to read in them */
+    .avail i::after { animation: none; opacity: 0; }
+    .acct-live, .acct-row i { animation: none; opacity: 1; }
+    /* the drag-and-drop mime is the one loop that travels; rest it on the
+       finished state - three uploads sent, pointer and folder gone */
     .prtl-zone, .prtl-hint, .prtl-drag, .prtl-up, .prtl-up-bar i, .prtl-sent,
-    .prtl-stack, .prtl-hand, .prtl-cursor,
-    .acct-live, .acct-row i, .rc-frame, .rc-tags span,
-    .mgr-row.add,
-    .mgr-row.cut, .mgr-row.cut .mgr-tgl, .mgr-row.cut .mgr-tgl::after,
-    .mgr-row.cut .mgr-st span, .avail i::after { animation: none; }
-    /* the portal rests on three finished uploads, pointer and folder gone */
+    .prtl-stack, .prtl-hand, .prtl-cursor { animation: none; }
     .prtl-hand, .prtl-hint { opacity: 0; }
     .prtl-stack { transform: none; }
     .prtl-up, .prtl-sent { opacity: 1; }
     .prtl-up-bar i { transform: scaleX(1); }
-    /* delivery dots hold lit rather than breathing */
-    .acct-live, .acct-row i { opacity: 1; }
-    /* ring off entirely rather than parked mid-expansion */
-    .avail i::after { opacity: 0; }
-    /* the frame rests on the widest crop with its label showing */
-    .rc-frame { width: 168px; height: 95px; }
-    .rc-tags span:nth-child(4) { opacity: 1; }
-    .mgr-row.cut { opacity: 0.55; }
-    .mgr-row.cut .mgr-tgl { background: var(--rule-2); }
-    .mgr-row.cut .mgr-tgl::after { transform: translateX(-10px); }
-    .mgr-row.cut .mgr-st span:first-child { opacity: 0; }
-    .mgr-row.cut .mgr-st span:nth-child(2) { opacity: 1; }
-    /* the replacement rests visible: the cut already happened */
-    .mgr-row.add { opacity: 1; }
   }
 </style>
 </head>
@@ -2386,11 +2398,11 @@
     <div class="team">
       <div class="block" data-anim><img src="/img/arlo-radford.webp" alt="Arlo Radford, founder of Tui Media, on a shoot in Nelson" width="900" height="900" loading="lazy" decoding="async"></div>
       <div class="team-body" data-anim>
-        <h3>Hey there</h3>
-        <p class="measure">Hey, I'm Arlo. I'm 16, still at Nelson College, based in Nelson. I've been behind a camera for 4 years, working with 30+ businesses on 60+ videos.</p>
-        <p class="measure">I write, shoot and edit every ad myself, script to final cut. No team of nine, no project manager relaying messages. Just one person who knows the job inside out, so nothing gets lost in translation.</p>
-        <p class="measure">I grew up on social media, so I know what actually gets watched now, not the overproduced, agency-style stuff. That means I turn jobs down too. If it needs a full crew and a month of pre-production, I'm probably not your guy, and I'd rather say so upfront.</p>
-        <p class="measure">I'm based in Nelson, working across the top of the South Island, usually a workshop, a warehouse, or someone's front paddock.</p>
+        <h3>Arlo Radford</h3>
+        <p class="measure">Hey there, I'm Arlo, a Nelson College student with over four years experience as a video creative. Filmmaking has been my passion for quite some time now and it's grown into this business. I've worked with 30+ NZ businesses on 60+ videos, and I love working with passionate brands.</p>
+        <p class="measure">I see being young as an advantage in this industry, since I know what actually gets watched right now, not the overproduced, agency-style stuff.</p>
+        <p class="measure">I write, shoot and edit every ad myself, script to final cut, so nothing gets lost in translation along the way.</p>
+        <p class="measure">I'm based in Nelson and work nationwide. I'd love to hear more about what you have in mind.</p>
         <div class="btn-row">
           <a class="btn outline" href="https://www.instagram.com/arloradford" target="_blank" rel="noopener noreferrer">
             <span class="btn-label"><span>Follow along</span><span aria-hidden="true">Follow along</span></span>
@@ -2522,10 +2534,10 @@
       <div class="select-wrap">
         <select id="f-value" name="value" required>
           <option value="" selected disabled>What's a customer worth to you?</option>
-          <option>Under $1k</option>
+          <option>Under $200</option>
+          <option>$200 to $1k</option>
           <option>$1k to $5k</option>
-          <option>$5k to $20k</option>
-          <option>$20k+</option>
+          <option>$5k+</option>
           <option>Varies a lot</option>
         </select>
       </div>
@@ -2538,9 +2550,10 @@
           <select id="f-spend" name="spend" required>
             <option value="" selected disabled>Monthly ad spend</option>
             <option>Not running ads yet</option>
-            <option>Under $2k / month</option>
-            <option>$2k to $10k / month</option>
-            <option>$10k+ / month</option>
+            <option>Under $300 / month</option>
+            <option>$300 to $800 / month</option>
+            <option>$800 to $2k / month</option>
+            <option>$2k+ / month</option>
           </select>
         </div>
       </div>
@@ -2606,6 +2619,14 @@
 (function () {
   'use strict';
 
+  /* `reduce` is not the same signal on every OS. On Windows it is the
+     Accessibility > Visual effects > "Animation effects" switch, which is
+     routinely off for performance, and gating the whole script on it left
+     those machines with a static page and no loader at all. The CSS block
+     at the foot of the stylesheet now does the calming - slower strips,
+     shorter travel, no decorative pulsing - so the only thing left that
+     has to be decided in JS is programmatic smooth scrolling, which is
+     genuinely vestibular and stays off. */
   var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   /* ---------- page loader: first paint -----------------------------------
@@ -2633,7 +2654,7 @@
     // one real load gets a bar - it's switched on here and switched off
     // for good once used, so it can't reappear stale on later in-page
     // "curtain" transitions that have no load behind them to measure.
-    if (bar && !reduceMotion) {
+    if (bar) {
       barWrap.style.display = 'block';
       bar.style.transition = 'none';
       bar.style.width = '0%';
@@ -2646,7 +2667,7 @@
     function revealFirstPaint() {
       if (done) return;
       done = true;
-      if (bar && !reduceMotion) {
+      if (bar) {
         bar.style.transition = 'width ' + SNAP_MS + 'ms ease-out';
         bar.style.width = '100%';
         setTimeout(function () {
@@ -2707,15 +2728,7 @@
     el._lit = -1;
   });
 
-  if (reduceMotion) {
-    /* decorative scrub — show the sentence outright instead */
-    reveals.forEach(function (el) {
-      el._chars.forEach(function (c) { c.classList.add('on'); });
-    });
-  }
-
   function paintReveals() {
-    if (reduceMotion) return;
     var vh = window.innerHeight;
     reveals.forEach(function (el) {
       var r = el.getBoundingClientRect();
@@ -2789,9 +2802,7 @@
       raf = requestAnimationFrame(paintSpine);
     }
 
-    if (reduceMotion) {
-      spine.style.setProperty('--spine', '1');
-    } else {
+    {
       window.addEventListener('scroll', onSpineScroll, { passive: true });
       window.addEventListener('resize', onSpineScroll);
       /* coming back to a hidden tab leaves the rail wherever it stopped */
@@ -2837,7 +2848,6 @@
     var target = parseFloat(b.getAttribute('data-count'));
     if (!isFinite(target)) return;
     var suffix = b.getAttribute('data-suffix') || '';
-    if (reduceMotion) { b.textContent = target + suffix; return; }
     var duration = 1400, start = null;
     function tick(t) {
       if (start === null) start = t;
@@ -3426,7 +3436,7 @@
      so a single class on the grid starts and stops the lot. */
 
   var wygGrid = document.querySelector('.wyg-grid');
-  if (wygGrid && !reduceMotion) {
+  if (wygGrid) {
     if ('IntersectionObserver' in window) {
       new IntersectionObserver(function (entries) {
         entries.forEach(function (e) {
@@ -3452,15 +3462,14 @@
      400KB of poster frames that the old `autoplay` markup fetched eagerly,
      whether or not the visitor ever scrolled this far. The observer arms
      the poster and starts playback together, 400px out, so the card is
-     never caught empty. Under reduced motion the poster is armed the same
-     way and stands in for the loop. Queried after the clone above so it
-     picks up both copies of the track. */
+     never caught empty. Queried after the clone above so it picks up both
+     copies of the track. */
   var caseVideos = [].slice.call(document.querySelectorAll('[data-case-video]'));
   caseVideos.forEach(function (v) {
     function arm() {
       var poster = v.getAttribute('data-poster');
       if (poster) { v.poster = poster; v.removeAttribute('data-poster'); }
-      if (!reduceMotion) v.play().catch(function () {});
+      v.play().catch(function () {});
     }
     /* these start well below the fold, so there is no "already playing on
        load" state to preserve — visibility is the only thing that should
@@ -3478,7 +3487,7 @@
   });
 
   var logoTrack = document.querySelector('[data-marquee-logos]');
-  if (logoTrack && !reduceMotion) {
+  if (logoTrack) {
     /* One duplicate is only seamless while a single run is wider than the
        viewport. On a wide screen it is not, and the strip runs dry before it
        wraps — so repeat the run until it covers the viewport, then mirror
@@ -3495,7 +3504,9 @@
       half = logoTrack.scrollWidth / 2;
     }
 
-    var LOGO_SPEED = 55;        /* px per second */
+    /* the one strip that isn't a CSS animation, so its reduced-motion
+       crawl has to be set here rather than in the media query */
+    var LOGO_SPEED = reduceMotion ? 16 : 55;   /* px per second */
     var half = 0, offset = 0, dir = 1, wanted = 1, prevT = null;
     var lastY = window.scrollY;
 
