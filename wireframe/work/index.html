@@ -209,16 +209,29 @@
     .btn:hover .arrow svg:nth-child(2) { transform: translateX(0); }
   }
 
-  /* The page has no visible heading: it is a grid of clips and nothing else,
-     which is the whole brief. The h1 stays for anything reading the document
-     rather than looking at it. */
-  .sr-only {
-    position: absolute;
-    width: 1px; height: 1px;
-    margin: -1px; padding: 0;
-    overflow: hidden;
-    clip-path: inset(50%);
-    white-space: nowrap;
+  /* ---------- page head ----------
+     Lifted from the book view (.page-head on index.html): centred, same
+     clamp on the heading, same lede treatment underneath. That page opens
+     "Let's see if we're a fit" over one honest sentence about what happens
+     next; this one gets the same shape with its own thing to say. */
+  .page-head {
+    text-align: center;
+    max-width: 640px;
+    margin: 0 auto;
+    padding-top: var(--s-5);
+  }
+  /* h1, h2, h3 on the main site share one rule (weight 500, -0.035em
+     tracking, 0.98 line-height); h2 there carries the clamp this heading
+     uses. Reproduced rather than referenced, same as everything else in
+     this file. */
+  h1 { margin: 0; font-weight: 500; letter-spacing: -0.035em; line-height: 0.98; text-wrap: balance; }
+  .page-head h1 { font-size: clamp(2.25rem, 5vw, 4.25rem); }
+  .page-head .lede {
+    font-size: var(--t-body);
+    color: var(--muted);
+    line-height: 1.6;
+    max-width: 46ch;
+    margin: var(--s-3) auto 0;
   }
 
   /* ---------- grid ---------- */
@@ -430,7 +443,10 @@
 </div>
 
 <div class="wrap">
-  <h1 class="sr-only">Work</h1>
+  <div class="page-head">
+    <h1>Here's the work</h1>
+    <p class="lede">Every clip below actually ran as an ad, not a reel or a highlight package. Click one and put the sound on.</p>
+  </div>
 
   <!-- Cards carry their clip on data-src rather than src: with no src there is
        no request at all until the first play, so opening the page costs the
