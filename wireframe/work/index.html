@@ -272,14 +272,23 @@
     height: 100%;
     object-fit: cover;
     display: block;
-    /* Transparent, not var(--slot-1): the card's own background-image (set in
-       JS, from the same poster the video carries) is what shows through here
-       before a frame has decoded. Painting a solid colour on the video itself
-       was the flash on hover — the poster attribute stops covering the
-       element the moment play() is called, and playback has no frame ready
-       yet, so the video's own background showed through for a beat. */
+    /* Transparent, not var(--slot-1): the card's own background-image (the
+       same poster the video carries) is what shows through here before a
+       frame has decoded. Painting a solid colour on the video itself was
+       the flash on hover — the poster attribute stops covering the element
+       the moment play() is called, and playback has no frame ready yet, so
+       the video's own background showed through for a beat. */
     background: transparent;
+    /* Hidden until it is genuinely playing, so what you see at rest is
+       always the chosen poster. Warming the clips in advance means the
+       element holds a decoded frame long before anyone asks to watch it,
+       and a browser paints that frame over the poster as soon as it has
+       one — frame zero of a clip that opens on a fade is black, and the
+       card would sit there looking broken. */
+    opacity: 0;
+    transition: opacity 200ms var(--ease-out);
   }
+  .card.is-live video { opacity: 1; }
 
   /* name and trade, over a scrim so they stay legible whatever the clip does */
   .meta {
@@ -490,16 +499,73 @@
 
   function video(card) { return card.querySelector('video'); }
 
-  /* Nothing has a src until it is first asked to play, so the page itself
-     downloads only the posters. */
-  function load(v) {
+  /* ---- three levels of readiness -------------------------------------
+     The two failure modes here pull in opposite directions, and each fix
+     on its own causes the other.
+
+     Arming everything for playback at once was the first one: eleven clips
+     streaming against one connection, ~16MB pulled from a single sweep of
+     the pointer, and the clip you actually wanted queued behind ten you
+     did not. Arming nothing until the click was the second: the click then
+     paid for a connection, the container header and enough frames to
+     start, measured cold at 117ms to 862ms on a fast line and 1.6s to
+     reach metadata on a slow sample. That is the delay between pressing a
+     card and seeing it move.
+
+     So there are three states rather than two. Every card keeps its header
+     warm; only the card in use streams; a card just used stays warm a few
+     seconds in case it is used again. `preload="metadata"` turns out to
+     fetch about a second of video and then stop on its own, which is both
+     cheap (~250KB a clip) and, measured, enough to put time-from-click to
+     ready at zero. */
+
+  /* Header and a moment of video, then the browser stops by itself. */
+  function arm(v) {
+    if (v.src) return;
+    v.preload = 'metadata';
+    v.src = v.getAttribute('data-src');
+  }
+
+  /* Everything it needs to keep playing. */
+  function stream(v) {
+    v.preload = 'auto';
     if (!v.src) v.src = v.getAttribute('data-src');
   }
+
+  /* Drop the buffer and the connection, then re-arm: pausing a video does
+     not stop it downloading, and only clearing the source does. */
+  function cool(v) {
+    v.pause();
+    if (v.src) {
+      v.removeAttribute('src');
+      try { v.load(); } catch (err) {}
+    }
+    arm(v);
+  }
+
+  /* Warm the headers one at a time once the page is up. Sequentially, on
+     purpose: it is the concurrency that hurt, not the bytes, and a queue
+     of eleven small requests costs nothing anyone can feel. It waits for
+     the posters to land first, so the grid is never held up by the very
+     thing meant to make it feel quick. */
+  function warm(i) {
+    if (i >= cards.length) return;
+    var v = video(cards[i]);
+    if (v.src) return warm(i + 1);
+    var moved = false;
+    var next = function () { if (!moved) { moved = true; warm(i + 1); } };
+    v.addEventListener('loadedmetadata', next, { once: true });
+    v.addEventListener('error', next, { once: true });
+    setTimeout(next, 2000);   /* one slow file must not stall the queue */
+    arm(v);
+  }
+  if (document.readyState === 'complete') setTimeout(function () { warm(0); }, 300);
+  else window.addEventListener('load', function () { setTimeout(function () { warm(0); }, 300); });
 
   function stop(card) {
     if (!card) return;
     var v = video(card);
-    release(v);
+    cool(v);
     v.muted = true;
     card.classList.remove('is-sound', 'is-preview');
   }
@@ -509,42 +575,34 @@
        actually playing out loud. */
     if (sound) return;
     var v = video(card);
-    load(v);
+    clearTimeout(card.coolTimer);
+    stream(v);
     v.muted = true;
     card.classList.add('is-preview');
     var p = v.play();
     if (p) p.catch(function () { card.classList.remove('is-preview'); });
   }
 
-  /* Pausing a video does NOT stop it downloading, and that was the whole
-     problem here. One sweep of the mouse across the grid armed all eleven
-     clips, and every one of them carried on pulling its file down in the
-     background: measured at ~16MB fetched from a single pass, eleven
-     transfers competing for the same connection and eleven decoders held
-     open. The clip you actually wanted to watch was queued behind the ten
-     you did not, which is what "laggy" and "not working" looked like.
-     Clearing the source and reloading is what actually cancels the
-     transfer and hands the decoder back. The card keeps its poster as a
-     background image, so dropping the video changes nothing on screen. */
-  function release(v) {
-    v.pause();
-    if (!v.src) return;
-    v.removeAttribute('src');
-    /* Without the reload the element keeps the old buffer and the request
-       alive; with it, the fetch is aborted. */
-    try { v.load(); } catch (err) {}
-  }
-
   function endPreview(card) {
     if (card === sound) return;
-    release(video(card));
+    var v = video(card);
+    v.pause();
     card.classList.remove('is-preview');
+    /* Hold what it buffered for a few seconds. Hovering a card and then
+       clicking it is the ordinary way to use this page, and that click
+       should not pay for the same bytes twice. After that it is dead
+       weight and goes back to being just a warm header. */
+    clearTimeout(card.coolTimer);
+    card.coolTimer = setTimeout(function () {
+      if (card !== sound) cool(v);
+    }, 5000);
   }
 
   function withSound(card) {
     if (sound && sound !== card) stop(sound);
     var v = video(card);
-    load(v);
+    clearTimeout(card.coolTimer);
+    stream(v);
     card.classList.remove('is-preview');
     card.classList.add('is-sound');
     sound = card;
@@ -567,6 +625,28 @@
 
   cards.forEach(function (card) {
     var v = video(card);
+
+    /* The video uncovers the poster only once frames are actually moving,
+       and covers it again the moment they stop. Driven by the element's own
+       events rather than by the click, so a clip that is still catching up
+       never shows a blank frame in place of the poster. */
+    v.addEventListener('playing', function () { card.classList.add('is-live'); });
+    /* Deliberately not 'waiting': a clip that stalls for a moment mid-play
+       should hold its last frame, not snap back to the poster and out
+       again. */
+    ['pause', 'emptied', 'ended'].forEach(function (ev) {
+      v.addEventListener(ev, function () { card.classList.remove('is-live'); });
+    });
+
+    /* Start pulling bytes on the press rather than the release. It is only
+       the length of a click, but it is free, and it costs nothing if the
+       press turns out to be the start of a scroll: this escalates what the
+       element is loading and never starts playback, which stays on click. */
+    card.addEventListener('pointerdown', function () {
+      if (card === sound) return;
+      clearTimeout(card.coolTimer);
+      stream(v);
+    });
 
     card.addEventListener('click', function () {
       if (card === sound) { stop(card); sound = null; return; }
