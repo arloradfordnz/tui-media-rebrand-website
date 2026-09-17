@@ -10,6 +10,9 @@ deployed on Vercel.
   The folder name is historical; renaming it means changing the Root Directory
   setting in the Vercel project at the same time.
   - `index.html` — the whole site: markup, styles and script in one file.
+  - `work/index.html` — the unlisted examples page at `/work`. Nothing links to
+    it; it exists to be pasted into a message. Its clips are the only ones on
+    the site that carry audio, and they live in `media/work/`.
   - `img/` — logos, marks and the founder portrait, all WebP.
   - `media/` — case-study clips and their poster frames.
   - `fonts/` — the self-hosted Bricolage Grotesque subsets.
@@ -52,10 +55,14 @@ That rests on a few decisions worth not undoing:
 - **Nothing is embedded as a data URI.** Images live in `img/` as WebP so they are
   cached across visits instead of being re-downloaded inside the HTML every time.
 - **Case-study videos are `preload="none"` with no `autoplay`,** and their posters
-  are held on `data-poster` rather than `poster`. One IntersectionObserver arms the
-  poster and starts playback together, 400px before the card reaches the viewport.
-  Putting `autoplay` back makes the browser fetch every clip on load regardless of
-  what `preload` says.
+  are held on `data-poster` rather than `poster`. One IntersectionObserver on the
+  *strip* decides when the section is worth any work, 400px out; a 4fps poll then
+  matches playback to the cards actually inside the frame. It is a poll and not an
+  observer per video on purpose — see the long comment above `caseTick` in
+  `index.html`, which is the bug that made the strip sit static. Putting `autoplay`
+  back makes the browser fetch every clip on load regardless of what `preload` says.
+- **`/work` loads its posters and nothing else.** The clips sit on `data-src`, so
+  the first request for an mp4 there is the first time someone plays one.
 - **Every `<img>` carries `width` and `height`.** The logo strip measures its own
   track to work out how many copies it needs, and a track measured before the
   plates have intrinsic sizes comes out short and runs dry before it wraps.
@@ -67,13 +74,29 @@ That rests on a few decisions worth not undoing:
   stale-while-revalidate, so a replaced clip under an existing filename takes up to
   a month to propagate. Rename the file if it needs to be immediate.
 
-Video masters are re-encoded to 608x1080, CRF 28, 25fps, no audio, `+faststart`:
+Video masters are re-encoded twice, because the two surfaces want different
+things. The home-page marquee is silent wallpaper — small, muted, many at once
+— at 608x1080, CRF 28, 25fps, no audio, `+faststart`:
 
 ```bash
 ffmpeg -i in.mp4 -an -c:v libx264 -preset slow -crf 28 -profile:v high -level 4.0 \
   -pix_fmt yuv420p -vf "scale=608:1080:flags=lanczos" -r 25 -g 50 \
   -movflags +faststart out.mp4
 ```
+
+`/work` is the opposite: one clip at a time, watched deliberately, with sound.
+Those go to `media/work/` at 720x1280, CRF 24, 30fps, AAC 128k:
+
+```bash
+ffmpeg -i in.mp4 -c:v libx264 -preset slow -crf 24 -profile:v high -level 4.1 \
+  -pix_fmt yuv420p -vf "scale=720:1280:flags=lanczos" -r 30 -g 60 \
+  -c:a aac -b:a 128k -ac 2 -ar 48000 \
+  -movflags +faststart media/work/out.mp4
+```
+
+Posters are a frame at 1s, half size, WebP q72. This ffmpeg has no webp
+encoder and `sips` only reads the format, so the frame comes out as PNG and
+Pillow converts it.
 
 ## Motion
 
@@ -107,6 +130,9 @@ One easing token, `--ease-out: cubic-bezier(0.23, 1, 0.32, 1)`. No libraries.
 
 ## SEO
 
+- `/work` is deliberately absent from the sitemap and the nav, and carries both a
+  `noindex` meta and an `X-Robots-Tag` from `vercel.json`. None of that is a lock —
+  anyone with the URL can open it. It is unlisted, not private.
 - Canonical, `og:url`, the sitemap and every `@id` in the JSON-LD point at
   `https://www.tuimedia.nz/`, which is what the apex redirects to. If the primary
   domain in Vercel is ever switched to the apex, all four have to move with it.

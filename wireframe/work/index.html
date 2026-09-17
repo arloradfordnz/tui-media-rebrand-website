@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="en-NZ">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<!-- UNLISTED ON PURPOSE.
+     Nothing on tuimedia.nz links here. This page exists to be pasted into a
+     message to one person — "here is the work" — and nowhere else, so it is
+     kept out of the nav, out of sitemap.xml, and out of the index by the
+     noindex below and the matching X-Robots-Tag in vercel.json. Neither of
+     those is a lock: the URL is public to anyone who has it. It is a page
+     you hand out, not a page you hide. -->
+<meta name="robots" content="noindex, nofollow, noarchive">
+
+<title>Work — Tui Media</title>
+<meta name="description" content="Video ads Tui Media has made for New Zealand businesses.">
+<link rel="icon" href="/favicon-32.png" sizes="32x32">
+<link rel="icon" href="/favicon-512.png" sizes="512x512">
+<link rel="preload" href="/fonts/bricolage-grotesque-latin.woff2" as="font" type="font/woff2" crossorigin>
+
+<style>
+  /* The site's font and palette, lifted from index.html rather than shared —
+     there is no build step here, and a second page is not worth inventing one
+     for. If the tokens there change, they change here too. */
+  @font-face {
+    font-family: 'Bricolage Grotesque';
+    font-style: normal;
+    font-weight: 200 800;
+    font-stretch: 100%;
+    font-display: swap;
+    src: url(/fonts/bricolage-grotesque-latin.woff2) format('woff2');
+    unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+  }
+
+  :root {
+    --paper:    #060D1A;
+    --surface:  #0F1930;
+    --ink:      #EFF2F8;
+    --muted:    #8996B2;
+    --rule:     rgba(239, 242, 248, 0.13);
+    --rule-2:   rgba(239, 242, 248, 0.26);
+    --accent:      #6E9BF7;
+    --accent-ink:  #0A1428;
+    --accent-soft: rgba(110, 155, 247, 0.16);
+    --slot-1: #111B33;
+
+    --t-h2:    clamp(2rem, 5.2vw, 3.75rem);
+    --t-body:  clamp(1rem, 1.15vw, 1.125rem);
+    --t-small: 0.8125rem;
+    --t-micro: 0.75rem;
+
+    --s-1: 0.5rem;
+    --s-2: 1rem;
+    --s-3: 1.5rem;
+    --s-4: 2rem;
+    --s-5: 3rem;
+    --s-6: 4.5rem;
+
+    --frame: clamp(0.75rem, 1.4vw, 1.25rem);
+    --content: 1120px;
+    --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+    --radius-sm:   22px;
+    --radius-pill: 999px;
+  }
+
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'Bricolage Grotesque', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+    font-size: var(--t-body);
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+  :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+  :focus:not(:focus-visible) { outline: none; }
+
+  .wrap {
+    max-width: var(--content);
+    margin: 0 auto;
+    padding-inline: var(--frame);
+  }
+
+  /* ---------- header ---------- */
+
+  header { padding-block: var(--s-5) var(--s-4); }
+  .home {
+    display: inline-flex; align-items: center; gap: 10px;
+    text-decoration: none; color: var(--muted);
+    font-size: var(--t-small);
+    transition: color 220ms var(--ease-out);
+  }
+  .home:hover { color: var(--ink); }
+  .home img { display: block; width: 26px; height: 26px; }
+
+  h1 {
+    font-size: var(--t-h2);
+    line-height: 0.98;
+    letter-spacing: -0.035em;
+    font-weight: 600;
+    margin: var(--s-4) 0 0;
+  }
+  .lede {
+    color: var(--muted);
+    margin: var(--s-2) 0 0;
+    max-width: 52ch;
+  }
+  .hint {
+    display: inline-flex; align-items: center; gap: 8px;
+    margin-top: var(--s-3);
+    padding: 7px 14px 7px 11px;
+    border: 1px solid var(--rule);
+    border-radius: var(--radius-pill);
+    background: var(--accent-soft);
+    color: var(--ink);
+    font-size: var(--t-small);
+  }
+  .hint svg { width: 15px; height: 15px; flex: none; color: var(--accent); }
+
+  /* ---------- grid ---------- */
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(215px, 1fr));
+    gap: var(--s-3);
+    padding-block: var(--s-5) var(--s-6);
+  }
+
+  /* A card is a button, not a div with a click handler: this page is sent to
+     people who may well open it on a phone or drive it from the keyboard, and
+     play/pause is exactly what a button is for. */
+  .card {
+    appearance: none;
+    -webkit-appearance: none;
+    margin: 0;
+    padding: 0;
+    font: inherit;
+    color: inherit;
+    text-align: left;
+    cursor: pointer;
+
+    position: relative;
+    display: block;
+    width: 100%;
+    aspect-ratio: 9 / 16;
+    border: 1px solid var(--rule);
+    border-radius: var(--radius-sm);
+    background: var(--slot-1);
+    overflow: hidden;
+    isolation: isolate;   /* same reason as the home page: Safari will paint a
+                             <video> over its siblings unless the card owns its
+                             own stacking context */
+    transition: border-color 260ms var(--ease-out), transform 260ms var(--ease-out);
+  }
+  .card:hover { border-color: var(--rule-2); }
+  .card.is-sound { border-color: var(--accent); }
+
+  .card video {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    background: var(--slot-1);
+  }
+
+  /* name and trade, over a scrim so they stay legible whatever the clip does */
+  .meta {
+    position: absolute;
+    left: 0; right: 0; top: 0;
+    z-index: 2;
+    transform: translateZ(0);
+    padding: var(--s-2) var(--s-3) var(--s-4);
+    display: grid;
+    gap: 2px;
+    background: linear-gradient(to bottom, rgba(0, 0, 0, 0.62), transparent);
+    pointer-events: none;
+  }
+  .meta .name {
+    display: flex; align-items: center; gap: 6px;
+    font-size: 0.9375rem; font-weight: 500; letter-spacing: -0.02em; color: #fff;
+  }
+  .meta .tick { width: 13px; height: 13px; flex: none; }
+  .meta .trade { font-size: var(--t-small); color: rgba(255, 255, 255, 0.72); }
+
+  /* ---------- the play / sound affordance ----------
+     One control in the bottom-left that says what the card is doing: a play
+     triangle at rest, bars while it is playing with sound. It is the only
+     thing on the card that changes on click, so it carries the state. */
+  .state {
+    position: absolute;
+    left: var(--s-2); bottom: var(--s-2);
+    z-index: 2;
+    transform: translateZ(0);
+    display: inline-flex; align-items: center; gap: 7px;
+    padding: 6px 11px 6px 8px;
+    border-radius: var(--radius-pill);
+    background: rgba(6, 13, 26, 0.72);
+    -webkit-backdrop-filter: blur(10px);
+    color: #fff;
+    font-size: var(--t-micro);
+    font-variant-numeric: tabular-nums;
+    pointer-events: none;
+    transition: background 220ms var(--ease-out);
+  }
+  /* Lightning CSS folds two backdrop-filter declarations in one rule into
+     one — the standard property gets its own rule for that reason. */
+  .state { backdrop-filter: blur(10px); }
+  .card.is-sound .state { background: var(--accent); color: var(--accent-ink); }
+  .state svg { width: 12px; height: 12px; flex: none; display: block; }
+  .state .on  { display: none; }
+  .card.is-sound .state .off { display: none; }
+  .card.is-sound .state .on  { display: block; }
+
+  /* Muted hover preview gets its own quiet marker in the opposite corner, so
+     "moving but silent" never reads as "playing". */
+  .silent {
+    position: absolute;
+    right: var(--s-2); bottom: var(--s-2);
+    z-index: 2;
+    transform: translateZ(0);
+    padding: 5px 10px;
+    border-radius: var(--radius-pill);
+    background: rgba(6, 13, 26, 0.72);
+    color: rgba(255, 255, 255, 0.8);
+    font-size: var(--t-micro);
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 200ms var(--ease-out);
+  }
+  .card.is-preview .silent { opacity: 1; }
+  .card.is-sound .silent { opacity: 0 !important; }
+
+  /* Hover motion only where there is a real pointer — a tap must not leave a
+     phone stuck in a hover state it can never leave. */
+  @media (hover: hover) and (pointer: fine) {
+    .card:hover { transform: translateY(-3px); }
+  }
+
+  footer {
+    border-top: 1px solid var(--rule);
+    padding-block: var(--s-4) var(--s-6);
+    color: var(--muted);
+    font-size: var(--t-small);
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--s-2) var(--s-4);
+    align-items: baseline;
+  }
+  footer a { color: var(--ink); text-decoration: none; border-bottom: 1px solid var(--rule-2); }
+  footer a:hover { border-bottom-color: var(--accent); }
+
+  @media (max-width: 520px) {
+    .grid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: var(--s-2); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { animation: none !important; transition: none !important; }
+    .card:hover { transform: none; }
+  }
+</style>
+</head>
+<body>
+
+<!-- The Meta verified tick, defined once and referenced by every card. -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <symbol id="tick" viewBox="0 0 84 84">
+    <path fill="#0064E0" fill-rule="evenodd" d="m50.4.47c1.79-.97,4.02-.37,5.08,1.36l4.99,8.17,9.57.24c2.03.05,3.67,1.69,3.72,3.72l.24,9.57,8.17,4.99c1.74,1.06,2.34,3.3,1.36,5.08l-4.58,8.4,4.58,8.4c.97,1.79.37,4.02-1.36,5.08l-8.17,4.99-.24,9.57c-.05,2.03-1.69,3.67-3.72,3.72l-9.57.24-4.99,8.17c-1.06,1.74-3.3,2.34-5.08,1.36l-8.4-4.58-8.4,4.58c-1.79.97-4.02.37-5.08-1.36l-4.99-8.17-9.57-.24c-2.03-.05-3.67-1.69-3.72-3.72l-.24-9.57-8.17-4.99c-1.74-1.06-2.34-3.3-1.36-5.08l4.58-8.4L.47,33.6c-.97-1.79-.37-4.02,1.36-5.08l8.17-4.99.24-9.57c.05-2.03,1.69-3.67,3.72-3.72l9.57-.24L28.51,1.83c1.06-1.74,3.3-2.34,5.08-1.36l8.4,4.58L50.4.47Zm9.31,34.92c1.62-1.35,1.84-3.76.49-5.38-1.35-1.62-3.76-1.84-5.38-.49l-.26.21c-6.64,5.54-12.84,11.59-18.52,18.1l-6.62-6.62c-1.49-1.49-3.91-1.49-5.4,0-1.49,1.49-1.49,3.91,0,5.4l9.55,9.55c.76.76,1.8,1.16,2.87,1.11,1.07-.05,2.07-.55,2.76-1.37l.21-.26c6.06-7.27,12.77-13.98,20.04-20.04l.26-.21Z"/>
+  </symbol>
+</svg>
+
+<div class="wrap">
+  <header>
+    <a class="home" href="/">
+      <img src="/img/tui-bird.webp" alt="" width="26" height="26">
+      <span>tuimedia.nz</span>
+    </a>
+    <h1>Work</h1>
+    <p class="lede">Ads made for New Zealand businesses — filmed, edited and run by Tui Media. These are the cuts that went live.</p>
+    <p class="hint">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M11 5 6 9H2v6h4l5 4V5Z"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/><path d="M19 5a9 9 0 0 1 0 14"/>
+      </svg>
+      Tap a clip to play it with sound
+    </p>
+  </header>
+
+  <!-- Cards carry their clip on data-src rather than src: with no src there is
+       no request at all until the first play, so opening the page costs the
+       posters and nothing else. -->
+  <div class="grid" id="grid"></div>
+
+  <footer>
+    <span>Tui Media · Nelson, New Zealand</span>
+    <a href="/">Back to the site</a>
+    <a href="mailto:arlo@tuimedia.nz">arlo@tuimedia.nz</a>
+  </footer>
+</div>
+
+<script>
+(function () {
+  'use strict';
+
+  /* Newest first: the reel a person scrolls is the one that opens. */
+  var WORK = [
+    { slug: 'sky-automotive-3',     name: 'Sky Automotive',        trade: 'New location',            secs: 24 },
+    { slug: 'johnson-residential-3', name: 'Johnson Residential',  trade: 'Residential building',    secs: 31 },
+    { slug: 'atk-detailing',        name: 'ATK Detailing',         trade: 'Car detailing',           secs: 31 },
+    { slug: 'sky-automotive-1',     name: 'Sky Automotive',        trade: 'Automotive servicing',    secs: 21 },
+    { slug: 'sky-automotive-2',     name: 'Sky Automotive',        trade: 'Automotive servicing',    secs: 14 },
+    { slug: 'washrite',             name: 'Washrite',              trade: 'Exterior cleaning',       secs: 21 },
+    { slug: 'johnson-residential-1', name: 'Johnson Residential',  trade: 'Residential building',    secs: 17 },
+    { slug: 'johnson-residential-2', name: 'Johnson Residential',  trade: 'Residential building',    secs: 26 },
+    { slug: 'nelson-city-framers-1', name: 'Nelson City Framers',  trade: 'Framing and construction', secs: 18 },
+    { slug: 'nelson-city-framers-2', name: 'Nelson City Framers',  trade: 'Framing and construction', secs: 18 },
+    { slug: 'nelson-english-center', name: 'Nelson English Center', trade: 'English language school', secs: 86 }
+  ];
+
+  var PLAY_ICON = '<svg class="off" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5.5v13l11-6.5z"/></svg>'
+                + '<svg class="on" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="5.5" y="4.5" width="4" height="15" rx="1.4"/><rect x="14.5" y="4.5" width="4" height="15" rx="1.4"/></svg>';
+
+  function clock(s) {
+    var m = Math.floor(s / 60);
+    var r = s % 60;
+    return m + ':' + (r < 10 ? '0' : '') + r;
+  }
+
+  function esc(t) {
+    return String(t).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  }
+
+  var grid = document.getElementById('grid');
+  var html = WORK.map(function (w) {
+    return '<button class="card" type="button" data-slug="' + esc(w.slug) + '"'
+         + ' aria-label="Play ' + esc(w.name) + ' — ' + esc(w.trade) + ', ' + clock(w.secs) + ', with sound">'
+         + '<video playsinline loop preload="none" muted'
+         + ' poster="/media/work/' + esc(w.slug) + '-poster.webp"'
+         + ' data-src="/media/work/' + esc(w.slug) + '.mp4"></video>'
+         + '<span class="meta">'
+         +   '<span class="name">' + esc(w.name) + '<svg class="tick" aria-label="Meta verified"><use href="#tick"></use></svg></span>'
+         +   '<span class="trade">' + esc(w.trade) + '</span>'
+         + '</span>'
+         + '<span class="state">' + PLAY_ICON + '<span class="time">' + clock(w.secs) + '</span></span>'
+         + '<span class="silent">Muted preview</span>'
+         + '</button>';
+  }).join('');
+  grid.innerHTML = html;
+
+  var cards = [].slice.call(grid.querySelectorAll('.card'));
+  /* The one card playing out loud. Only ever one — a grid of eleven clips all
+     talking over each other is the failure mode this page exists to avoid. */
+  var sound = null;
+
+  function video(card) { return card.querySelector('video'); }
+
+  /* Nothing has a src until it is first asked to play, so the page itself
+     downloads only the posters. */
+  function load(v) {
+    if (!v.src) v.src = v.getAttribute('data-src');
+  }
+
+  function stop(card) {
+    if (!card) return;
+    var v = video(card);
+    v.pause();
+    v.muted = true;
+    card.classList.remove('is-sound', 'is-preview');
+  }
+
+  function preview(card) {
+    /* Silent, so it needs no gesture and cannot interrupt the card that is
+       actually playing out loud. */
+    if (sound) return;
+    var v = video(card);
+    load(v);
+    v.muted = true;
+    card.classList.add('is-preview');
+    var p = v.play();
+    if (p) p.catch(function () { card.classList.remove('is-preview'); });
+  }
+
+  function endPreview(card) {
+    if (card === sound) return;
+    var v = video(card);
+    v.pause();
+    v.currentTime = 0;
+    card.classList.remove('is-preview');
+  }
+
+  function withSound(card) {
+    if (sound && sound !== card) stop(sound);
+    var v = video(card);
+    load(v);
+    card.classList.remove('is-preview');
+    card.classList.add('is-sound');
+    sound = card;
+    /* Unmuting inside the click handler is what makes this allowed: the
+       gesture is still on the stack, so the autoplay policy lets the sound
+       through. Unmuting later — on canplay, say — does not get that. */
+    v.muted = false;
+    v.volume = 1;
+    var p = v.play();
+    if (p) p.catch(function () {
+      /* Blocked anyway (an iOS silent switch, a policy this page cannot see).
+         Fall back to a silent play rather than a dead card. */
+      v.muted = true;
+      card.classList.remove('is-sound');
+      card.classList.add('is-preview');
+      if (sound === card) sound = null;
+      v.play().catch(function () {});
+    });
+  }
+
+  cards.forEach(function (card) {
+    var v = video(card);
+
+    card.addEventListener('click', function () {
+      if (card === sound) { stop(card); sound = null; return; }
+      withSound(card);
+    });
+
+    /* Hover previews are gated on a real pointer, so a tap on a phone does
+       not fire one on the way to the click. */
+    if (window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
+      card.addEventListener('mouseenter', function () { preview(card); });
+      card.addEventListener('mouseleave', function () { endPreview(card); });
+    }
+
+    /* Keyboard focus is the other way to arrive at a card, and it should
+       behave like hover does: a look, not a commitment. */
+    card.addEventListener('focus', function () { preview(card); });
+    card.addEventListener('blur', function () { endPreview(card); });
+  });
+
+  /* Leaving the tab kills the sound; nobody wants a page they switched away
+     from still talking. */
+  document.addEventListener('visibilitychange', function () {
+    if (!document.hidden) return;
+    cards.forEach(function (c) { if (c !== sound) endPreview(c); });
+    if (sound) { video(sound).pause(); }
+  });
+
+  /* Escape stops whatever is playing out loud. */
+  document.addEventListener('keydown', function (e) {
+    if (e.key !== 'Escape' || !sound) return;
+    stop(sound);
+    sound = null;
+  });
+})();
+</script>
+
+</body>
+</html>
