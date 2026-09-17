@@ -90,13 +90,13 @@
   }
 
   /* ---------- nav ----------
-     Lifted straight from index.html: same sticky glass pill, same wordmark
-     sizing (24x40 — the artwork is 0.598:1, so squaring it off, the way an
-     img tag at 26x26 used to here, squashes it). Nothing else from the main
-     nav belongs on this page: there are no #fit/#process anchors to link to,
-     and a fake "Let's talk" CTA has no home to click through to. The mark
-     alone, centred, is the header — it is also the only way back to the
-     site now that the footer carries just the text link and the email. */
+     The site's nav, not an approximation of it: same pill, same glass, same
+     wordmark, same label-swap on the links, same CTA. The only difference is
+     that the destinations are absolute (/#fit rather than #fit) because they
+     live on the home page, not this one. index.html's own click handler only
+     intercepts href="#..." so these stay plain navigations, and the router
+     there already handles arriving on #book, while everything else is an
+     ordinary anchor the browser lands on itself. */
   .nav-wrap {
     position: sticky;
     top: 0;
@@ -104,14 +104,16 @@
     padding: var(--frame);
   }
   .nav {
+    position: relative;
     max-width: calc(var(--content) - 2 * var(--frame));
     margin-inline: auto;
     height: var(--nav-h);
-    padding: 6px;
+    padding: 6px 6px 6px var(--s-4);
     border-radius: var(--radius-pill);
+    color: var(--ink);
     display: flex;
     align-items: center;
-    justify-content: center;
+    gap: var(--s-4);
 
     background: var(--nav-bg);
     -webkit-backdrop-filter: blur(30px) saturate(190%);
@@ -119,31 +121,104 @@
     box-shadow: 0 10px 34px -10px rgba(0, 0, 0, 0.6);
   }
   .nav { backdrop-filter: blur(30px) saturate(190%); }
+
   .wordmark {
-    display: inline-flex; align-items: center; justify-content: center;
-    line-height: 0;
+    display: inline-flex; align-items: center; line-height: 0;
     min-width: 44px; min-height: 44px;
+    margin-left: -10px; padding-left: 10px;
     -webkit-tap-highlight-color: transparent;
   }
   .wordmark i {
     display: block;
     height: 40px;
-    width: 24px;
+    width: 24px;                        /* artwork is 0.598:1 */
     background: var(--logo-bird) no-repeat center / contain;
   }
 
-  header { padding-block: var(--s-2) var(--s-4); }
-  h1 {
-    font-size: var(--t-h2);
-    line-height: 0.98;
-    letter-spacing: -0.035em;
-    font-weight: 600;
-    margin: var(--s-4) 0 0;
+  .nav-links {
+    display: flex;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    gap: var(--s-4);
+    font-size: 0.9375rem;
+    font-weight: 500;
   }
-  .lede {
-    color: var(--muted);
-    margin: var(--s-2) 0 0;
-    max-width: 56ch;
+  .nav-links a { color: var(--muted); text-decoration: none; white-space: nowrap; }
+  .nav-links .nav-label { display: inline-grid; overflow: hidden; line-height: 1.3; }
+  .nav-links .nav-label > span {
+    grid-area: 1 / 1;
+    transition: transform 380ms var(--ease-out), color 200ms ease;
+  }
+  .nav-links .nav-label > span:nth-child(2) { transform: translateY(115%); }
+  @media (hover: hover) and (pointer: fine) {
+    .nav-links a:hover .nav-label > span:nth-child(1) { transform: translateY(-115%); color: var(--ink); }
+    .nav-links a:hover .nav-label > span:nth-child(2) { transform: translateY(0); color: var(--ink); }
+  }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.7em;
+    height: 44px;
+    padding: 6px 6px 6px 1.15rem;
+    border-radius: var(--radius-pill);
+    background: var(--accent);
+    color: var(--accent-ink);
+    font-size: 0.9375rem;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    text-decoration: none;
+    border: 1px solid transparent;
+    white-space: nowrap;
+    cursor: pointer;
+    transition: transform 140ms var(--ease-out);
+  }
+  .btn:active { transform: scale(0.975); }
+  .nav .btn { margin-left: auto; }
+  .btn-label { display: grid; overflow: hidden; line-height: 1.25; }
+  .btn-label > span {
+    grid-area: 1 / 1;
+    transition: transform 460ms cubic-bezier(.19, 1, .22, 1);
+  }
+  .btn-label > span:nth-child(2) { transform: translateY(115%); }
+  @media (hover: hover) and (pointer: fine) {
+    .btn:hover .btn-label > span:nth-child(1) { transform: translateY(-115%); }
+    .btn:hover .btn-label > span:nth-child(2) { transform: translateY(0); }
+  }
+  .btn .arrow {
+    width: 30px; height: 30px;
+    flex: none;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    background: var(--accent-ink);
+    color: var(--accent);
+    overflow: hidden;
+    position: relative;
+  }
+  .btn .arrow svg {
+    grid-area: 1 / 1;
+    width: 12px; height: 12px;
+    display: block;
+    transition: transform 420ms cubic-bezier(.19, 1, .22, 1);
+  }
+  .btn .arrow svg:nth-child(2) { transform: translateX(-160%); }
+  @media (hover: hover) and (pointer: fine) {
+    .btn:hover .arrow svg:nth-child(1) { transform: translateX(160%); }
+    .btn:hover .arrow svg:nth-child(2) { transform: translateX(0); }
+  }
+
+  /* The page has no visible heading: it is a grid of clips and nothing else,
+     which is the whole brief. The h1 stays for anything reading the document
+     rather than looking at it. */
+  .sr-only {
+    position: absolute;
+    width: 1px; height: 1px;
+    margin: -1px; padding: 0;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
   }
 
   /* ---------- grid ---------- */
@@ -152,7 +227,7 @@
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(215px, 1fr));
     gap: var(--s-3);
-    padding-block: var(--s-5) var(--s-6);
+    padding-block: var(--s-4) var(--s-6);
   }
 
   /* A card is a button, not a div with a click handler: this page is sent to
@@ -172,20 +247,22 @@
     display: block;
     width: 100%;
     aspect-ratio: 9 / 16;
-    border: 1px solid var(--rule);
+    /* No resting border. A hairline of rgba(255,255,255,.13) reads as a pale
+       edge on every card, and worst on the corners where the radius stretches
+       it along the curve. The clip should meet the page directly. */
+    border: 0;
     border-radius: var(--radius-sm);
     background: var(--slot-1) center / cover no-repeat;
     overflow: hidden;
     isolation: isolate;   /* same reason as the home page: Safari will paint a
                              <video> over its siblings unless the card owns its
                              own stacking context */
-    transition: border-color 260ms var(--ease-out), box-shadow 260ms var(--ease-out);
+    transition: box-shadow 260ms var(--ease-out);
   }
-  .card:hover { border-color: var(--rule-2); }
-  /* Same doubled-weight recipe as a focused form field on the main site:
-     the border turns accent and a matching ring sits just outside it, so the
-     state reads at a glance and stays the same weight everywhere it appears. */
-  .card.is-sound { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent); }
+  /* The one card playing out loud, and only on click. A ring rather than a
+     border: box-shadow paints outside the box, so nothing about the card's
+     size or the video inside it changes when it turns on. */
+  .card.is-sound { box-shadow: 0 0 0 2px var(--accent); }
 
   .card video {
     position: absolute;
@@ -251,7 +328,6 @@
   .state { backdrop-filter: blur(20px) saturate(190%); }
   .card.is-sound .state {
     background: var(--accent);
-    box-shadow: 0 0 0 1px var(--accent-ink), 0 6px 20px -8px rgba(0, 0, 0, 0.6);
     color: var(--accent-ink);
   }
   .state svg { width: 13px; height: 13px; flex: none; display: block; }
@@ -293,6 +369,21 @@
   footer a { color: var(--ink); text-decoration: none; border-bottom: 1px solid var(--rule-2); }
   footer a:hover { border-bottom-color: var(--accent); }
 
+  /* Same breakpoints the nav uses on the home page, so the pill behaves
+     identically on both: tighter at 900, and on a phone the links drop out
+     entirely and the mark shrinks, leaving the mark and the one action. */
+  @media (max-width: 900px) {
+    .nav { gap: var(--s-2); padding-left: var(--s-3); }
+    .nav-links { gap: var(--s-3); font-size: 0.8125rem; }
+  }
+
+  @media (max-width: 620px) {
+    :root { --nav-h: 56px; }
+    .nav { height: 56px; padding-left: var(--s-3); }
+    .wordmark i { height: 32px; width: 19px; }
+    .nav-links { display: none; }
+  }
+
   @media (max-width: 520px) {
     .grid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: var(--s-2); }
   }
@@ -314,14 +405,23 @@
 <div class="nav-wrap">
   <div class="nav">
     <a class="wordmark" href="/" aria-label="Tui Media, home"><i></i></a>
+    <nav class="nav-links">
+      <a href="/#fit"><span class="nav-label"><span>Fit</span><span aria-hidden="true">Fit</span></span></a>
+      <a href="/#process"><span class="nav-label"><span>Process</span><span aria-hidden="true">Process</span></span></a>
+      <a href="/#handover"><span class="nav-label"><span>What you get</span><span aria-hidden="true">What you get</span></span></a>
+      <a href="/#work"><span class="nav-label"><span>Work</span><span aria-hidden="true">Work</span></span></a>
+      <a href="/#about"><span class="nav-label"><span>About</span><span aria-hidden="true">About</span></span></a>
+      <a href="/#faq"><span class="nav-label"><span>Questions</span><span aria-hidden="true">Questions</span></span></a>
+    </nav>
+    <a class="btn" href="/#book">
+      <span class="btn-label"><span>Let's talk</span><span aria-hidden="true">Let's talk</span></span>
+      <span class="arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h13M12 6l6 6-6 6"/></svg><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h13M12 6l6 6-6 6"/></svg></span>
+    </a>
   </div>
 </div>
 
 <div class="wrap">
-  <header>
-    <h1>Work</h1>
-    <p class="lede">Every clip here is a real ad for a real business, filmed, edited and run by Tui Media for one project fee, no retainer and no lock-in. These are the cuts that actually went out and did the job, not a reel or a highlight package.</p>
-  </header>
+  <h1 class="sr-only">Work</h1>
 
   <!-- Cards carry their clip on data-src rather than src: with no src there is
        no request at all until the first play, so opening the page costs the
@@ -399,7 +499,7 @@
   function stop(card) {
     if (!card) return;
     var v = video(card);
-    v.pause();
+    release(v);
     v.muted = true;
     card.classList.remove('is-sound', 'is-preview');
   }
@@ -416,11 +516,28 @@
     if (p) p.catch(function () { card.classList.remove('is-preview'); });
   }
 
+  /* Pausing a video does NOT stop it downloading, and that was the whole
+     problem here. One sweep of the mouse across the grid armed all eleven
+     clips, and every one of them carried on pulling its file down in the
+     background: measured at ~16MB fetched from a single pass, eleven
+     transfers competing for the same connection and eleven decoders held
+     open. The clip you actually wanted to watch was queued behind the ten
+     you did not, which is what "laggy" and "not working" looked like.
+     Clearing the source and reloading is what actually cancels the
+     transfer and hands the decoder back. The card keeps its poster as a
+     background image, so dropping the video changes nothing on screen. */
+  function release(v) {
+    v.pause();
+    if (!v.src) return;
+    v.removeAttribute('src');
+    /* Without the reload the element keeps the old buffer and the request
+       alive; with it, the fetch is aborted. */
+    try { v.load(); } catch (err) {}
+  }
+
   function endPreview(card) {
     if (card === sound) return;
-    var v = video(card);
-    v.pause();
-    v.currentTime = 0;
+    release(video(card));
     card.classList.remove('is-preview');
   }
 
@@ -457,10 +574,20 @@
     });
 
     /* Hover previews are gated on a real pointer, so a tap on a phone does
-       not fire one on the way to the click. */
+       not fire one on the way to the click. The delay is hover intent: moving
+       the pointer to the far side of the grid crosses three or four cards on
+       the way, and without it each of those crossings starts a download for
+       a clip nobody asked to see. */
     if (window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
-      card.addEventListener('mouseenter', function () { preview(card); });
-      card.addEventListener('mouseleave', function () { endPreview(card); });
+      var dwell = null;
+      card.addEventListener('mouseenter', function () {
+        clearTimeout(dwell);
+        dwell = setTimeout(function () { preview(card); }, 160);
+      });
+      card.addEventListener('mouseleave', function () {
+        clearTimeout(dwell);
+        endPreview(card);
+      });
     }
 
     /* Keyboard focus is the other way to arrive at a card, and it should
