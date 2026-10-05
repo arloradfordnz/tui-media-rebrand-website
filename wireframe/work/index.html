@@ -4,16 +4,15 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
-<!-- UNLISTED ON PURPOSE.
-     Nothing on tuimedia.nz links here. This page exists to be pasted into a
-     message to one person — "here is the work" — and nowhere else, so it is
-     kept out of the nav, out of sitemap.xml, and out of the index by the
-     noindex below and the matching X-Robots-Tag in vercel.json. Neither of
-     those is a lock: the URL is public to anyone who has it. It is a page
-     you hand out, not a page you hide. -->
+<!-- KEPT OUT OF SEARCH ON PURPOSE.
+     The home page links here from the "See all our work" button under Recent
+     work, and the page is also made to be pasted into a message. It is kept
+     out of the nav, out of sitemap.xml, and out of the index by the noindex
+     below and the matching X-Robots-Tag in vercel.json. Neither of those is a
+     lock: the URL is public to anyone who has it. -->
 <meta name="robots" content="noindex, nofollow, noarchive">
 
-<title>Work — Tui Media</title>
+<title>Work | Tui Media</title>
 <meta name="description" content="Video ads Tui Media has made for New Zealand businesses.">
 <link rel="icon" href="/favicon-32.png" sizes="32x32">
 <link rel="icon" href="/favicon-512.png" sizes="512x512">
@@ -428,9 +427,9 @@
   <div class="nav">
     <a class="wordmark" href="/" aria-label="Tui Media, home"><i></i></a>
     <nav class="nav-links">
+      <a href="/#services"><span class="nav-label"><span>Services</span><span aria-hidden="true">Services</span></span></a>
       <a href="/#fit"><span class="nav-label"><span>Fit</span><span aria-hidden="true">Fit</span></span></a>
       <a href="/#process"><span class="nav-label"><span>Process</span><span aria-hidden="true">Process</span></span></a>
-      <a href="/#handover"><span class="nav-label"><span>What you get</span><span aria-hidden="true">What you get</span></span></a>
       <a href="/#work"><span class="nav-label"><span>Work</span><span aria-hidden="true">Work</span></span></a>
       <a href="/#about"><span class="nav-label"><span>About</span><span aria-hidden="true">About</span></span></a>
       <a href="/#faq"><span class="nav-label"><span>Questions</span><span aria-hidden="true">Questions</span></span></a>
@@ -464,23 +463,27 @@
   'use strict';
 
   /* Newest first, then spread so the same business never sits in two cards
-     running next to each other — three Sky Automotive clips and three
-     Johnson Residential clips is most of the grid, and grouped they read as
+     running next to each other. Four ATK Detailing clips and four Johnson
+     Residential clips is over half the grid, and grouped they read as
      "here is one client's reel" rather than "here is the work". Round-robin
      across businesses, most clips first, keeps the newest clip in the lead
      slot and still lands with no two neighbours the same. */
   var WORK = [
+    { slug: 'johnson-residential-4', name: 'Johnson Residential',    trade: 'Residential building' },
+    { slug: 'atk-detailing-4',       name: 'ATK Detailing',          trade: 'Car detailing' },
     { slug: 'sky-automotive-3',      name: 'Sky Automotive',         trade: 'New location' },
-    { slug: 'johnson-residential-3', name: 'Johnson Residential',    trade: 'Residential building' },
     { slug: 'nelson-city-framers-1', name: 'Nelson City Framers',    trade: 'Framing and construction' },
-    { slug: 'atk-detailing',         name: 'ATK Detailing',          trade: 'Car detailing' },
     { slug: 'washrite',              name: 'Washrite',               trade: 'Exterior cleaning' },
     { slug: 'nelson-english-center', name: 'Nelson English Center',  trade: 'English language school' },
+    { slug: 'johnson-residential-3', name: 'Johnson Residential',    trade: 'Residential building' },
+    { slug: 'atk-detailing-3',       name: 'ATK Detailing',          trade: 'Car detailing' },
     { slug: 'sky-automotive-1',      name: 'Sky Automotive',         trade: 'Automotive servicing' },
-    { slug: 'johnson-residential-1', name: 'Johnson Residential',    trade: 'Residential building' },
     { slug: 'nelson-city-framers-2', name: 'Nelson City Framers',    trade: 'Framing and construction' },
+    { slug: 'johnson-residential-1', name: 'Johnson Residential',    trade: 'Residential building' },
+    { slug: 'atk-detailing-2',       name: 'ATK Detailing',          trade: 'Car detailing' },
     { slug: 'sky-automotive-2',      name: 'Sky Automotive',         trade: 'Automotive servicing' },
-    { slug: 'johnson-residential-2', name: 'Johnson Residential',    trade: 'Residential building' }
+    { slug: 'johnson-residential-2', name: 'Johnson Residential',    trade: 'Residential building' },
+    { slug: 'atk-detailing',         name: 'ATK Detailing',          trade: 'Car detailing' }
   ];
 
   var PLAY_ICON = '<svg class="off" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5.5v13l11-6.5z"/></svg>'
@@ -509,7 +512,7 @@
   grid.innerHTML = html;
 
   var cards = [].slice.call(grid.querySelectorAll('.card'));
-  /* The one card playing out loud. Only ever one — a grid of eleven clips all
+  /* The one card playing out loud. Only ever one — a grid of fifteen clips all
      talking over each other is the failure mode this page exists to avoid. */
   var sound = null;
 

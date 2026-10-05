@@ -10,8 +10,8 @@ deployed on Vercel.
   The folder name is historical; renaming it means changing the Root Directory
   setting in the Vercel project at the same time.
   - `index.html` — the whole site: markup, styles and script in one file.
-  - `work/index.html` — the unlisted examples page at `/work`. Nothing links to
-    it; it exists to be pasted into a message. Its clips are the only ones on
+  - `work/index.html` — the full examples page at `/work`, linked from the
+    "See all my work" button under Recent work. Its clips are the only ones on
     the site that carry audio, and they live in `media/work/`.
   - `img/` — logos, marks and the founder portrait, all WebP.
   - `media/` — case-study clips and their poster frames.
@@ -47,7 +47,7 @@ Resend. It needs `RESEND_API_KEY` in the Vercel project's environment variables.
 
 ## Performance
 
-The page carries no media on first load. Concretely: ~167KB of HTML and ~215KB of
+The page carries no media on first load. Concretely: ~144KB of HTML and ~215KB of
 everything else, and nothing from `media/`.
 
 That rests on a few decisions worth not undoing:
@@ -63,9 +63,8 @@ That rests on a few decisions worth not undoing:
   back makes the browser fetch every clip on load regardless of what `preload` says.
 - **`/work` loads its posters and nothing else.** The clips sit on `data-src`, so
   the first request for an mp4 there is the first time someone plays one.
-- **Every `<img>` carries `width` and `height`.** The logo strip measures its own
-  track to work out how many copies it needs, and a track measured before the
-  plates have intrinsic sizes comes out short and runs dry before it wraps.
+- **Every `<img>` carries `width` and `height`,** so nothing shifts as the
+  logos and the portrait decode.
 - **The font is self-hosted** and the latin subset is preloaded. Google Fonts cost
   two extra connections and a chained request on the critical path.
 - **`vercel.json` sets the cache headers.** Vercel's default for static files is
@@ -94,6 +93,22 @@ ffmpeg -i in.mp4 -c:v libx264 -preset slow -crf 24 -profile:v high -level 4.1 \
   -movflags +faststart media/work/out.mp4
 ```
 
+The hero's cursor trail gets a third, tiny cut in `media/trail/`: 264px wide
+(sharp at 2x on the largest 132px tile), four seconds from 1s in so nothing opens
+on a fade, 24fps, silent, ~100KB each and ~1MB for the set. It is only fetched
+once a mouse first enters the hero, and never on touch or reduced motion. A clip
+added to Recent work joins the trail as soon as its cut exists here, under the
+same name:
+
+```bash
+ffmpeg -ss 1 -t 4 -i media/in.mp4 -an -c:v libx264 -preset slow -crf 30 \
+  -profile:v high -level 3.1 -pix_fmt yuv420p \
+  -vf "scale=264:-2:flags=lanczos,fps=24" -g 48 -movflags +faststart \
+  media/trail/in.mp4
+```
+
+Each trail cut also has a first-frame poster, `media/trail/in.webp`, at q70.
+
 Posters are a frame at 1s, half size, WebP q72. This ffmpeg has no webp
 encoder and `sips` only reads the format, so the frame comes out as PNG and
 Pillow converts it.
@@ -106,31 +121,36 @@ One easing token, `--ease-out: cubic-bezier(0.23, 1, 0.32, 1)`. No libraries.
   IntersectionObserver. Siblings stagger 60ms apart, set in JS as `--anim-delay`.
   A sweep in the scroll painter reveals anything scrolled past outright, so anchor
   jumps and scroll restoration can't leave content stuck invisible.
-- **The scrubbed sentence** and the **process rail** are tied to scroll position
-  rather than a clock, so they read the same going back up the page.
-- **The case marquee** duplicates its own track in JS so the loop is seamless. The
-  **logo marquee** is frame-driven rather than a CSS animation so it can follow the
-  scroll direction, easing between forward and reverse instead of flipping.
+- **The process rail** is tied to scroll position rather than a clock, so it
+  reads the same going back up the page.
+- **Both marquees** are CSS animations running one way. Each has its run
+  duplicated in JS so -50% lands exactly on the copy and the loop is seamless.
+  The logo strip is a centred third of the page (60% on tablet, 86% on phones)
+  with faded edges.
+- **The hero trail** drops a clip under the pointer every 80px of travel from a
+  fixed pool of 14 tiles, each popping in, drifting the way the pointer was
+  heading and shrinking out over 1.1s. Mouse only, off for reduced motion,
+  posters only with Save-Data.
 - **Hover motion is gated** behind `(hover: hover) and (pointer: fine)` so taps
   don't fire it on touch.
-- **Reduced motion** drops movement and keeps meaning: opacity only, marquees
-  stopped, the scrubbed sentence shown fully lit, and case-study posters standing
-  in for the loops.
+- **Reduced motion** drops movement and keeps meaning: shorter reveals, the
+  logo strip stopped, and the case strip slowed to a crawl.
 
 ## Conventions
 
 - Type and spacing run off tokens at the top of the stylesheet (`--t-*` for type,
   `--s-*` for space, `--frame` for the page edge, `--content` for where content
   stops). Change those, not the individual rules.
-- Breakpoints at 1024px (pad spacing), 900px (process and team stack), 700px (fit
-  cards stack) and 620px (full-width buttons, tighter nav, smaller cases).
+- Breakpoints at 1024px (pad spacing), 900px (process, team, intro and
+  what-you-keep stack), 700px (fit and two-ways cards stack) and 620px (tighter
+  nav, smaller cases).
 - **Button labels appear twice.** The hover slide keeps a duplicate label
   underneath, both inside `.btn-label`, so changing button text means changing it
   in both spans.
 
 ## SEO
 
-- `/work` is deliberately absent from the sitemap and the nav, and carries both a
+- `/work` is linked from the home page but absent from the sitemap and the nav, and carries both a
   `noindex` meta and an `X-Robots-Tag` from `vercel.json`. None of that is a lock —
   anyone with the URL can open it. It is unlisted, not private.
 - Canonical, `og:url`, the sitemap and every `@id` in the JSON-LD point at

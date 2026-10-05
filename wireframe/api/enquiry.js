@@ -9,16 +9,19 @@ const FIELD_LABELS = {
   name: 'Your name',
   business: 'Business',
   email: 'Email',
+  interest: 'What are you after?',
   sell: 'What do you sell?',
   value: "What's a customer worth to you?",
   spend: 'Monthly ad spend',
-  when: 'When do you want ads live?',
+  when: 'When do you want to start?',
   decision: 'Who signs this off?',
   capacity: 'Could you handle more work right now?',
   notes: 'Anything else?'
 };
-const FIELD_ORDER = ['name', 'business', 'email', 'sell', 'value', 'spend', 'when', 'decision', 'capacity', 'notes'];
+const FIELD_ORDER = ['name', 'business', 'email', 'interest', 'sell', 'value', 'spend', 'when', 'decision', 'capacity', 'notes'];
 const REQUIRED = ['name', 'business', 'email', 'sell', 'value', 'spend', 'when', 'decision', 'capacity'];
+// `interest` is required in the form but not here, so a tab still holding
+// the page from before it existed can still send its enquiry.
 
 function escapeHtml(str) {
   return String(str)
@@ -105,7 +108,9 @@ module.exports = async function handler(req, res) {
         from: FROM,
         to: [TO],
         reply_to: data.email,
-        subject: `New enquiry: ${data.business}`,
+        subject: data.interest
+          ? `New enquiry (${data.interest}): ${data.business}`
+          : `New enquiry: ${data.business}`,
         html: `<table cellpadding="0" cellspacing="0">${rows}</table>`,
         text: textBody
       })
