@@ -13,7 +13,24 @@
 <meta name="robots" content="noindex, nofollow, noarchive">
 
 <title>Work | Tui Media</title>
-<meta name="description" content="Video ads Tui Media has made for New Zealand businesses.">
+<meta name="description" content="Video ads and social content Tui Media has made for New Zealand businesses.">
+<!-- Link preview. This page is made to be pasted into a message, and without
+     these a pasted link showed as a bare URL. -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Tui Media">
+<meta property="og:url" content="https://www.tuimedia.nz/work">
+<meta property="og:title" content="Featured work | Tui Media">
+<meta property="og:description" content="Ad campaigns and social content Tui Media has made for Nelson businesses. Click one and put the sound on.">
+<meta property="og:locale" content="en_NZ">
+<meta property="og:image" content="https://www.tuimedia.nz/og.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="The Tui Media logo, white on navy.">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Featured work | Tui Media">
+<meta name="twitter:description" content="Ad campaigns and social content Tui Media has made for Nelson businesses. Click one and put the sound on.">
+<meta name="twitter:image" content="https://www.tuimedia.nz/og.jpg">
+<meta name="theme-color" content="#060D1A">
 <link rel="icon" href="/favicon-32.png" sizes="32x32">
 <link rel="icon" href="/favicon-512.png" sizes="512x512">
 <link rel="preload" href="/fonts/bricolage-grotesque-latin.woff2" as="font" type="font/woff2" crossorigin>
@@ -376,6 +393,54 @@
   .card.is-preview .silent { opacity: 1; }
   .card.is-sound .silent { opacity: 0 !important; }
 
+  /* ---------- closing ----------
+     The home page's closing call to action, so someone who has just watched
+     the work has the next step in front of them rather than only a way back.
+     Same heading, copy, button and reviews line as index.html. */
+  .closing {
+    margin-bottom: var(--s-6);
+    padding: clamp(3rem, 7vw, 6rem) var(--s-3);
+    background: var(--surface);
+    border-radius: var(--radius-sm);
+    text-align: center;
+  }
+  .closing h2 {
+    margin: 0 auto;
+    max-width: 18ch;
+    font-size: var(--t-h2);
+    font-weight: 500; letter-spacing: -0.035em; line-height: 0.98;
+    text-wrap: balance;
+  }
+  .closing .lede {
+    margin: var(--s-3) auto 0;
+    max-width: 44ch;
+    color: var(--muted);
+    line-height: 1.6;
+  }
+  .closing .btn { margin-top: var(--s-4); }
+  .cta-note {
+    margin: var(--s-2) 0 0;
+    font-size: var(--t-small);
+    line-height: 1.5;
+    color: var(--muted);
+    text-wrap: balance;
+  }
+  .rating-stars { color: var(--accent); letter-spacing: 0.12em; margin-right: 8px; }
+  .cta-part { white-space: nowrap; }
+  .rating-link {
+    color: inherit;
+    text-decoration: underline;
+    text-decoration-color: var(--rule-2);
+    text-underline-offset: 3px;
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .rating-link:hover { color: var(--ink); text-decoration-color: var(--accent); }
+  }
+  @media (max-width: 620px) {
+    .cta-sep { display: none; }
+    .cta-note .cta-part { display: block; }
+  }
+
   footer {
     border-top: 1px solid var(--rule);
     padding-block: var(--s-4) var(--s-6);
@@ -412,6 +477,23 @@
   @media (prefers-reduced-motion: reduce) {
     * { animation: none !important; transition: none !important; }
   }
+
+  /* ---------- cursor ----------
+     The home page's dot, so the pointer does not change on the way over
+     here: the accent on the page, the dark navy over the solid accent
+     button where an accent dot would vanish. Real pointers only. Same
+     data URIs as index.html; if the dot changes there, it changes here. */
+  @media (hover: hover) and (pointer: fine) {
+    html, a, button, .btn, .card, .wordmark {
+      cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'%3E%3Ccircle cx='8' cy='8' r='8' fill='%236E9BF7'/%3E%3C/svg%3E") 8 8, auto;
+    }
+    .btn {
+      cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'%3E%3Ccircle cx='8' cy='8' r='8' fill='%230A1428'/%3E%3C/svg%3E") 8 8, auto;
+    }
+    .btn .arrow {
+      cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'%3E%3Ccircle cx='8' cy='8' r='8' fill='%236E9BF7'/%3E%3C/svg%3E") 8 8, auto;
+    }
+  }
 </style>
 </head>
 <body>
@@ -435,7 +517,7 @@
       <a href="/#faq"><span class="nav-label"><span>Questions</span><span aria-hidden="true">Questions</span></span></a>
     </nav>
     <a class="btn" href="/#book">
-      <span class="btn-label"><span>Let's talk</span><span aria-hidden="true">Let's talk</span></span>
+      <span class="btn-label"><span>Book a free call</span><span aria-hidden="true">Book a free call</span></span>
       <span class="arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h13M12 6l6 6-6 6"/></svg><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h13M12 6l6 6-6 6"/></svg></span>
     </a>
   </div>
@@ -444,13 +526,23 @@
 <div class="wrap">
   <div class="page-head">
     <h1>Featured work</h1>
-    <p class="lede">Some of the recent ads we've made for Nelson businesses. Real clips, not a reel, so click one and put the sound on.</p>
+    <p class="lede">Ad campaigns and social content we've made for Nelson businesses. Real clips, not a reel, so click one and put the sound on.</p>
   </div>
 
   <!-- Cards carry their clip on data-src rather than src: with no src there is
        no request at all until the first play, so opening the page costs the
        posters and nothing else. -->
   <div class="grid" id="grid"></div>
+
+  <div class="closing">
+    <h2>Start with a 20&#8209;minute call.</h2>
+    <p class="lede">Free, and no pitch. We'll tell you straight whether we can help before you spend anything.</p>
+    <a class="btn" href="/#book">
+      <span class="btn-label"><span>Book my free call</span><span aria-hidden="true">Book my free call</span></span>
+      <span class="arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h13M12 6l6 6-6 6"/></svg><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h13M12 6l6 6-6 6"/></svg></span>
+    </a>
+    <p class="cta-note"><span class="cta-part"><span class="rating-stars" aria-hidden="true">&#9733;&#9733;&#9733;&#9733;&#9733;</span><a class="rating-link" href="https://share.google/I0Nl8jbacTLDWQb2e" target="_blank" rel="noopener noreferrer">5.0 from 12 Google reviews</a></span><span class="cta-sep" aria-hidden="true"> &middot; </span> <span class="cta-part">Reply within one working day</span></p>
+  </div>
 
   <footer>
     <a href="/">Back to site</a>
@@ -463,22 +555,22 @@
   'use strict';
 
   /* Newest first, then spread so the same business never sits in two cards
-     running next to each other. Two ATK Detailing clips, three Sky Automotive
+     running next to each other. Two ATK Detailing clips, two Sky Automotive
      clips and four Johnson Residential clips is most of the grid, and grouped they read as
-     "here is one client's reel" rather than "here is the work". Round-robin
-     across businesses, most clips first, keeps the newest clip in the lead
-     slot and still lands with no two neighbours the same. */
+     "here is one client's reel" rather than "here is the work". Johnson
+     Residential, with the most clips, takes every third slot and the rest
+     fill in between, which keeps the newest clip in the lead slot and still
+     lands with no two neighbours the same. */
   var WORK = [
     { slug: 'johnson-residential-4', name: 'Johnson Residential',    trade: 'Residential building' },
     { slug: 'sky-automotive-3',      name: 'Sky Automotive',         trade: 'New location' },
     { slug: 'washrite',              name: 'Washrite',               trade: 'Exterior cleaning' },
-    { slug: 'nelson-english-center', name: 'Nelson English Center',  trade: 'English language school' },
     { slug: 'johnson-residential-3', name: 'Johnson Residential',    trade: 'Residential building' },
+    { slug: 'nelson-english-center', name: 'Nelson English Center',  trade: 'English language school' },
     { slug: 'atk-detailing-3',       name: 'ATK Detailing',          trade: 'Car detailing' },
+    { slug: 'johnson-residential-1', name: 'Johnson Residential',    trade: 'Residential building' },
     { slug: 'sky-automotive-1',      name: 'Sky Automotive',         trade: 'Automotive servicing' },
     { slug: 'nelson-city-framers-2', name: 'Nelson City Framers',    trade: 'Framing and construction' },
-    { slug: 'johnson-residential-1', name: 'Johnson Residential',    trade: 'Residential building' },
-    { slug: 'sky-automotive-2',      name: 'Sky Automotive',         trade: 'Automotive servicing' },
     { slug: 'johnson-residential-2', name: 'Johnson Residential',    trade: 'Residential building' },
     { slug: 'atk-detailing',         name: 'ATK Detailing',          trade: 'Car detailing' }
   ];
@@ -509,7 +601,7 @@
   grid.innerHTML = html;
 
   var cards = [].slice.call(grid.querySelectorAll('.card'));
-  /* The one card playing out loud. Only ever one — a grid of twelve clips all
+  /* The one card playing out loud. Only ever one — a grid of eleven clips all
      talking over each other is the failure mode this page exists to avoid. */
   var sound = null;
 
@@ -708,6 +800,8 @@
   });
 })();
 </script>
+
+<script defer src="/_vercel/insights/script.js"></script>
 
 </body>
 </html>

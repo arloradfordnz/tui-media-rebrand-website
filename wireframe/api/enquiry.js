@@ -19,9 +19,31 @@ const FIELD_LABELS = {
   notes: 'Anything else?'
 };
 const FIELD_ORDER = ['name', 'business', 'email', 'interest', 'sell', 'value', 'spend', 'when', 'decision', 'capacity', 'notes'];
-const REQUIRED = ['name', 'business', 'email', 'sell', 'value', 'spend', 'when', 'decision', 'capacity'];
+const REQUIRED = ['name', 'business', 'email', 'sell', 'when', 'decision', 'capacity'];
 // `interest` is required in the form but not here, so a tab still holding
 // the page from before it existed can still send its enquiry.
+
+// Customer value and ad spend are only asked when ads are part of it. The form
+// hides them for monthly content and "not sure yet"; an enquiry with no
+// interest at all comes from an older tab that always asked them.
+const AD_FIELDS = ['value', 'spend'];
+const AD_INTERESTS = ['A video ad project', 'Both'];
+function requiredFor(data) {
+  const interest = String(data.interest || '').trim();
+  return !interest || AD_INTERESTS.includes(interest) ? REQUIRED.concat(AD_FIELDS) : REQUIRED;
+}
+
+// Spam. `website` is a field people never see (it is moved off screen), so
+// anything in it came from a bot. `_t` is how long the page had been open
+// when the form was sent; nobody fills it in under MIN_FILL_MS. Both get a
+// 200 so the bot has nothing to learn from, and nothing is sent. Older tabs
+// send no `_t` and are let through.
+const MIN_FILL_MS = 2500;
+function looksLikeSpam(data) {
+  if (String(data.website || '').trim()) return true;
+  const t = Number(data._t);
+  return Number.isFinite(t) && t < MIN_FILL_MS;
+}
 
 function escapeHtml(str) {
   return String(str)
@@ -73,7 +95,14 @@ module.exports = async function handler(req, res) {
 
   const data = req.body || {};
 
-  for (const field of REQUIRED) {
+  if (looksLikeSpam(data)) {
+    console.warn('Enquiry dropped as spam');
+    return res.status(200).json({ ok: true });
+  }
+  delete data.website;
+  delete data._t;
+
+  for (const field of requiredFor(data)) {
     if (!String(data[field] || '').trim()) {
       return res.status(400).json({ ok: false, error: `Missing field: ${field}` });
     }

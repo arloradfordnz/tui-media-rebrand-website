@@ -11,7 +11,7 @@ deployed on Vercel.
   setting in the Vercel project at the same time.
   - `index.html` — the whole site: markup, styles and script in one file.
   - `work/index.html` — the full examples page at `/work`, linked from the
-    "See all my work" button under Recent work. Its clips are the only ones on
+    "See all our work" button under Recent work. Its clips are the only ones on
     the site that carry audio, and they live in `media/work/`.
   - `img/` — logos, marks and the founder portrait, all WebP.
   - `media/` — case-study clips and their poster frames.
@@ -43,7 +43,10 @@ swallowed event can't leave the site looking dead.
 The book view is a filter form — name, business, email, what you sell, customer
 value, ad spend, timing, decision maker, capacity, notes. It validates client
 side, posts JSON to `/api/enquiry`, and that function emails the details through
-Resend. It needs `RESEND_API_KEY` in the Vercel project's environment variables.
+Resend. Customer value and ad spend only appear (and are only required, in the
+form and the function) when the enquiry is for an ad project or both. Spam is
+caught by an off-screen honeypot field and a minimum time on the page; both are
+answered with a quiet 200 and nothing is sent. It needs `RESEND_API_KEY` in the Vercel project's environment variables.
 
 ## Performance
 
@@ -56,11 +59,15 @@ That rests on a few decisions worth not undoing:
   cached across visits instead of being re-downloaded inside the HTML every time.
 - **Case-study videos are `preload="none"` with no `autoplay`,** and their posters
   are held on `data-poster` rather than `poster`. One IntersectionObserver on the
-  *strip* decides when the section is worth any work, 400px out; a 4fps poll then
+  *strip* decides when the section is worth any work, a screen out; that arms every
+  poster (on the video and painted behind it on the card), and a 4fps poll then
   matches playback to the cards actually inside the frame. It is a poll and not an
   observer per video on purpose — see the long comment above `caseTick` in
-  `index.html`, which is the bug that made the strip sit static. Putting `autoplay`
-  back makes the browser fetch every clip on load regardless of what `preload` says.
+  `index.html`, which is the bug that made the strip sit static. The poll also
+  reloads any clip in the frame that has errored or stalled, with a short backoff:
+  without that, one dropped connection froze a card for the rest of the visit.
+  Putting `autoplay` back makes the browser fetch every clip on load regardless of
+  what `preload` says.
 - **`/work` loads its posters and nothing else.** The clips sit on `data-src`, so
   the first request for an mp4 there is the first time someone plays one.
 - **Every `<img>` carries `width` and `height`,** so nothing shifts as the
@@ -133,6 +140,9 @@ One easing token, `--ease-out: cubic-bezier(0.23, 1, 0.32, 1)`. No libraries.
   posters only with Save-Data.
 - **Hover motion is gated** behind `(hover: hover) and (pointer: fine)` so taps
   don't fire it on touch.
+- **The cursor** is an accent dot (navy over solid accent buttons), done with the
+  CSS `cursor` property, mouse and trackpad only. It is declared in both
+  `index.html` and `work/index.html`, so a change to it goes in both.
 - **Reduced motion** drops movement and keeps meaning: shorter reveals, the
   logo strip stopped, and the case strip slowed to a crawl.
 
