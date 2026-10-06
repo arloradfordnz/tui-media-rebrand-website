@@ -1120,13 +1120,13 @@
     text-wrap: balance;
   }
   .cta-note .rating-stars { margin-right: 8px; font-size: var(--t-small); }
-  /* each half of the line stays whole; on a phone they stack instead of
-     breaking mid-phrase, and the dot between them goes */
+  /* each half of the line stays whole, with space between them rather than
+     a mark; on a phone they stack instead of breaking mid-phrase */
   .cta-part { white-space: nowrap; }
+  .cta-part + .cta-part { margin-left: var(--s-3); }
   @media (max-width: 620px) {
-    .cta-sep { display: none; }
     .cta-note .cta-part { display: block; }
-    .cta-note .cta-part + .cta-part { margin-top: 2px; }
+    .cta-note .cta-part + .cta-part { margin: 2px 0 0; }
   }
 
   .closing-foot {
@@ -2143,7 +2143,7 @@
         <span class="arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h13M12 6l6 6-6 6"/></svg><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h13M12 6l6 6-6 6"/></svg></span>
       </a>
     </div>
-    <p class="cta-note">20 minutes. No pitch, no lock-in.</p>
+    <p class="cta-note">20 minutes. No pressure, no lock-in.</p>
   </div>
 
 </section>
@@ -2290,7 +2290,7 @@
           <div>
             <span class="step-when">20 minutes</span>
             <h3>Fit call</h3>
-            <p>A quick call to see if we're a fit. No pitch.</p>
+            <p>A quick call to see if we're a fit. No pressure.</p>
           </div>
         </div>
         <div class="step" data-anim>
@@ -2615,7 +2615,7 @@
 <!-- ============ CLOSING PANEL (CTA + FOOTER) ============ -->
 <div class="closing center" id="contact">
   <h2 data-anim>Start with a 20&#8209;minute call.</h2>
-  <p class="lede" data-anim>Free, and no pitch. We'll tell you straight whether we can help before you spend anything.</p>
+  <p class="lede" data-anim>Free, and no pressure. We'll tell you straight whether we can help before you spend anything.</p>
 
   <div class="btn-row">
     <a class="btn" href="#book" data-route="book">
@@ -2623,7 +2623,7 @@
       <span class="arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h13M12 6l6 6-6 6"/></svg><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h13M12 6l6 6-6 6"/></svg></span>
     </a>
   </div>
-  <p class="cta-note"><span class="cta-part"><span class="rating-stars" aria-hidden="true">&#9733;&#9733;&#9733;&#9733;&#9733;</span><a class="rating-link" href="https://share.google/I0Nl8jbacTLDWQb2e" target="_blank" rel="noopener noreferrer">5.0 from 12 Google reviews</a></span><span class="cta-sep" aria-hidden="true"> &middot; </span> <span class="cta-part">Reply within one working day</span></p>
+  <p class="cta-note"><span class="cta-part"><span class="rating-stars" aria-hidden="true">&#9733;&#9733;&#9733;&#9733;&#9733;</span><a class="rating-link" href="https://share.google/I0Nl8jbacTLDWQb2e" target="_blank" rel="noopener noreferrer">5.0 from 12 Google reviews</a></span><span class="cta-part">Reply within one working day</span></p>
 
   <div class="closing-foot">
     <span class="foot-logo"><img src="/img/tui-wordmark.webp" alt="Tui Media" width="639" height="130" loading="lazy" decoding="async"></span>

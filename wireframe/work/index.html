@@ -393,31 +393,36 @@
   .card.is-preview .silent { opacity: 1; }
   .card.is-sound .silent { opacity: 0 !important; }
 
-  /* ---------- closing ----------
-     The home page's closing call to action, so someone who has just watched
-     the work has the next step in front of them rather than only a way back.
-     Same heading, copy, button and reviews line as index.html. */
+  /* ---------- closing panel (CTA + footer) ----------
+     The home page's closing panel, copied rather than approximated: full
+     width, the --surface ground, rounded top corners, then the footer row
+     inside it. The only addition is "Back to site". It sits outside .wrap so
+     it runs edge to edge instead of stopping at the content width. */
   .closing {
-    margin-bottom: var(--s-6);
-    padding: clamp(3rem, 7vw, 6rem) var(--s-3);
+    margin-top: var(--s-6);
     background: var(--surface);
-    border-radius: var(--radius-sm);
+    color: var(--ink);
+    border-radius: 32px 32px 0 0;
+    padding: clamp(4rem, 9vw, 8rem) var(--s-4) var(--s-2);
     text-align: center;
   }
   .closing h2 {
     margin: 0 auto;
     max-width: 18ch;
-    font-size: var(--t-h2);
+    font-size: clamp(2rem, 5.2vw, 4.5rem);
     font-weight: 500; letter-spacing: -0.035em; line-height: 0.98;
     text-wrap: balance;
   }
   .closing .lede {
     margin: var(--s-3) auto 0;
     max-width: 44ch;
+    font-size: var(--t-body);
     color: var(--muted);
     line-height: 1.6;
   }
-  .closing .btn { margin-top: var(--s-4); }
+  .btn-row { display: flex; gap: var(--s-2); flex-wrap: wrap; justify-content: center; }
+  .closing .btn-row { margin-top: var(--s-4); }
+
   .cta-note {
     margin: var(--s-2) 0 0;
     font-size: var(--t-small);
@@ -425,8 +430,9 @@
     color: var(--muted);
     text-wrap: balance;
   }
-  .rating-stars { color: var(--accent); letter-spacing: 0.12em; margin-right: 8px; }
+  .rating-stars { color: var(--accent); letter-spacing: 0.12em; margin-right: 8px; font-size: var(--t-small); }
   .cta-part { white-space: nowrap; }
+  .cta-part + .cta-part { margin-left: var(--s-3); }
   .rating-link {
     color: inherit;
     text-decoration: underline;
@@ -436,24 +442,29 @@
   @media (hover: hover) and (pointer: fine) {
     .rating-link:hover { color: var(--ink); text-decoration-color: var(--accent); }
   }
-  @media (max-width: 620px) {
-    .cta-sep { display: none; }
-    .cta-note .cta-part { display: block; }
-  }
 
-  footer {
-    border-top: 1px solid var(--rule);
-    padding-block: var(--s-4) var(--s-6);
-    color: var(--muted);
-    font-size: var(--t-small);
+  .closing-foot {
+    margin-top: clamp(4rem, 8vw, 7rem);
     display: flex;
-    flex-wrap: wrap;
+    align-items: center;
     justify-content: space-between;
-    gap: var(--s-2) var(--s-4);
-    align-items: baseline;
+    gap: var(--s-3);
+    flex-wrap: wrap;
+    text-align: left;
+    font-size: var(--t-small);
+    color: var(--muted);
   }
-  footer a { color: var(--ink); text-decoration: none; border-bottom: 1px solid var(--rule-2); }
-  footer a:hover { border-bottom-color: var(--accent); }
+  .closing-foot .foot-logo { line-height: 0; }
+  .closing-foot .foot-logo img { height: clamp(31px, 2.9vw, 40px); width: auto; display: block; }
+  .closing-foot .foot-right { display: flex; align-items: center; gap: var(--s-3); flex-wrap: wrap; }
+  .closing-foot .foot-copy { color: var(--muted); }
+  .closing-foot a {
+    color: inherit; text-decoration: none; transition: color 200ms ease;
+    display: inline-flex; align-items: center; min-height: 44px;
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .closing-foot a:hover { color: var(--ink); }
+  }
 
   /* Same breakpoints the nav uses on the home page, so the pill behaves
      identically on both: tighter at 900, and on a phone the links drop out
@@ -468,6 +479,15 @@
     .nav { height: 56px; padding-left: var(--s-3); }
     .wordmark i { height: 32px; width: 19px; }
     .nav-links { display: none; }
+  }
+
+  @media (max-width: 620px) {
+    .closing { padding-inline: var(--s-3); }
+    .cta-note .cta-part { display: block; }
+    .cta-note .cta-part + .cta-part { margin: 2px 0 0; }
+    .closing-foot .foot-logo img { height: 27px; }
+    .closing-foot { flex-direction: column; text-align: center; gap: var(--s-3); }
+    .closing-foot .foot-right { flex-direction: column; gap: var(--s-2); justify-content: center; }
   }
 
   @media (max-width: 520px) {
@@ -533,21 +553,29 @@
        no request at all until the first play, so opening the page costs the
        posters and nothing else. -->
   <div class="grid" id="grid"></div>
+</div>
 
-  <div class="closing">
-    <h2>Start with a 20&#8209;minute call.</h2>
-    <p class="lede">Free, and no pitch. We'll tell you straight whether we can help before you spend anything.</p>
+<div class="closing center" id="contact">
+  <h2>Start with a 20&#8209;minute call.</h2>
+  <p class="lede">Free, and no pressure. We'll tell you straight whether we can help before you spend anything.</p>
+
+  <div class="btn-row">
     <a class="btn" href="/#book">
       <span class="btn-label"><span>Book my free call</span><span aria-hidden="true">Book my free call</span></span>
       <span class="arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h13M12 6l6 6-6 6"/></svg><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h13M12 6l6 6-6 6"/></svg></span>
     </a>
-    <p class="cta-note"><span class="cta-part"><span class="rating-stars" aria-hidden="true">&#9733;&#9733;&#9733;&#9733;&#9733;</span><a class="rating-link" href="https://share.google/I0Nl8jbacTLDWQb2e" target="_blank" rel="noopener noreferrer">5.0 from 12 Google reviews</a></span><span class="cta-sep" aria-hidden="true"> &middot; </span> <span class="cta-part">Reply within one working day</span></p>
   </div>
+  <p class="cta-note"><span class="cta-part"><span class="rating-stars" aria-hidden="true">&#9733;&#9733;&#9733;&#9733;&#9733;</span><a class="rating-link" href="https://share.google/I0Nl8jbacTLDWQb2e" target="_blank" rel="noopener noreferrer">5.0 from 12 Google reviews</a></span><span class="cta-part">Reply within one working day</span></p>
 
-  <footer>
-    <a href="/">Back to site</a>
-    <a href="mailto:hello@tuimedia.nz">hello@tuimedia.nz</a>
-  </footer>
+  <div class="closing-foot">
+    <span class="foot-logo"><img src="/img/tui-wordmark.webp" alt="Tui Media" width="639" height="130" loading="lazy" decoding="async"></span>
+    <div class="foot-right">
+      <a href="/">Back to site</a>
+      <span>Nelson, New Zealand</span>
+      <a href="mailto:hello@tuimedia.nz">hello@tuimedia.nz</a>
+      <span class="foot-copy">&copy; <span data-year>2026</span> Tui Media</span>
+    </div>
+  </div>
 </div>
 
 <script>
@@ -581,6 +609,9 @@
   function esc(t) {
     return String(t).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
   }
+
+  var yearEl = document.querySelector('[data-year]');
+  if (yearEl) yearEl.textContent = new Date().getFullYear();
 
   var grid = document.getElementById('grid');
   var html = WORK.map(function (w) {
