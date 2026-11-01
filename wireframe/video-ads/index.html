@@ -67,7 +67,7 @@
           "name": "Do you manage the ads after launch?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "Not right now. I build and launch the campaign, then hand it over so you or your marketing person can run it. Full plans include ad-ready cuts of your content."
+            "text": "Not right now. We build and launch the campaign, then hand it over so you or your marketing person can run it. Full plans include ad-ready cuts of your content."
           }
         },
         {
@@ -238,7 +238,7 @@
             <span class="faq-q">Do you manage the ads after launch?</span>
             <span class="faq-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></span>
           </button>
-          <div class="faq-panel" id="faq-a3" role="region" aria-labelledby="faq-q3" inert><div><p class="faq-a">Not right now. I build and launch the campaign, then hand it over so you or your marketing person can run it. Full plans include ad-ready cuts of your content.</p></div></div>
+          <div class="faq-panel" id="faq-a3" role="region" aria-labelledby="faq-q3" inert><div><p class="faq-a">Not right now. We build and launch the campaign, then hand it over so you or your marketing person can run it. Full plans include ad-ready cuts of your content.</p></div></div>
         </div>
         <div class="faq-item">
           <button class="faq-row" type="button" id="faq-q4" aria-expanded="false" aria-controls="faq-a4">
@@ -282,8 +282,8 @@
     <span class="foot-logo"><img src="/img/tui-wordmark.webp" alt="Tui Media" width="639" height="130" loading="lazy" decoding="async"></span>
     <div class="foot-right">
       <a href="/">Back to site</a>
-      <a href="/video-ads">Video ads</a>
       <a href="/monthly-content">Monthly content</a>
+      <a href="/video-ads">Video ads</a>
       <span>Nelson, New Zealand</span>
       <a href="mailto:hello@tuimedia.nz">hello@tuimedia.nz</a>
       <span class="foot-copy">&copy; <span data-year>2026</span> Tui Media</span>
@@ -310,6 +310,22 @@
       setRow(row, !open);
     });
   });
+  /* Monthly / quarterly switch on the package prices. Without script the
+     switch stays hidden and the cards show the monthly price with the
+     quarterly one in the line under it. */
+  var billing = document.querySelector('[data-billing]');
+  if (billing) {
+    billing.hidden = false;
+    var opts = [].slice.call(billing.querySelectorAll('[data-billing-to]'));
+    var priced = [].slice.call(document.querySelectorAll('[data-monthly]'));
+    opts.forEach(function (b) {
+      b.addEventListener('click', function () {
+        var to = b.getAttribute('data-billing-to');
+        opts.forEach(function (o) { o.setAttribute('aria-pressed', o === b ? 'true' : 'false'); });
+        priced.forEach(function (el) { el.textContent = el.getAttribute('data-' + to); });
+      });
+    });
+  }
   var y = document.querySelector('[data-year]');
   if (y) y.textContent = new Date().getFullYear();
 })();

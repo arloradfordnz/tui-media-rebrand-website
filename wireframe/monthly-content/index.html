@@ -4,14 +4,14 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Monthly content | Tui Media</title>
-<meta name="description" content="Monthly video content for Nelson businesses. A planned shoot, edited videos, photos and captions every month. Three packs from $500 a month, or pay quarterly.">
+<meta name="description" content="Monthly video content for Nelson businesses. A planned shoot, edited videos, photos and captions every month. Three packages from $500 a month, or pay quarterly.">
 <link rel="canonical" href="https://www.tuimedia.nz/monthly-content">
 <meta name="robots" content="index, follow, max-image-preview:large">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Tui Media">
 <meta property="og:url" content="https://www.tuimedia.nz/monthly-content">
 <meta property="og:title" content="Monthly content | Tui Media">
-<meta property="og:description" content="Monthly video content for Nelson businesses. A planned shoot, edited videos, photos and captions every month. Three packs from $500 a month, or pay quarterly.">
+<meta property="og:description" content="Monthly video content for Nelson businesses. A planned shoot, edited videos, photos and captions every month. Three packages from $500 a month, or pay quarterly.">
 <meta property="og:locale" content="en_NZ">
 <meta property="og:image" content="https://www.tuimedia.nz/og.jpg">
 <meta property="og:image:width" content="1200">
@@ -19,7 +19,7 @@
 <meta property="og:image:alt" content="The Tui Media logo, white on navy.">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Monthly content | Tui Media">
-<meta name="twitter:description" content="Monthly video content for Nelson businesses. A planned shoot, edited videos, photos and captions every month. Three packs from $500 a month, or pay quarterly.">
+<meta name="twitter:description" content="Monthly video content for Nelson businesses. A planned shoot, edited videos, photos and captions every month. Three packages from $500 a month, or pay quarterly.">
 <meta name="twitter:image" content="https://www.tuimedia.nz/og.jpg">
 <meta name="theme-color" content="#060D1A">
 <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
@@ -162,7 +162,7 @@
 <div class="wrap">
   <div class="page-head">
     <h1>Monthly content</h1>
-    <p class="lede">A planned shoot, edited videos, photos and captions, every month. Pick a pack, and pay monthly or quarterly.</p>
+    <p class="lede">A planned shoot, edited videos, photos and captions, every month. Pick a package, and pay monthly or quarterly.</p>
     <div class="btn-row">
       <a class="btn" href="/?interest=monthly#book">
         <span class="btn-label"><span>Talk about monthly content</span><span aria-hidden="true">Talk about monthly content</span></span>
@@ -175,8 +175,8 @@
 <section>
   <div class="wrap">
     <div class="section-head center">
-      <h2>What every pack includes</h2>
-      <p class="lede">The same building blocks, every time. The packs differ in how much you get each month.</p>
+      <h2>What every package includes</h2>
+      <p class="lede">The same building blocks, every time. The packages differ in how much you get each month.</p>
     </div>
     <div class="panel">
       <ul class="ticks two-col">
@@ -193,16 +193,20 @@
 <section>
   <div class="wrap">
     <div class="section-head center">
-      <h2>Pick a pack</h2>
+      <h2>Pick a package</h2>
       <p class="lede">Pay monthly, or pay for a quarter upfront and it works out cheaper.</p>
+      <div class="billing" role="group" aria-label="Show prices" data-billing hidden>
+        <button type="button" aria-pressed="true" data-billing-to="monthly">Monthly</button>
+        <button type="button" aria-pressed="false" data-billing-to="quarterly">Quarterly <span class="save">Save up to $500</span></button>
+      </div>
     </div>
     <div class="three-up">
       <article class="way-card">
         <span class="way-tag">Lite</span>
         <h3>Lite</h3>
         <div>
-          <p class="way-price big">$500 a month</p>
-          <p class="way-note">or $1,350 a quarter, paid upfront</p>
+          <p class="way-price big" data-monthly="$500 a month" data-quarterly="$1,350 a quarter">$500 a month</p>
+          <p class="way-note" data-monthly="One shoot a month. Or $1,350 a quarter." data-quarterly="One bigger shoot, paid upfront. Saves $150 a quarter.">One shoot a month. Or $1,350 a quarter.</p>
         </div>
         <div class="way-body">
           <ul class="ticks">
@@ -225,8 +229,8 @@
         <span class="way-tag">Most popular</span>
         <h3>Core</h3>
         <div>
-          <p class="way-price big">$850 a month</p>
-          <p class="way-note">or $2,300 a quarter, paid upfront</p>
+          <p class="way-price big" data-monthly="$850 a month" data-quarterly="$2,300 a quarter">$850 a month</p>
+          <p class="way-note" data-monthly="One shoot a month. Or $2,300 a quarter." data-quarterly="One bigger shoot, paid upfront. Saves $250 a quarter.">One shoot a month. Or $2,300 a quarter.</p>
         </div>
         <div class="way-body">
           <ul class="ticks">
@@ -250,8 +254,8 @@
         <span class="way-tag">Full</span>
         <h3>Full</h3>
         <div>
-          <p class="way-price big">$1,500 a month</p>
-          <p class="way-note">or $4,000 a quarter, paid upfront</p>
+          <p class="way-price big" data-monthly="$1,500 a month" data-quarterly="$4,000 a quarter">$1,500 a month</p>
+          <p class="way-note" data-monthly="One shoot a month. Or $4,000 a quarter." data-quarterly="One bigger shoot, paid upfront. Saves $500 a quarter.">One shoot a month. Or $4,000 a quarter.</p>
         </div>
         <div class="way-body">
           <ul class="ticks">
@@ -311,7 +315,7 @@
     </div>
       <div class="steps">
         <span class="spine" aria-hidden="true"></span>
-        <div class="step"><div><span class="step-when">20 minutes</span><h3>Fit call</h3><p>A quick call to see if we're a fit and which pack suits. No pressure.</p></div></div>
+        <div class="step"><div><span class="step-when">20 minutes</span><h3>Fit call</h3><p>A quick call to see if we're a fit and which package suits. No pressure.</p></div></div>
         <div class="step"><div><span class="step-when">Every month</span><h3>Plan</h3><p>We plan the month's content around your business, what's coming up and what's worked so far.</p></div></div>
         <div class="step"><div><span class="step-when">Once a month, or once a quarter</span><h3>Shoot</h3><p>One planned shoot, on site with our own gear. On a quarterly plan, one bigger shoot covers the whole quarter.</p></div></div>
         <div class="step"><div><span class="step-when">Every month</span><h3>Edit</h3><p>Your videos, the photo set, and captions and cover images for every post.</p></div></div>
@@ -388,8 +392,8 @@
     <span class="foot-logo"><img src="/img/tui-wordmark.webp" alt="Tui Media" width="639" height="130" loading="lazy" decoding="async"></span>
     <div class="foot-right">
       <a href="/">Back to site</a>
-      <a href="/video-ads">Video ads</a>
       <a href="/monthly-content">Monthly content</a>
+      <a href="/video-ads">Video ads</a>
       <span>Nelson, New Zealand</span>
       <a href="mailto:hello@tuimedia.nz">hello@tuimedia.nz</a>
       <span class="foot-copy">&copy; <span data-year>2026</span> Tui Media</span>
@@ -416,6 +420,22 @@
       setRow(row, !open);
     });
   });
+  /* Monthly / quarterly switch on the package prices. Without script the
+     switch stays hidden and the cards show the monthly price with the
+     quarterly one in the line under it. */
+  var billing = document.querySelector('[data-billing]');
+  if (billing) {
+    billing.hidden = false;
+    var opts = [].slice.call(billing.querySelectorAll('[data-billing-to]'));
+    var priced = [].slice.call(document.querySelectorAll('[data-monthly]'));
+    opts.forEach(function (b) {
+      b.addEventListener('click', function () {
+        var to = b.getAttribute('data-billing-to');
+        opts.forEach(function (o) { o.setAttribute('aria-pressed', o === b ? 'true' : 'false'); });
+        priced.forEach(function (el) { el.textContent = el.getAttribute('data-' + to); });
+      });
+    });
+  }
   var y = document.querySelector('[data-year]');
   if (y) y.textContent = new Date().getFullYear();
 })();

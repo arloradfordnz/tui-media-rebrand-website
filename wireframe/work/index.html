@@ -12,23 +12,23 @@
      lock: the URL is public to anyone who has it. -->
 <meta name="robots" content="noindex, nofollow, noarchive">
 
-<title>Work | Tui Media</title>
-<meta name="description" content="Video ads and social content Tui Media has made for New Zealand businesses.">
+<title>Case studies | Tui Media</title>
+<meta name="description" content="Case studies of the video content and ads Tui Media has made for Nelson businesses.">
 <!-- Link preview. This page is made to be pasted into a message, and without
      these a pasted link showed as a bare URL. -->
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Tui Media">
 <meta property="og:url" content="https://www.tuimedia.nz/work">
-<meta property="og:title" content="Featured work | Tui Media">
-<meta property="og:description" content="Ad campaigns and social content Tui Media has made for Nelson businesses. Click one and put the sound on.">
+<meta property="og:title" content="Case studies | Tui Media">
+<meta property="og:description" content="Case studies of the video content and ads Tui Media has made for Nelson businesses. Click a video and put the sound on.">
 <meta property="og:locale" content="en_NZ">
 <meta property="og:image" content="https://www.tuimedia.nz/og.jpg">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta property="og:image:alt" content="The Tui Media logo, white on navy.">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Featured work | Tui Media">
-<meta name="twitter:description" content="Ad campaigns and social content Tui Media has made for Nelson businesses. Click one and put the sound on.">
+<meta name="twitter:title" content="Case studies | Tui Media">
+<meta name="twitter:description" content="Case studies of the video content and ads Tui Media has made for Nelson businesses. Click a video and put the sound on.">
 <meta name="twitter:image" content="https://www.tuimedia.nz/og.jpg">
 <meta name="theme-color" content="#060D1A">
 <link rel="icon" href="/favicon-32.png" sizes="32x32">
@@ -254,10 +254,64 @@
 
   .grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(215px, 1fr));
-    gap: var(--s-3);
-    padding-block: var(--s-4) var(--s-6);
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--frame);
+    padding-block: var(--s-5) var(--s-6);
   }
+
+  /* ---------- case study card ----------
+     The home page's case-study card: the --surface panel, a clip on top
+     (the playable card below, cropped a little shorter than 9:16), then
+     the trade, the name and what we made. A client with more than one clip
+     gets numbered buttons to switch between them. */
+  .study {
+    background: var(--surface);
+    border-radius: 32px;
+    padding: var(--s-2);
+    display: flex;
+    flex-direction: column;
+    gap: var(--s-3);
+    min-width: 0;
+  }
+  .study .card { aspect-ratio: 4 / 5; }
+  .study-body { display: flex; flex-direction: column; gap: var(--s-2); padding: 0 var(--s-2) var(--s-2); flex: 1; }
+  .way-tag {
+    align-self: flex-start;
+    font-size: var(--t-micro); font-weight: 700;
+    letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--accent); background: var(--accent-soft);
+    border-radius: var(--radius-pill);
+    padding: 5px 11px;
+  }
+  .study-body h3 {
+    margin: 0;
+    display: flex; align-items: center; gap: 8px;
+    font-size: clamp(1.25rem, 1.8vw, 1.5rem); font-weight: 500;
+    letter-spacing: -0.03em; line-height: 1.1;
+  }
+  .study-body h3 .tick { width: 16px; height: 16px; flex: none; }
+  .study-body p { margin: 0; font-size: 0.9375rem; line-height: 1.6; color: var(--muted); }
+  .study-made { padding-top: var(--s-2); border-top: 1px solid var(--rule); margin-top: auto; }
+  .study-made p { color: var(--ink); }
+  .study-label {
+    display: block; margin-bottom: 4px;
+    font-size: var(--t-micro); font-weight: 700;
+    letter-spacing: 0.11em; text-transform: uppercase;
+    color: var(--accent);
+  }
+  .clips { display: flex; gap: 6px; flex-wrap: wrap; }
+  .clips button {
+    appearance: none; -webkit-appearance: none;
+    margin: 0; font: inherit;
+    min-width: 36px; height: 32px; padding: 0 10px;
+    border-radius: var(--radius-pill);
+    border: 1px solid var(--rule-2);
+    background: transparent; color: var(--muted);
+    font-size: var(--t-small); font-weight: 600;
+    cursor: pointer;
+    transition: background 200ms var(--ease-out), color 200ms var(--ease-out), border-color 200ms var(--ease-out);
+  }
+  .clips button[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
 
   /* A card is a button, not a div with a click handler: this page is sent to
      people who may well open it on a phone or drive it from the keyboard, and
@@ -318,25 +372,6 @@
     transition: opacity 200ms var(--ease-out);
   }
   .card.is-live video { opacity: 1; }
-
-  /* name and trade, over a scrim so they stay legible whatever the clip does */
-  .meta {
-    position: absolute;
-    left: 0; right: 0; top: 0;
-    z-index: 2;
-    transform: translateZ(0);
-    padding: var(--s-2) var(--s-3) var(--s-4);
-    display: grid;
-    gap: 2px;
-    background: linear-gradient(to bottom, rgba(0, 0, 0, 0.62), transparent);
-    pointer-events: none;
-  }
-  .meta .name {
-    display: flex; align-items: center; gap: 6px;
-    font-size: 0.9375rem; font-weight: 500; letter-spacing: -0.02em; color: #fff;
-  }
-  .meta .tick { width: 13px; height: 13px; flex: none; }
-  .meta .trade { font-size: var(--t-small); color: rgba(255, 255, 255, 0.72); }
 
   /* ---------- the play / sound affordance ----------
      One control in the bottom-left that says what the card is doing: a play
@@ -490,8 +525,11 @@
     .closing-foot .foot-right { flex-direction: column; gap: var(--s-2); justify-content: center; }
   }
 
-  @media (max-width: 520px) {
-    .grid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: var(--s-2); }
+  @media (max-width: 1024px) {
+    .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  }
+  @media (max-width: 620px) {
+    .grid { grid-template-columns: 1fr; max-width: 520px; margin-inline: auto; }
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -504,7 +542,7 @@
      button where an accent dot would vanish. Real pointers only. Same
      data URIs as index.html; if the dot changes there, it changes here. */
   @media (hover: hover) and (pointer: fine) {
-    html, a, button, .btn, .card, .wordmark {
+    html, a, button, .btn, .card, .wordmark, .clips button {
       cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'%3E%3Ccircle cx='8' cy='8' r='8' fill='%236E9BF7'/%3E%3C/svg%3E") 8 8, auto;
     }
     .btn {
@@ -545,13 +583,13 @@
 
 <div class="wrap">
   <div class="page-head">
-    <h1>Featured work</h1>
-    <p class="lede">Ad campaigns and social content we've made for Nelson businesses. Real clips, not a reel, so click one and put the sound on.</p>
+    <h1>Case studies</h1>
+    <p class="lede">The businesses we've made videos for, and what we made them. Real clips, not a reel, so click one and put the sound on.</p>
   </div>
 
-  <!-- Cards carry their clip on data-src rather than src: with no src there is
-       no request at all until the first play, so opening the page costs the
-       posters and nothing else. -->
+  <!-- One case study per client. Each carries its clip on data-src rather
+       than src: with no src there is no request at all until the first play,
+       so opening the page costs the posters and nothing else. -->
   <div class="grid" id="grid"></div>
 </div>
 
@@ -571,6 +609,8 @@
     <span class="foot-logo"><img src="/img/tui-wordmark.webp" alt="Tui Media" width="639" height="130" loading="lazy" decoding="async"></span>
     <div class="foot-right">
       <a href="/">Back to site</a>
+      <a href="/monthly-content">Monthly content</a>
+      <a href="/video-ads">Video ads</a>
       <span>Nelson, New Zealand</span>
       <a href="mailto:hello@tuimedia.nz">hello@tuimedia.nz</a>
       <span class="foot-copy">&copy; <span data-year>2026</span> Tui Media</span>
@@ -582,25 +622,34 @@
 (function () {
   'use strict';
 
-  /* Newest first, then spread so the same business never sits in two cards
-     running next to each other. Two ATK Detailing clips, two Sky Automotive
-     clips and four Johnson Residential clips is most of the grid, and grouped they read as
-     "here is one client's reel" rather than "here is the work". Johnson
-     Residential, with the most clips, takes every third slot and the rest
-     fill in between, which keeps the newest clip in the lead slot and still
-     lands with no two neighbours the same. */
-  var WORK = [
-    { slug: 'johnson-residential-4', name: 'Johnson Residential',    trade: 'Residential building' },
-    { slug: 'sky-automotive-3',      name: 'Sky Automotive',         trade: 'New location' },
-    { slug: 'washrite',              name: 'Washrite',               trade: 'Exterior cleaning' },
-    { slug: 'johnson-residential-3', name: 'Johnson Residential',    trade: 'Residential building' },
-    { slug: 'nelson-english-center', name: 'Nelson English Center',  trade: 'English language school' },
-    { slug: 'atk-detailing-3',       name: 'ATK Detailing',          trade: 'Car detailing' },
-    { slug: 'johnson-residential-1', name: 'Johnson Residential',    trade: 'Residential building' },
-    { slug: 'sky-automotive-1',      name: 'Sky Automotive',         trade: 'Automotive servicing' },
-    { slug: 'nelson-city-framers-2', name: 'Nelson City Framers',    trade: 'Framing and construction' },
-    { slug: 'johnson-residential-2', name: 'Johnson Residential',    trade: 'Residential building' },
-    { slug: 'atk-detailing',         name: 'ATK Detailing',          trade: 'Car detailing' }
+  /* One case study per client, the ones with the most work first. The first
+     clip in each list is the one the card opens on. Only clips cut for this
+     page (media/work/, the versions with audio) are listed. */
+  var CASES = [
+    { name: 'Johnson Residential', trade: 'Residential building',
+      summary: "Videos from Johnson Residential's building sites, with the team on camera talking through their homes, from the concrete pour to the finished build.",
+      made: 'Short vertical videos filmed on site, with the builders on camera and drone shots of the finished homes.',
+      clips: ['johnson-residential-4', 'johnson-residential-3', 'johnson-residential-1', 'johnson-residential-2'] },
+    { name: 'Sky Automotive', trade: 'Automotive servicing',
+      summary: "Sky Automotive's workshop on camera, from detail work on the cars to the opening of their new Nelson location.",
+      made: 'Short vertical videos shot in the workshop, including one for the launch of the new location.',
+      clips: ['sky-automotive-3', 'sky-automotive-1'] },
+    { name: 'ATK Detailing', trade: 'Car detailing',
+      summary: "ATK Detailing's owner on camera, talking through the work and the protection they offer, with the detailing shown up close.",
+      made: 'Short vertical videos built around the owner talking to camera, cut with close-ups of the work.',
+      clips: ['atk-detailing-3', 'atk-detailing'] },
+    { name: 'Washrite', trade: 'Exterior cleaning',
+      summary: "Washrite's owner on camera, explaining what they do and why it's worth getting done.",
+      made: 'A short vertical video built around the owner talking to camera.',
+      clips: ['washrite'] },
+    { name: 'Nelson English Center', trade: 'English language school',
+      summary: 'A sit-down interview at Nelson English Center, filmed in their own building.',
+      made: 'A short vertical interview video.',
+      clips: ['nelson-english-center'] },
+    { name: 'Nelson City Framers', trade: 'Framing and construction',
+      summary: 'Nelson City Framers at work in the workshop, with the framing shown up close.',
+      made: 'A short vertical video of the work in progress.',
+      clips: ['nelson-city-framers-2'] }
   ];
 
   var PLAY_ICON = '<svg class="off" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5.5v13l11-6.5z"/></svg>'
@@ -614,20 +663,38 @@
   if (yearEl) yearEl.textContent = new Date().getFullYear();
 
   var grid = document.getElementById('grid');
-  var html = WORK.map(function (w) {
-    return '<button class="card" type="button" data-slug="' + esc(w.slug) + '"'
-         + ' style="background-image:url(/media/work/' + esc(w.slug) + '-poster.webp)"'
-         + ' aria-label="Play ' + esc(w.name) + ', ' + esc(w.trade) + ', with sound">'
+  function poster(slug) { return '/media/work/' + slug + '-poster.webp'; }
+  function clipSrc(slug) { return '/media/work/' + slug + '.mp4'; }
+  function label(c, n) {
+    return 'Play ' + c.name + (c.clips.length > 1 ? ', clip ' + n + ' of ' + c.clips.length : '') + ', with sound';
+  }
+  var html = CASES.map(function (c, ci) {
+    var slug = c.clips[0];
+    var pills = c.clips.length < 2 ? '' :
+        '<div class="clips" role="group" aria-label="' + esc(c.name) + ' clips">'
+      + c.clips.map(function (s, n) {
+          return '<button type="button" data-case="' + ci + '" data-clip="' + n + '" aria-pressed="' + (n === 0) + '"'
+               + ' aria-label="Clip ' + (n + 1) + ' of ' + c.clips.length + '">' + (n + 1) + '</button>';
+        }).join('')
+      + '</div>';
+    return '<article class="study">'
+         + '<button class="card" type="button" data-case="' + ci + '"'
+         + ' style="background-image:url(' + poster(slug) + ')"'
+         + ' aria-label="' + esc(label(c, 1)) + '">'
          + '<video playsinline loop preload="none" muted'
-         + ' poster="/media/work/' + esc(w.slug) + '-poster.webp"'
-         + ' data-src="/media/work/' + esc(w.slug) + '.mp4"></video>'
-         + '<span class="meta">'
-         +   '<span class="name">' + esc(w.name) + '<svg class="tick" aria-label="Meta verified"><use href="#tick"></use></svg></span>'
-         +   '<span class="trade">' + esc(w.trade) + '</span>'
-         + '</span>'
+         + ' poster="' + poster(slug) + '"'
+         + ' data-src="' + clipSrc(slug) + '"></video>'
          + '<span class="state">' + PLAY_ICON + '</span>'
          + '<span class="silent">Muted preview</span>'
-         + '</button>';
+         + '</button>'
+         + '<div class="study-body">'
+         +   '<span class="way-tag">' + esc(c.trade) + '</span>'
+         +   '<h3>' + esc(c.name) + '<svg class="tick" aria-label="Meta verified"><use href="#tick"></use></svg></h3>'
+         +   '<p>' + esc(c.summary) + '</p>'
+         +   '<div class="study-made"><span class="study-label">What we made</span><p>' + esc(c.made) + '</p></div>'
+         +   pills
+         + '</div>'
+         + '</article>';
   }).join('');
   grid.innerHTML = html;
 
@@ -813,6 +880,35 @@
        behave like hover does: a look, not a commitment. */
     card.addEventListener('focus', function () { preview(card); });
     card.addEventListener('blur', function () { endPreview(card); });
+  });
+
+  /* The numbered buttons under a case study swap which of that client's
+     clips its card holds, then play it with sound: the click is a gesture,
+     so the sound is allowed through. The old clip's buffer is dropped. */
+  [].slice.call(grid.querySelectorAll('.clips button')).forEach(function (pill) {
+    pill.addEventListener('click', function () {
+      var ci = +pill.getAttribute('data-case');
+      var n = +pill.getAttribute('data-clip');
+      var c = CASES[ci];
+      var card = grid.querySelector('.card[data-case="' + ci + '"]');
+      var v = video(card);
+      var slug = c.clips[n];
+      [].slice.call(pill.parentNode.children).forEach(function (b) {
+        b.setAttribute('aria-pressed', b === pill ? 'true' : 'false');
+      });
+      if (v.getAttribute('data-src') !== clipSrc(slug)) {
+        if (card === sound) sound = null;
+        stop(card);
+        clearTimeout(card.coolTimer);
+        v.removeAttribute('src');
+        try { v.load(); } catch (err) {}
+        v.setAttribute('data-src', clipSrc(slug));
+        v.poster = poster(slug);
+        card.style.backgroundImage = 'url(' + poster(slug) + ')';
+        card.setAttribute('aria-label', label(c, n + 1));
+      }
+      withSound(card);
+    });
   });
 
   /* Leaving the tab kills the sound; nobody wants a page they switched away

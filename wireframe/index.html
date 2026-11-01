@@ -71,16 +71,16 @@
         { "@type": "AdministrativeArea", "name": "Marlborough" },
         { "@type": "Country", "name": "New Zealand" }
       ],
-      "serviceType": ["Video ad production", "Lead generation video", "Social media video content", "Social media photography"],
+      "serviceType": ["Social media video content", "Social media photography", "Video ad production", "Lead generation video"],
       "priceRange": "$$",
       "hasOfferCatalog": {
         "@type": "OfferCatalog",
         "name": "Video ad and content services",
         "itemListElement": [
-          { "@type": "Offer", "url": "https://www.tuimedia.nz/video-ads", "itemOffered": { "@type": "Service", "name": "Video ad project", "description": "Research, script and hooks, filming on site, and several ad versions in every format. The campaign is set up in an ad account in the client's name, launched and handed over. One fee, quoted per project. Ad spend is paid straight to Meta with no markup.", "areaServed": { "@type": "City", "name": "Nelson" }, "provider": { "@id": "https://www.tuimedia.nz/#business" } } },
           { "@type": "Offer", "url": "https://www.tuimedia.nz/monthly-content", "name": "Monthly content, Lite", "price": "500", "priceCurrency": "NZD", "priceSpecification": { "@type": "UnitPriceSpecification", "price": "500", "priceCurrency": "NZD", "unitText": "month" }, "itemOffered": { "@type": "Service", "name": "Monthly content, Lite", "description": "A monthly content plan, a planned shoot, edited videos, a photo set, and captions and cover images for every post. 2 videos and 10 photos a month. Or $1,350 a quarter, paid upfront.", "areaServed": { "@type": "City", "name": "Nelson" }, "provider": { "@id": "https://www.tuimedia.nz/#business" } } },
           { "@type": "Offer", "url": "https://www.tuimedia.nz/monthly-content", "name": "Monthly content, Core", "price": "850", "priceCurrency": "NZD", "priceSpecification": { "@type": "UnitPriceSpecification", "price": "850", "priceCurrency": "NZD", "unitText": "month" }, "itemOffered": { "@type": "Service", "name": "Monthly content, Core", "description": "A monthly content plan, a planned shoot, edited videos, a photo set, and captions and cover images for every post. 4 videos and 15 photos a month, plus a monthly check-in on what worked. Or $2,300 a quarter, paid upfront.", "areaServed": { "@type": "City", "name": "Nelson" }, "provider": { "@id": "https://www.tuimedia.nz/#business" } } },
-          { "@type": "Offer", "url": "https://www.tuimedia.nz/monthly-content", "name": "Monthly content, Full", "price": "1500", "priceCurrency": "NZD", "priceSpecification": { "@type": "UnitPriceSpecification", "price": "1500", "priceCurrency": "NZD", "unitText": "month" }, "itemOffered": { "@type": "Service", "name": "Monthly content, Full", "description": "A monthly content plan, a planned shoot, edited videos, a photo set, and captions and cover images for every post. 6 videos, 25 photos and 2 designed posts a month, plus a monthly check-in, posting and scheduling done for you, and ad-ready cuts in every format. Or $4,000 a quarter, paid upfront.", "areaServed": { "@type": "City", "name": "Nelson" }, "provider": { "@id": "https://www.tuimedia.nz/#business" } } }
+          { "@type": "Offer", "url": "https://www.tuimedia.nz/monthly-content", "name": "Monthly content, Full", "price": "1500", "priceCurrency": "NZD", "priceSpecification": { "@type": "UnitPriceSpecification", "price": "1500", "priceCurrency": "NZD", "unitText": "month" }, "itemOffered": { "@type": "Service", "name": "Monthly content, Full", "description": "A monthly content plan, a planned shoot, edited videos, a photo set, and captions and cover images for every post. 6 videos, 25 photos and 2 designed posts a month, plus a monthly check-in, posting and scheduling done for you, and ad-ready cuts in every format. Or $4,000 a quarter, paid upfront.", "areaServed": { "@type": "City", "name": "Nelson" }, "provider": { "@id": "https://www.tuimedia.nz/#business" } } },
+          { "@type": "Offer", "url": "https://www.tuimedia.nz/video-ads", "itemOffered": { "@type": "Service", "name": "Video ad project", "description": "Research, script and hooks, filming on site, and several ad versions in every format. The campaign is set up in an ad account in the client's name, launched and handed over. One fee, quoted per project. Ad spend is paid straight to Meta with no markup.", "areaServed": { "@type": "City", "name": "Nelson" }, "provider": { "@id": "https://www.tuimedia.nz/#business" } } }
         ]
       }
     },
@@ -145,7 +145,7 @@
     {
       "@type": "Question",
       "name": "Do you manage the ads after launch?",
-      "acceptedAnswer": { "@type": "Answer", "text": "Not right now. I build and launch the campaign, then hand it over so you or your marketing person can run it. Full plans include ad-ready cuts of your content." }
+      "acceptedAnswer": { "@type": "Answer", "text": "Not right now. We build and launch the campaign, then hand it over so you or your marketing person can run it. Full plans include ad-ready cuts of your content." }
     },
     {
       "@type": "Question",
@@ -936,58 +936,31 @@
   .step:nth-child(even) p { margin-left: auto; }
 
   /* ---------- case studies ----------
-     One panel per client: what we made on the left, a few of their clips
-     on the right. Same --surface panel and type as the offer cards. */
+     A grid of cards, one per client: a clip of theirs on top, what we did
+     underneath. Same --surface panel and type as the offer cards. */
 
-  .studies { display: grid; gap: var(--frame); }
+  .studies { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--frame); }
   .study {
     background: var(--surface);
     border-radius: var(--radius);
-    padding: clamp(1.25rem, 2.6vw, 2.5rem);
-    display: grid;
-    grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
-    gap: clamp(1.5rem, 3vw, 3rem);
-    align-items: center;
+    padding: var(--s-2);
+    display: flex;
+    flex-direction: column;
+    gap: var(--s-3);
   }
-  .study-body { display: flex; flex-direction: column; gap: var(--s-3); }
+  /* the clip fills the card's width, cropped a little shorter than 9:16 so
+     a row of three doesn't run two screens tall */
+  .study .case { width: auto; aspect-ratio: 4 / 5; }
+  .study-body { display: flex; flex-direction: column; gap: var(--s-2); padding: 0 var(--s-2) var(--s-2); }
   .study-body .way-tag { align-self: flex-start; }
   .study-body h3 {
-    display: flex; align-items: center; gap: 10px;
-    font-size: clamp(1.5rem, 2.4vw, 2rem); letter-spacing: -0.03em;
+    display: flex; align-items: center; gap: 8px;
+    font-size: clamp(1.25rem, 1.8vw, 1.5rem); letter-spacing: -0.03em;
   }
-  .study-body h3 .tick { width: 18px; height: 18px; flex: none; }
+  .study-body h3 .tick { width: 16px; height: 16px; flex: none; }
   .study-body p { font-size: 0.9375rem; line-height: 1.6; color: var(--muted); }
-  .study-body .way-best p { color: var(--ink); }
-  .study-clips {
-    display: grid;
-    grid-auto-flow: column;
-    /* always a third of the row, so a client with two clips gets the same
-       size cards as one with three, centred rather than blown up */
-    grid-auto-columns: calc((100% - 2 * var(--s-2)) / 3);
-    justify-content: center;
-    gap: var(--s-2);
-  }
-  .study-clips .case { width: auto; }
   @media (max-width: 900px) {
-    .study { grid-template-columns: 1fr; }
-  }
-  /* on a phone the clips scroll sideways inside the panel rather than
-     shrinking to thumbnails */
-  @media (max-width: 620px) {
-    .study-clips {
-      display: flex;
-      /* not centred here: centring an overflowing row pushes the first
-         clip off the left edge where it can't be scrolled back to */
-      justify-content: flex-start;
-      overflow-x: auto;
-      scroll-snap-type: x mandatory;
-      scrollbar-width: none;
-      margin-inline: calc(-1 * clamp(1.25rem, 2.6vw, 2.5rem));
-      padding-inline: clamp(1.25rem, 2.6vw, 2.5rem);
-      scroll-padding-inline: clamp(1.25rem, 2.6vw, 2.5rem);
-    }
-    .study-clips::-webkit-scrollbar { display: none; }
-    .study-clips .case { width: 52vw; flex: none; scroll-snap-align: start; }
+    .studies { grid-template-columns: 1fr; max-width: 520px; margin-inline: auto; }
   }
 
   .case {
@@ -2166,7 +2139,7 @@
   <div class="shell">
     <p class="avail"><i></i><span>Now taking on new clients</span></p>
     <h1 tabindex="-1">Bringing you leads<br>through creative video</h1>
-    <p class="lede">Kia ora, we're a Nelson based non-agency that creates video content for local businesses. Whether you want a one-off ad project or fresh content every month, we're the team for the job.</p>
+    <p class="lede">Kia ora, we're a Nelson based non-agency that creates video content for local businesses. Whether you want fresh content every month or a one-off ad project, we're the team for the job.</p>
     <div class="btn-row">
       <a class="btn" href="#book" data-route="book">
         <span class="btn-label"><span>Book my free call</span><span aria-hidden="true">Book my free call</span></span>
@@ -2225,8 +2198,8 @@
 <!-- ============ TWO WAYS TO WORK TOGETHER ============
      The two offers side by side, each a short summary that leads to its own
      page (/video-ads, /monthly-content) where the detail and pricing live.
-     The ad project is still the headline one, so it carries the solid
-     button and monthly content the outline. -->
+     Monthly content is the main service, so it comes first and carries
+     the solid button; the ad project takes the outline. -->
 <section id="services">
   <div class="shell">
     <div class="section-head center" data-anim>
@@ -2235,6 +2208,25 @@
     </div>
 
     <div class="two-up">
+      <article class="way-card" data-anim>
+        <span class="way-tag">Monthly or quarterly</span>
+        <h3>Monthly content</h3>
+        <p class="way-body">A content plan, a planned shoot, edited videos, a photo set, and captions and cover images for every post. Three packages, paid monthly or quarterly.</p>
+        <div class="way-best">
+          <span class="way-label">Best for</span>
+          <p>Businesses that want to grow their socials but have no clue how to do so.</p>
+        </div>
+        <div class="way-foot">
+          <p class="way-price">From $500 a month.</p>
+          <div class="btn-row">
+            <a class="btn" href="/monthly-content">
+              <span class="btn-label"><span>See the packages</span><span aria-hidden="true">See the packages</span></span>
+              <span class="arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h13M12 6l6 6-6 6"/></svg><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h13M12 6l6 6-6 6"/></svg></span>
+            </a>
+          </div>
+        </div>
+      </article>
+
       <article class="way-card" data-anim>
         <span class="way-tag">One fee</span>
         <h3>Video ad project</h3>
@@ -2246,27 +2238,8 @@
         <div class="way-foot">
           <p class="way-price">One fee, quoted per project.</p>
           <div class="btn-row">
-            <a class="btn" href="/video-ads">
+            <a class="btn outline" href="/video-ads">
               <span class="btn-label"><span>See how ad projects work</span><span aria-hidden="true">See how ad projects work</span></span>
-              <span class="arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h13M12 6l6 6-6 6"/></svg><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h13M12 6l6 6-6 6"/></svg></span>
-            </a>
-          </div>
-        </div>
-      </article>
-
-      <article class="way-card" data-anim>
-        <span class="way-tag">Monthly or quarterly</span>
-        <h3>Monthly content</h3>
-        <p class="way-body">A content plan, a planned shoot, edited videos, a photo set, and captions and cover images for every post. Three packs, paid monthly or quarterly.</p>
-        <div class="way-best">
-          <span class="way-label">Best for</span>
-          <p>Businesses that want to grow their socials but have no clue how to do so.</p>
-        </div>
-        <div class="way-foot">
-          <p class="way-price">From $500 a month.</p>
-          <div class="btn-row">
-            <a class="btn outline" href="/monthly-content">
-              <span class="btn-label"><span>See the monthly packs</span><span aria-hidden="true">See the monthly packs</span></span>
               <span class="arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h13M12 6l6 6-6 6"/></svg><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h13M12 6l6 6-6 6"/></svg></span>
             </a>
           </div>
@@ -2313,7 +2286,7 @@
   <div class="shell">
     <div class="section-head center" data-anim>
       <h2>How it works</h2>
-      <p class="lede">Ad projects and monthly content start the same way. The difference is what happens after the edit.</p>
+      <p class="lede">Monthly content and ad projects start the same way. The difference is what happens after the edit.</p>
     </div>
 
     <div class="steps process-steps" data-steps>
@@ -2350,14 +2323,7 @@
           <div>
             <span class="step-when">Week two</span>
             <h3>Edit</h3>
-            <p>Ads get a few versions with different hooks and formats. Monthly content gets edited videos, a photo set, captions and cover images.</p>
-          </div>
-        </div>
-        <div class="step" data-anim>
-          <div>
-            <span class="step-when">Ad project &middot; week three</span>
-            <h3>Launch and handover</h3>
-            <p>We set up the campaign in your ad account and launch it. You get the footage, the ads and the ad account. It's all yours.</p>
+            <p>Monthly content gets edited videos, a photo set, captions and cover images. Ads get a few versions with different hooks and formats.</p>
           </div>
         </div>
         <div class="step" data-anim>
@@ -2365,6 +2331,13 @@
             <span class="step-when">Monthly content &middot; every month</span>
             <h3>Deliver and repeat</h3>
             <p>Your content arrives ready to post, and we plan the next round. Core and Full get a monthly check-in on what worked.</p>
+          </div>
+        </div>
+        <div class="step" data-anim>
+          <div>
+            <span class="step-when">Ad project &middot; week three</span>
+            <h3>Launch and handover</h3>
+            <p>We set up the campaign in your ad account and launch it. You get the footage, the ads and the ad account. It's all yours.</p>
           </div>
         </div>
     </div>
@@ -2467,50 +2440,27 @@
 
     <div class="studies">
       <article class="study" data-anim>
+        <div class="case"><video class="case-video" src="media/johnson-residential-4.mp4" data-poster="media/johnson-residential-4-poster.webp" muted loop playsinline preload="none" data-case-video aria-hidden="true"></video></div>
         <div class="study-body">
           <span class="way-tag">Residential building</span>
           <h3>Johnson Residential<svg class="tick" viewBox="0 0 84 84" aria-label="Meta verified"><path fill="#0064E0" fill-rule="evenodd" d="m50.4.47c1.79-.97,4.02-.37,5.08,1.36l4.99,8.17,9.57.24c2.03.05,3.67,1.69,3.72,3.72l.24,9.57,8.17,4.99c1.74,1.06,2.34,3.3,1.36,5.08l-4.58,8.4,4.58,8.4c.97,1.79.37,4.02-1.36,5.08l-8.17,4.99-.24,9.57c-.05,2.03-1.69,3.67-3.72,3.72l-9.57.24-4.99,8.17c-1.06,1.74-3.3,2.34-5.08,1.36l-8.4-4.58-8.4,4.58c-1.79.97-4.02.37-5.08-1.36l-4.99-8.17-9.57-.24c-2.03-.05-3.67-1.69-3.72-3.72l-.24-9.57-8.17-4.99c-1.74-1.06-2.34-3.3-1.36-5.08l4.58-8.4L.47,33.6c-.97-1.79-.37-4.02,1.36-5.08l8.17-4.99.24-9.57c.05-2.03,1.69-3.67,3.72-3.72l9.57-.24L28.51,1.83c1.06-1.74,3.3-2.34,5.08-1.36l8.4,4.58L50.4.47Zm9.31,34.92c1.62-1.35,1.84-3.76.49-5.38-1.35-1.62-3.76-1.84-5.38-.49l-.26.21c-6.64,5.54-12.84,11.59-18.52,18.1l-6.62-6.62c-1.49-1.49-3.91-1.49-5.4,0-1.49,1.49-1.49,3.91,0,5.4l9.55,9.55c.76.76,1.8,1.16,2.87,1.11,1.07-.05,2.07-.55,2.76-1.37l.21-.26c6.06-7.27,12.77-13.98,20.04-20.04l.26-.21Z"/></svg></h3>
           <p>Videos from Johnson Residential's building sites, with the team on camera talking through their homes, from the concrete pour to the finished build.</p>
-          <div class="way-best">
-            <span class="way-label">What we made</span>
-            <p>Short vertical videos filmed on site, with the builders on camera and drone shots of the finished homes.</p>
-          </div>
-        </div>
-        <div class="study-clips">
-            <div class="case"><video class="case-video" src="media/johnson-residential-4.mp4" data-poster="media/johnson-residential-4-poster.webp" muted loop playsinline preload="none" data-case-video aria-hidden="true"></video></div>
-            <div class="case"><video class="case-video" src="media/johnson-residential-3.mp4" data-poster="media/johnson-residential-3-poster.webp" muted loop playsinline preload="none" data-case-video aria-hidden="true"></video></div>
-            <div class="case"><video class="case-video" src="media/johnson-residential-1.mp4" data-poster="media/johnson-residential-1-poster.webp" muted loop playsinline preload="none" data-case-video aria-hidden="true"></video></div>
         </div>
       </article>
       <article class="study" data-anim>
+        <div class="case"><video class="case-video" src="media/sky-automotive-3.mp4" data-poster="media/sky-automotive-3-poster.webp" muted loop playsinline preload="none" data-case-video aria-hidden="true"></video></div>
         <div class="study-body">
           <span class="way-tag">Automotive servicing</span>
           <h3>Sky Automotive<svg class="tick" viewBox="0 0 84 84" aria-label="Meta verified"><path fill="#0064E0" fill-rule="evenodd" d="m50.4.47c1.79-.97,4.02-.37,5.08,1.36l4.99,8.17,9.57.24c2.03.05,3.67,1.69,3.72,3.72l.24,9.57,8.17,4.99c1.74,1.06,2.34,3.3,1.36,5.08l-4.58,8.4,4.58,8.4c.97,1.79.37,4.02-1.36,5.08l-8.17,4.99-.24,9.57c-.05,2.03-1.69,3.67-3.72,3.72l-9.57.24-4.99,8.17c-1.06,1.74-3.3,2.34-5.08,1.36l-8.4-4.58-8.4,4.58c-1.79.97-4.02.37-5.08-1.36l-4.99-8.17-9.57-.24c-2.03-.05-3.67-1.69-3.72-3.72l-.24-9.57-8.17-4.99c-1.74-1.06-2.34-3.3-1.36-5.08l4.58-8.4L.47,33.6c-.97-1.79-.37-4.02,1.36-5.08l8.17-4.99.24-9.57c.05-2.03,1.69-3.67,3.72-3.72l9.57-.24L28.51,1.83c1.06-1.74,3.3-2.34,5.08-1.36l8.4,4.58L50.4.47Zm9.31,34.92c1.62-1.35,1.84-3.76.49-5.38-1.35-1.62-3.76-1.84-5.38-.49l-.26.21c-6.64,5.54-12.84,11.59-18.52,18.1l-6.62-6.62c-1.49-1.49-3.91-1.49-5.4,0-1.49,1.49-1.49,3.91,0,5.4l9.55,9.55c.76.76,1.8,1.16,2.87,1.11,1.07-.05,2.07-.55,2.76-1.37l.21-.26c6.06-7.27,12.77-13.98,20.04-20.04l.26-.21Z"/></svg></h3>
           <p>Sky Automotive's workshop on camera, from detail work on the cars to the opening of their new Nelson location.</p>
-          <div class="way-best">
-            <span class="way-label">What we made</span>
-            <p>Short vertical videos shot in the workshop, including one for the launch of the new location.</p>
-          </div>
-        </div>
-        <div class="study-clips">
-            <div class="case"><video class="case-video" src="media/sky-automotive-3.mp4" data-poster="media/sky-automotive-3-poster.webp" muted loop playsinline preload="none" data-case-video aria-hidden="true"></video></div>
-            <div class="case"><video class="case-video" src="media/sky-automotive-1.mp4" data-poster="media/sky-automotive-1-poster.webp" muted loop playsinline preload="none" data-case-video aria-hidden="true"></video></div>
-            <div class="case"><video class="case-video" src="media/sky-automotive-2.mp4" data-poster="media/sky-automotive-2-poster.webp" muted loop playsinline preload="none" data-case-video aria-hidden="true"></video></div>
         </div>
       </article>
       <article class="study" data-anim>
+        <div class="case"><video class="case-video" src="media/atk-detailing-3.mp4" data-poster="media/atk-detailing-3-poster.webp" muted loop playsinline preload="none" data-case-video aria-hidden="true"></video></div>
         <div class="study-body">
           <span class="way-tag">Car detailing</span>
           <h3>ATK Detailing<svg class="tick" viewBox="0 0 84 84" aria-label="Meta verified"><path fill="#0064E0" fill-rule="evenodd" d="m50.4.47c1.79-.97,4.02-.37,5.08,1.36l4.99,8.17,9.57.24c2.03.05,3.67,1.69,3.72,3.72l.24,9.57,8.17,4.99c1.74,1.06,2.34,3.3,1.36,5.08l-4.58,8.4,4.58,8.4c.97,1.79.37,4.02-1.36,5.08l-8.17,4.99-.24,9.57c-.05,2.03-1.69,3.67-3.72,3.72l-9.57.24-4.99,8.17c-1.06,1.74-3.3,2.34-5.08,1.36l-8.4-4.58-8.4,4.58c-1.79.97-4.02.37-5.08-1.36l-4.99-8.17-9.57-.24c-2.03-.05-3.67-1.69-3.72-3.72l-.24-9.57-8.17-4.99c-1.74-1.06-2.34-3.3-1.36-5.08l4.58-8.4L.47,33.6c-.97-1.79-.37-4.02,1.36-5.08l8.17-4.99.24-9.57c.05-2.03,1.69-3.67,3.72-3.72l9.57-.24L28.51,1.83c1.06-1.74,3.3-2.34,5.08-1.36l8.4,4.58L50.4.47Zm9.31,34.92c1.62-1.35,1.84-3.76.49-5.38-1.35-1.62-3.76-1.84-5.38-.49l-.26.21c-6.64,5.54-12.84,11.59-18.52,18.1l-6.62-6.62c-1.49-1.49-3.91-1.49-5.4,0-1.49,1.49-1.49,3.91,0,5.4l9.55,9.55c.76.76,1.8,1.16,2.87,1.11,1.07-.05,2.07-.55,2.76-1.37l.21-.26c6.06-7.27,12.77-13.98,20.04-20.04l.26-.21Z"/></svg></h3>
           <p>ATK Detailing's owner on camera, talking through the work and the protection they offer, with the detailing shown up close.</p>
-          <div class="way-best">
-            <span class="way-label">What we made</span>
-            <p>Short vertical videos built around the owner talking to camera, cut with close-ups of the work.</p>
-          </div>
-        </div>
-        <div class="study-clips">
-            <div class="case"><video class="case-video" src="media/atk-detailing-3.mp4" data-poster="media/atk-detailing-3-poster.webp" muted loop playsinline preload="none" data-case-video aria-hidden="true"></video></div>
-            <div class="case"><video class="case-video" src="media/atk-detailing.mp4" data-poster="media/atk-detailing-poster.webp" muted loop playsinline preload="none" data-case-video aria-hidden="true"></video></div>
         </div>
       </article>
     </div>
@@ -2518,7 +2468,7 @@
 
   <div class="btn-row work-more" data-anim>
     <a class="btn outline" href="/work">
-      <span class="btn-label"><span>See all our work</span><span aria-hidden="true">See all our work</span></span>
+      <span class="btn-label"><span>See all case studies</span><span aria-hidden="true">See all case studies</span></span>
       <span class="arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h13M12 6l6 6-6 6"/></svg><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h13M12 6l6 6-6 6"/></svg></span>
     </a>
   </div>
@@ -2632,7 +2582,7 @@
           <span class="faq-q">Do you manage the ads after launch?</span>
           <span class="faq-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></span>
         </button>
-        <div class="faq-panel" id="faq-a6" role="region" aria-labelledby="faq-q6" inert><div><p class="faq-a">Not right now. I build and launch the campaign, then hand it over so you or your marketing person can run it. Full plans include ad-ready cuts of your content.</p></div></div>
+        <div class="faq-panel" id="faq-a6" role="region" aria-labelledby="faq-q6" inert><div><p class="faq-a">Not right now. We build and launch the campaign, then hand it over so you or your marketing person can run it. Full plans include ad-ready cuts of your content.</p></div></div>
       </div>
 
       <div class="faq-item" data-anim>
@@ -2675,8 +2625,8 @@
   <div class="closing-foot">
     <span class="foot-logo"><img src="/img/tui-wordmark.webp" alt="Tui Media" width="639" height="130" loading="lazy" decoding="async"></span>
     <div class="foot-right">
-      <a href="/video-ads">Video ads</a>
       <a href="/monthly-content">Monthly content</a>
+      <a href="/video-ads">Video ads</a>
       <span>Nelson, New Zealand</span>
       <a href="mailto:hello@tuimedia.nz">hello@tuimedia.nz</a>
       <span class="foot-copy">&copy; <span data-year>2026</span> Tui Media</span>
@@ -2717,8 +2667,8 @@
       <div class="select-wrap">
         <select id="f-interest" name="interest" required>
           <option value="" selected disabled>What are you after?</option>
-          <option>A video ad project</option>
           <option>Monthly content</option>
+          <option>A video ad project</option>
           <option>Both</option>
           <option>Not sure yet</option>
         </select>

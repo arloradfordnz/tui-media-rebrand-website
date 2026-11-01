@@ -10,9 +10,11 @@ deployed on Vercel.
   The folder name is historical; renaming it means changing the Root Directory
   setting in the Vercel project at the same time.
   - `index.html` — the whole site: markup, styles and script in one file.
-  - `work/index.html` — the full examples page at `/work`, linked from the
-    "See all our work" button under Recent work. Its clips are the only ones on
-    the site that carry audio, and they live in `media/work/`.
+  - `work/index.html` — every case study at `/work`, in a grid, linked from the
+    "See all case studies" button under the home page's case studies. Each card
+    plays its clip with sound on click, and numbered buttons switch between a
+    client's clips. These are the only clips on the site that carry audio, and
+    they live in `media/work/`. The case studies are the `CASES` list in its script.
   - `video-ads/index.html` and `monthly-content/index.html` — the two service
     pages at `/video-ads` and `/monthly-content`, linked from the cards in
     "Two ways to work together". Their book buttons go to `/?interest=ad#book`
