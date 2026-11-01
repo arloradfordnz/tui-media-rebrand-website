@@ -1,0 +1,504 @@
+/* Shared by /video-ads and /monthly-content.
+
+   The site's tokens, nav, buttons and closing panel are lifted from
+   /work, and the cards, timeline and FAQ from index.html, so the service
+   pages look like the rest of the site. There is still no build step: if
+   a token or component changes there, it changes here too. */
+
+@font-face {
+  font-family: 'Bricolage Grotesque';
+  font-style: normal;
+  font-weight: 200 800;
+  font-stretch: 100%;
+  font-display: swap;
+  src: url(/fonts/bricolage-grotesque-latin.woff2) format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+:root {
+  --paper:    #060D1A;
+  --surface:  #0F1930;
+  --ink:      #EFF2F8;
+  --muted:    #8996B2;
+  --rule:     rgba(239, 242, 248, 0.13);
+  --rule-2:   rgba(239, 242, 248, 0.26);
+  --accent:      #6E9BF7;
+  --accent-ink:  #0A1428;
+  --accent-soft: rgba(110, 155, 247, 0.16);
+  --slot-1: #111B33;
+
+  /* nav pill: translucent so content reads through it while it floats */
+  --nav-bg: rgba(15, 25, 48, 0.40);
+  --nav-h: 60px;
+  --logo-bird: url("/img/tui-bird.webp");
+
+  --t-h2:    clamp(2rem, 5.2vw, 3.75rem);
+  --hairline: rgba(239, 242, 248, 0.22);
+  --radius: 32px;
+  --s-7: 7rem;
+  --t-body:  clamp(1rem, 1.15vw, 1.125rem);
+  --t-small: 0.8125rem;
+  --t-micro: 0.75rem;
+
+  --s-1: 0.5rem;
+  --s-2: 1rem;
+  --s-3: 1.5rem;
+  --s-4: 2rem;
+  --s-5: 3rem;
+  --s-6: 4.5rem;
+
+  --frame: clamp(0.75rem, 1.4vw, 1.25rem);
+  --content: 1120px;
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --radius-sm:   22px;
+  --radius-pill: 999px;
+}
+
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: 'Bricolage Grotesque', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+  font-size: var(--t-body);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+:focus:not(:focus-visible) { outline: none; }
+
+.wrap {
+  max-width: var(--content);
+  margin: 0 auto;
+  padding-inline: var(--frame);
+}
+
+/* ---------- nav ----------
+   The site's nav, not an approximation of it: same pill, same glass, same
+   wordmark, same label-swap on the links, same CTA. The only difference is
+   that the destinations are absolute (/#fit rather than #fit) because they
+   live on the home page, not this one. index.html's own click handler only
+   intercepts href="#..." so these stay plain navigations, and the router
+   there already handles arriving on #book, while everything else is an
+   ordinary anchor the browser lands on itself. */
+.nav-wrap {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  padding: var(--frame);
+}
+.nav {
+  position: relative;
+  max-width: calc(var(--content) - 2 * var(--frame));
+  margin-inline: auto;
+  height: var(--nav-h);
+  padding: 6px 6px 6px var(--s-4);
+  border-radius: var(--radius-pill);
+  color: var(--ink);
+  display: flex;
+  align-items: center;
+  gap: var(--s-4);
+
+  background: var(--nav-bg);
+  -webkit-backdrop-filter: blur(30px) saturate(190%);
+  border: 0;
+  box-shadow: 0 10px 34px -10px rgba(0, 0, 0, 0.6);
+}
+.nav { backdrop-filter: blur(30px) saturate(190%); }
+
+.wordmark {
+  display: inline-flex; align-items: center; line-height: 0;
+  min-width: 44px; min-height: 44px;
+  margin-left: -10px; padding-left: 10px;
+  -webkit-tap-highlight-color: transparent;
+}
+.wordmark i {
+  display: block;
+  height: 40px;
+  width: 24px;                        /* artwork is 0.598:1 */
+  background: var(--logo-bird) no-repeat center / contain;
+}
+
+.nav-links {
+  display: flex;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  gap: var(--s-4);
+  font-size: 0.9375rem;
+  font-weight: 500;
+}
+.nav-links a { color: var(--muted); text-decoration: none; white-space: nowrap; }
+.nav-links .nav-label { display: inline-grid; overflow: hidden; line-height: 1.3; }
+.nav-links .nav-label > span {
+  grid-area: 1 / 1;
+  transition: transform 380ms var(--ease-out), color 200ms ease;
+}
+.nav-links .nav-label > span:nth-child(2) { transform: translateY(115%); }
+@media (hover: hover) and (pointer: fine) {
+  .nav-links a:hover .nav-label > span:nth-child(1) { transform: translateY(-115%); color: var(--ink); }
+  .nav-links a:hover .nav-label > span:nth-child(2) { transform: translateY(0); color: var(--ink); }
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.7em;
+  height: 44px;
+  padding: 6px 6px 6px 1.15rem;
+  border-radius: var(--radius-pill);
+  background: var(--accent);
+  color: var(--accent-ink);
+  font-size: 0.9375rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  text-decoration: none;
+  border: 1px solid transparent;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: transform 140ms var(--ease-out);
+}
+.btn:active { transform: scale(0.975); }
+.nav .btn { margin-left: auto; }
+.btn-label { display: grid; overflow: hidden; line-height: 1.25; }
+.btn-label > span {
+  grid-area: 1 / 1;
+  transition: transform 460ms cubic-bezier(.19, 1, .22, 1);
+}
+.btn-label > span:nth-child(2) { transform: translateY(115%); }
+@media (hover: hover) and (pointer: fine) {
+  .btn:hover .btn-label > span:nth-child(1) { transform: translateY(-115%); }
+  .btn:hover .btn-label > span:nth-child(2) { transform: translateY(0); }
+}
+.btn .arrow {
+  width: 30px; height: 30px;
+  flex: none;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: var(--accent-ink);
+  color: var(--accent);
+  overflow: hidden;
+  position: relative;
+}
+.btn .arrow svg {
+  grid-area: 1 / 1;
+  width: 12px; height: 12px;
+  display: block;
+  transition: transform 420ms cubic-bezier(.19, 1, .22, 1);
+}
+.btn .arrow svg:nth-child(2) { transform: translateX(-160%); }
+@media (hover: hover) and (pointer: fine) {
+  .btn:hover .arrow svg:nth-child(1) { transform: translateX(160%); }
+  .btn:hover .arrow svg:nth-child(2) { transform: translateX(0); }
+}
+
+/* ---------- page head ----------
+   Lifted from the book view (.page-head on index.html): centred, same
+   clamp on the heading, same lede treatment underneath. That page opens
+   "Let's see if we're a fit" over one honest sentence about what happens
+   next; this one gets the same shape with its own thing to say. */
+.page-head {
+  text-align: center;
+  max-width: 640px;
+  margin: 0 auto;
+  padding-top: var(--s-5);
+}
+/* h1, h2, h3 on the main site share one rule (weight 500, -0.035em
+   tracking, 0.98 line-height); h2 there carries the clamp this heading
+   uses. Reproduced rather than referenced, same as everything else in
+   this file. */
+h1 { margin: 0; font-weight: 500; letter-spacing: -0.035em; line-height: 0.98; text-wrap: balance; }
+.page-head h1 { font-size: clamp(2.25rem, 5vw, 4.25rem); }
+.page-head .lede {
+  font-size: var(--t-body);
+  color: var(--muted);
+  line-height: 1.6;
+  max-width: 46ch;
+  margin: var(--s-3) auto 0;
+}
+
+
+/* ---------- sections ---------- */
+
+section { padding-block: var(--s-6); }
+h2, h3 { margin: 0; font-weight: 500; letter-spacing: -0.035em; line-height: 0.98; text-wrap: balance; }
+h2 { font-size: var(--t-h2); }
+h3 { font-size: clamp(1.125rem, 1.45vw, 1.375rem); line-height: 1.15; letter-spacing: -0.02em; }
+p { margin: 0; }
+.lede { font-size: var(--t-body); color: var(--muted); line-height: 1.6; max-width: 46ch; }
+.center { text-align: center; }
+.center .lede { margin-inline: auto; }
+.section-head { margin-bottom: var(--s-5); }
+.section-head .lede { margin-top: var(--s-3); }
+.page-head .btn-row { margin-top: var(--s-4); }
+.page-head { padding-bottom: var(--s-4); }
+
+.btn.outline { background: transparent; color: var(--ink); border-color: var(--hairline); }
+.btn.outline .arrow { background: var(--accent); color: var(--accent-ink); }
+
+/* ---------- cards: the home page's offer card ---------- */
+
+.two-up   { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--frame); }
+.three-up { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--frame); }
+.way-card {
+  background: var(--surface);
+  border-radius: var(--radius);
+  padding: clamp(1.5rem, 2.6vw, 2.5rem);
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-3);
+}
+.way-tag {
+  align-self: flex-start;
+  font-size: var(--t-micro); font-weight: 700;
+  letter-spacing: 0.1em; text-transform: uppercase;
+  color: var(--accent); background: var(--accent-soft);
+  border-radius: var(--radius-pill);
+  padding: 5px 11px;
+}
+.way-card h3 { font-size: clamp(1.5rem, 2.4vw, 2rem); letter-spacing: -0.03em; }
+.way-card p { font-size: 0.9375rem; line-height: 1.6; color: var(--muted); }
+.way-card .way-body { flex: 1; }
+.way-label {
+  display: block; margin-bottom: 4px;
+  font-size: var(--t-micro); font-weight: 700;
+  letter-spacing: 0.11em; text-transform: uppercase;
+  color: var(--accent);
+}
+.way-foot { display: grid; gap: var(--s-3); padding-top: var(--s-1); }
+.way-card .way-note { font-size: var(--t-small); }
+.way-card .way-price { font-size: 1.0625rem; font-weight: 600; color: var(--ink); }
+/* the price on a pack card is the headline, so it gets the h3's size */
+.way-card .way-price.big { font-size: clamp(1.75rem, 2.8vw, 2.25rem); font-weight: 500; letter-spacing: -0.03em; line-height: 1.1; }
+.way-card .btn-row { justify-content: flex-start; }
+/* the pack that most people pick: an accent ring, same as a playing card on /work */
+.way-card.is-pick { box-shadow: 0 0 0 2px var(--accent); }
+
+/* the home page's fit list: a tick in a soft accent circle, then the line */
+.ticks { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--s-2); }
+.ticks li {
+  display: grid;
+  grid-template-columns: 26px 1fr;
+  gap: var(--s-2);
+  align-items: start;
+  font-size: 0.9375rem;
+  color: var(--ink);
+  line-height: 1.5;
+}
+.ticks .fit-icon {
+  width: 26px; height: 26px;
+  border-radius: 50%;
+  background: var(--accent-soft);
+  color: var(--accent);
+  display: grid;
+  place-items: center;
+  margin-top: -1px;
+}
+.ticks .fit-icon svg { width: 12px; height: 12px; display: block; }
+.ticks.two-col { grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: var(--s-5); }
+
+/* a single wide panel, for the included list and the small print */
+.panel {
+  background: var(--surface);
+  border-radius: var(--radius);
+  padding: clamp(1.5rem, 3vw, 3rem);
+}
+.small-print { margin-top: var(--s-4); text-align: center; font-size: var(--t-small); color: var(--muted); line-height: 1.6; }
+.small-print p + p { margin-top: 4px; }
+
+/* ---------- process: the home page's timeline, without the scroll fill ---------- */
+
+.process-panel { background: var(--surface); border-radius: var(--radius); }
+.steps {
+  position: relative;
+  display: flex; flex-direction: column; gap: 4px;
+  max-width: 900px; margin-inline: auto;
+}
+.spine {
+  position: absolute; z-index: 0;
+  left: 50%; margin-left: -1.5px;
+  top: 0; bottom: 0; width: 3px;
+  border-radius: 2px;
+  background: var(--accent);
+  opacity: 0.35;
+}
+.step {
+  position: relative; z-index: 1;
+  display: grid;
+  grid-template-columns: 1fr 3px 1fr;
+  column-gap: clamp(1.25rem, 3vw, 2.75rem);
+}
+.step > div { grid-row: 1; padding-block: var(--s-2); }
+.step:nth-child(even) > div { grid-column: 1; text-align: right; }
+.step:nth-child(odd)  > div { grid-column: 3; text-align: left; }
+.step p { margin-top: var(--s-1); font-size: 0.9375rem; color: var(--muted); max-width: 40ch; }
+.step:nth-child(even) p { margin-left: auto; }
+.step-when {
+  display: block; margin-bottom: 3px;
+  font-size: var(--t-micro); font-weight: 700;
+  letter-spacing: 0.11em; text-transform: uppercase;
+  color: var(--accent);
+}
+
+/* ---------- faq: the home page's accordion ---------- */
+
+.faq { max-width: 720px; margin-inline: auto; border-bottom: 1px solid var(--rule); }
+.faq-item { border-top: 1px solid var(--rule); }
+.faq-row {
+  width: 100%; background: none; border: 0; cursor: pointer;
+  padding: 24px 0;
+  display: flex; align-items: center; justify-content: space-between; gap: 24px;
+  text-align: left; font: inherit; color: inherit;
+}
+.faq-q { font-size: 17px; font-weight: 500; line-height: 1.4; color: var(--ink); transition: transform 300ms var(--ease-out); }
+.faq-icon {
+  flex-shrink: 0; width: 28px; height: 28px; border-radius: 50%;
+  border: 1px solid var(--rule-2);
+  display: flex; align-items: center; justify-content: center;
+  color: var(--ink);
+  transition: border-color 220ms ease, transform 220ms cubic-bezier(.16,1,.3,1);
+}
+.faq-icon svg { width: 12px; height: 12px; transition: transform 320ms var(--ease-out); }
+.faq-row[aria-expanded="true"] .faq-icon svg { transform: rotate(45deg); }
+@media (hover: hover) and (pointer: fine) {
+  .faq-row:hover .faq-q { transform: translateX(6px); }
+  .faq-row:hover .faq-icon { border-color: var(--accent); transform: scale(1.1); }
+}
+.faq-panel { display: grid; grid-template-rows: 0fr; transition: grid-template-rows 380ms cubic-bezier(.16,1,.3,1); }
+.faq-row[aria-expanded="true"] + .faq-panel { grid-template-rows: 1fr; }
+.faq-panel > div { overflow: hidden; }
+.faq-a { font-size: 15px; line-height: 1.6; color: var(--muted); margin: 0 0 24px; padding-right: 52px; max-width: 60ch; }
+
+/* ---------- responsive ---------- */
+
+@media (max-width: 1024px) {
+  .three-up { grid-template-columns: 1fr; max-width: 560px; margin-inline: auto; }
+}
+@media (max-width: 900px) {
+  .two-up { grid-template-columns: 1fr; }
+  .ticks.two-col { grid-template-columns: 1fr; }
+  .step { grid-template-columns: 3px 1fr; column-gap: var(--s-3); }
+  .spine { left: 1.5px; margin-left: 0; }
+  .step:nth-child(odd) > div,
+  .step:nth-child(even) > div { grid-column: 2; text-align: left; }
+  .step p { margin-left: 0 !important; }
+  .process-panel { padding-inline: var(--s-3); }
+}
+@media (max-width: 620px) {
+  .faq-a { padding-right: 0; }
+}
+/* ---------- closing panel (CTA + footer) ----------
+   The home page's closing panel, copied rather than approximated: full
+   width, the --surface ground, rounded top corners, then the footer row
+   inside it. The only addition is "Back to site". It sits outside .wrap so
+   it runs edge to edge instead of stopping at the content width. */
+.closing {
+  margin-top: var(--s-6);
+  background: var(--surface);
+  color: var(--ink);
+  border-radius: 32px 32px 0 0;
+  padding: clamp(4rem, 9vw, 8rem) var(--s-4) var(--s-2);
+  text-align: center;
+}
+.closing h2 {
+  margin: 0 auto;
+  max-width: 18ch;
+  font-size: clamp(2rem, 5.2vw, 4.5rem);
+  font-weight: 500; letter-spacing: -0.035em; line-height: 0.98;
+  text-wrap: balance;
+}
+.closing .lede {
+  margin: var(--s-3) auto 0;
+  max-width: 44ch;
+  font-size: var(--t-body);
+  color: var(--muted);
+  line-height: 1.6;
+}
+.btn-row { display: flex; gap: var(--s-2); flex-wrap: wrap; justify-content: center; }
+.closing .btn-row { margin-top: var(--s-4); }
+
+.cta-note {
+  margin: var(--s-2) 0 0;
+  font-size: var(--t-small);
+  line-height: 1.5;
+  color: var(--muted);
+  text-wrap: balance;
+}
+.rating-stars { color: var(--accent); letter-spacing: 0.12em; margin-right: 8px; font-size: var(--t-small); }
+.cta-part { white-space: nowrap; }
+.cta-part + .cta-part { margin-left: var(--s-3); }
+.rating-link {
+  color: inherit;
+  text-decoration: underline;
+  text-decoration-color: var(--rule-2);
+  text-underline-offset: 3px;
+}
+@media (hover: hover) and (pointer: fine) {
+  .rating-link:hover { color: var(--ink); text-decoration-color: var(--accent); }
+}
+
+.closing-foot {
+  margin-top: clamp(4rem, 8vw, 7rem);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s-3);
+  flex-wrap: wrap;
+  text-align: left;
+  font-size: var(--t-small);
+  color: var(--muted);
+}
+.closing-foot .foot-logo { line-height: 0; }
+.closing-foot .foot-logo img { height: clamp(31px, 2.9vw, 40px); width: auto; display: block; }
+.closing-foot .foot-right { display: flex; align-items: center; gap: var(--s-3); flex-wrap: wrap; }
+.closing-foot .foot-copy { color: var(--muted); }
+.closing-foot a {
+  color: inherit; text-decoration: none; transition: color 200ms ease;
+  display: inline-flex; align-items: center; min-height: 44px;
+}
+@media (hover: hover) and (pointer: fine) {
+  .closing-foot a:hover { color: var(--ink); }
+}
+
+/* Same breakpoints the nav uses on the home page, so the pill behaves
+   identically on both: tighter at 900, and on a phone the links drop out
+   entirely and the mark shrinks, leaving the mark and the one action. */
+@media (max-width: 900px) {
+  .nav { gap: var(--s-2); padding-left: var(--s-3); }
+  .nav-links { gap: var(--s-3); font-size: 0.8125rem; }
+}
+
+@media (max-width: 620px) {
+  :root { --nav-h: 56px; }
+  .nav { height: 56px; padding-left: var(--s-3); }
+  .wordmark i { height: 32px; width: 19px; }
+  .nav-links { display: none; }
+}
+
+@media (max-width: 620px) {
+  .closing { padding-inline: var(--s-3); }
+  .cta-note .cta-part { display: block; }
+  .cta-note .cta-part + .cta-part { margin: 2px 0 0; }
+  .closing-foot .foot-logo img { height: 27px; }
+  .closing-foot { flex-direction: column; text-align: center; gap: var(--s-3); }
+  .closing-foot .foot-right { flex-direction: column; gap: var(--s-2); justify-content: center; }
+}
+
+/* ---------- cursor ----------
+   The home page's dot, so the pointer does not change on the way over
+   here: the accent on the page, the dark navy over the solid accent
+   button where an accent dot would vanish. Real pointers only. Same
+   data URIs as index.html; if the dot changes there, it changes here. */
+@media (hover: hover) and (pointer: fine) {
+  html, a, button, .btn, .wordmark, .faq-row {
+    cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'%3E%3Ccircle cx='8' cy='8' r='8' fill='%236E9BF7'/%3E%3C/svg%3E") 8 8, auto;
+  }
+  .btn:not(.outline), .btn.outline .arrow {
+    cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'%3E%3Ccircle cx='8' cy='8' r='8' fill='%230A1428'/%3E%3C/svg%3E") 8 8, auto;
+  }
+  .btn:not(.outline) .arrow {
+    cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'%3E%3Ccircle cx='8' cy='8' r='8' fill='%236E9BF7'/%3E%3C/svg%3E") 8 8, auto;
+  }
+}

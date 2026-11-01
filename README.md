@@ -13,6 +13,13 @@ deployed on Vercel.
   - `work/index.html` — the full examples page at `/work`, linked from the
     "See all our work" button under Recent work. Its clips are the only ones on
     the site that carry audio, and they live in `media/work/`.
+  - `video-ads/index.html` and `monthly-content/index.html` — the two service
+    pages at `/video-ads` and `/monthly-content`, linked from the cards in
+    "Two ways to work together". Their book buttons go to `/?interest=ad#book`
+    or `/?interest=monthly#book`, which opens the form with that option picked.
+  - `css/service.css` — shared by the two service pages: the site's tokens, nav,
+    buttons and closing panel, plus the offer card, timeline and FAQ from
+    `index.html`, copied rather than shared, so a change there needs making here too.
   - `img/` — logos, marks and the founder portrait, all WebP.
   - `media/` — case-study clips and their poster frames.
   - `fonts/` — the self-hosted Bricolage Grotesque subsets.

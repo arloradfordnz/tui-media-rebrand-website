@@ -77,10 +77,10 @@
         "@type": "OfferCatalog",
         "name": "Video ad and content services",
         "itemListElement": [
-          { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Video ad project", "description": "Research, script and hooks, filming on site, and several ad versions in every format. The campaign is set up in an ad account in the client's name, launched and handed over. One fee, quoted per project. Ad spend is paid straight to Meta with no markup.", "areaServed": { "@type": "City", "name": "Nelson" }, "provider": { "@id": "https://www.tuimedia.nz/#business" } } },
-          { "@type": "Offer", "name": "Monthly content, Lite", "price": "500", "priceCurrency": "NZD", "priceSpecification": { "@type": "UnitPriceSpecification", "price": "500", "priceCurrency": "NZD", "unitText": "month" }, "itemOffered": { "@type": "Service", "name": "Monthly content, Lite", "description": "A monthly content plan, a planned shoot, edited videos, a photo set, and captions and cover images for every post. 2 videos and 10 photos a month. Or $1,350 a quarter, paid upfront.", "areaServed": { "@type": "City", "name": "Nelson" }, "provider": { "@id": "https://www.tuimedia.nz/#business" } } },
-          { "@type": "Offer", "name": "Monthly content, Core", "price": "850", "priceCurrency": "NZD", "priceSpecification": { "@type": "UnitPriceSpecification", "price": "850", "priceCurrency": "NZD", "unitText": "month" }, "itemOffered": { "@type": "Service", "name": "Monthly content, Core", "description": "A monthly content plan, a planned shoot, edited videos, a photo set, and captions and cover images for every post. 4 videos and 15 photos a month, plus a monthly check-in on what worked. Or $2,300 a quarter, paid upfront.", "areaServed": { "@type": "City", "name": "Nelson" }, "provider": { "@id": "https://www.tuimedia.nz/#business" } } },
-          { "@type": "Offer", "name": "Monthly content, Full", "price": "1500", "priceCurrency": "NZD", "priceSpecification": { "@type": "UnitPriceSpecification", "price": "1500", "priceCurrency": "NZD", "unitText": "month" }, "itemOffered": { "@type": "Service", "name": "Monthly content, Full", "description": "A monthly content plan, a planned shoot, edited videos, a photo set, and captions and cover images for every post. 6 videos, 25 photos and 2 designed posts a month, plus a monthly check-in, posting and scheduling done for you, and ad-ready cuts in every format. Or $4,000 a quarter, paid upfront.", "areaServed": { "@type": "City", "name": "Nelson" }, "provider": { "@id": "https://www.tuimedia.nz/#business" } } }
+          { "@type": "Offer", "url": "https://www.tuimedia.nz/video-ads", "itemOffered": { "@type": "Service", "name": "Video ad project", "description": "Research, script and hooks, filming on site, and several ad versions in every format. The campaign is set up in an ad account in the client's name, launched and handed over. One fee, quoted per project. Ad spend is paid straight to Meta with no markup.", "areaServed": { "@type": "City", "name": "Nelson" }, "provider": { "@id": "https://www.tuimedia.nz/#business" } } },
+          { "@type": "Offer", "url": "https://www.tuimedia.nz/monthly-content", "name": "Monthly content, Lite", "price": "500", "priceCurrency": "NZD", "priceSpecification": { "@type": "UnitPriceSpecification", "price": "500", "priceCurrency": "NZD", "unitText": "month" }, "itemOffered": { "@type": "Service", "name": "Monthly content, Lite", "description": "A monthly content plan, a planned shoot, edited videos, a photo set, and captions and cover images for every post. 2 videos and 10 photos a month. Or $1,350 a quarter, paid upfront.", "areaServed": { "@type": "City", "name": "Nelson" }, "provider": { "@id": "https://www.tuimedia.nz/#business" } } },
+          { "@type": "Offer", "url": "https://www.tuimedia.nz/monthly-content", "name": "Monthly content, Core", "price": "850", "priceCurrency": "NZD", "priceSpecification": { "@type": "UnitPriceSpecification", "price": "850", "priceCurrency": "NZD", "unitText": "month" }, "itemOffered": { "@type": "Service", "name": "Monthly content, Core", "description": "A monthly content plan, a planned shoot, edited videos, a photo set, and captions and cover images for every post. 4 videos and 15 photos a month, plus a monthly check-in on what worked. Or $2,300 a quarter, paid upfront.", "areaServed": { "@type": "City", "name": "Nelson" }, "provider": { "@id": "https://www.tuimedia.nz/#business" } } },
+          { "@type": "Offer", "url": "https://www.tuimedia.nz/monthly-content", "name": "Monthly content, Full", "price": "1500", "priceCurrency": "NZD", "priceSpecification": { "@type": "UnitPriceSpecification", "price": "1500", "priceCurrency": "NZD", "unitText": "month" }, "itemOffered": { "@type": "Service", "name": "Monthly content, Full", "description": "A monthly content plan, a planned shoot, edited videos, a photo set, and captions and cover images for every post. 6 videos, 25 photos and 2 designed posts a month, plus a monthly check-in, posting and scheduling done for you, and ad-ready cuts in every format. Or $4,000 a quarter, paid upfront.", "areaServed": { "@type": "City", "name": "Nelson" }, "provider": { "@id": "https://www.tuimedia.nz/#business" } } }
         ]
       }
     },
@@ -935,37 +935,59 @@
   .step p { margin-top: var(--s-1); font-size: 0.9375rem; color: var(--muted); max-width: 40ch; }
   .step:nth-child(even) p { margin-left: auto; }
 
-  /* ---------- case studies (continuous marquee) ---------- */
+  /* ---------- case studies ----------
+     One panel per client: what we made on the left, a few of their clips
+     on the right. Same --surface panel and type as the offer cards. */
 
-  .marquee {
-    overflow: hidden;
-    width: 100%;
-    /* the strip is its own paint unit - without this every frame of the
-       track's transform invalidates the sections stacked around it */
-    contain: paint;
-    /* feather both ends so cards arrive and leave instead of being sliced
-       off at the viewport edge. That hard cut is most of what reads as
-       "jumpy" even when the loop itself is running clean. */
-    -webkit-mask-image: linear-gradient(to right, transparent 0, #000 clamp(24px, 7vw, 120px), #000 calc(100% - clamp(24px, 7vw, 120px)), transparent 100%);
-            mask-image: linear-gradient(to right, transparent 0, #000 clamp(24px, 7vw, 120px), #000 calc(100% - clamp(24px, 7vw, 120px)), transparent 100%);
+  .studies { display: grid; gap: var(--frame); }
+  .study {
+    background: var(--surface);
+    border-radius: var(--radius);
+    padding: clamp(1.25rem, 2.6vw, 2.5rem);
+    display: grid;
+    grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
+    gap: clamp(1.5rem, 3vw, 3rem);
+    align-items: center;
   }
-  .marquee-track {
-    display: flex;
-    gap: var(--frame);
-    width: max-content;
-    /* A flex row of 2N cards has 2N-1 gaps, so -50% of the track lands half
-       a gap short of where the duplicate run begins and the loop hitches
-       once per cycle. The trailing pad is a 2Nth gap: the track is then two
-       identical (card + gap) runs and -50% is exactly one of them. */
-    padding-right: var(--frame);
-    animation: marquee 56s linear infinite;
-    will-change: transform;
-    transform: translate3d(0, 0, 0);
-    backface-visibility: hidden;
+  .study-body { display: flex; flex-direction: column; gap: var(--s-3); }
+  .study-body .way-tag { align-self: flex-start; }
+  .study-body h3 {
+    display: flex; align-items: center; gap: 10px;
+    font-size: clamp(1.5rem, 2.4vw, 2rem); letter-spacing: -0.03em;
   }
-  @keyframes marquee {
-    from { transform: translate3d(0, 0, 0); }
-    to   { transform: translate3d(-50%, 0, 0); }
+  .study-body h3 .tick { width: 18px; height: 18px; flex: none; }
+  .study-body p { font-size: 0.9375rem; line-height: 1.6; color: var(--muted); }
+  .study-body .way-best p { color: var(--ink); }
+  .study-clips {
+    display: grid;
+    grid-auto-flow: column;
+    /* always a third of the row, so a client with two clips gets the same
+       size cards as one with three, centred rather than blown up */
+    grid-auto-columns: calc((100% - 2 * var(--s-2)) / 3);
+    justify-content: center;
+    gap: var(--s-2);
+  }
+  .study-clips .case { width: auto; }
+  @media (max-width: 900px) {
+    .study { grid-template-columns: 1fr; }
+  }
+  /* on a phone the clips scroll sideways inside the panel rather than
+     shrinking to thumbnails */
+  @media (max-width: 620px) {
+    .study-clips {
+      display: flex;
+      /* not centred here: centring an overflowing row pushes the first
+         clip off the left edge where it can't be scrolled back to */
+      justify-content: flex-start;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      scrollbar-width: none;
+      margin-inline: calc(-1 * clamp(1.25rem, 2.6vw, 2.5rem));
+      padding-inline: clamp(1.25rem, 2.6vw, 2.5rem);
+      scroll-padding-inline: clamp(1.25rem, 2.6vw, 2.5rem);
+    }
+    .study-clips::-webkit-scrollbar { display: none; }
+    .study-clips .case { width: 52vw; flex: none; scroll-snap-align: start; }
   }
 
   .case {
@@ -1015,7 +1037,7 @@
   .case-detail .tick { width: 13px; height: 13px; flex: none; }
   .case-detail .stat { font-size: var(--t-small); color: rgba(255, 255, 255, 0.72); }
 
-  /* the way through to /work, under the strip */
+  /* the way through to /work, under the case studies */
   .work-more { justify-content: center; margin-top: var(--s-5); padding-inline: var(--frame); }
 
   /* ---------- team ---------- */
@@ -2077,11 +2099,8 @@
      honouring it literally left the entire site dead on those machines, right
      down to the loader. So what stays is the motion that is opacity-led,
      small-travel, or user-initiated; what goes is the long travel and the
-     decorative pulsing. The case strip drops to a crawl; the logo strip
-     stops outright. */
+     decorative pulsing. The logo strip stops outright. */
   @media (prefers-reduced-motion: reduce) {
-    /* still moving, but at a reading pace rather than a scroll */
-    .marquee-track { animation-duration: 140s; }
     /* parked on its first logos, the faded edges still framing it */
     .logo-track { animation: none; }
     /* a 6px settle instead of a 16px rise */
@@ -2204,9 +2223,10 @@
 </section>
 
 <!-- ============ TWO WAYS TO WORK TOGETHER ============
-     The two offers side by side. The ad project is still the headline one,
-     so it carries the solid button and monthly content the outline. The
-     three monthly packs sit inside the monthly card as "way-best" rows. -->
+     The two offers side by side, each a short summary that leads to its own
+     page (/video-ads, /monthly-content) where the detail and pricing live.
+     The ad project is still the headline one, so it carries the solid
+     button and monthly content the outline. -->
 <section id="services">
   <div class="shell">
     <div class="section-head center" data-anim>
@@ -2218,21 +2238,16 @@
       <article class="way-card" data-anim>
         <span class="way-tag">One fee</span>
         <h3>Video ad project</h3>
-        <p class="way-body">We research what's working in your industry, write the script and hooks, film on site, and edit several ad versions with different hooks in every format. Then we set up the campaign in an ad account in your name, launch it, and hand everything over.</p>
-        <div class="way-best">
-          <span class="way-label">What you keep</span>
-          <p>The raw footage, the final ads and the ad account. We don't run the ads after launch, so from there it's yours to run, or to hand to your marketing person.</p>
-        </div>
+        <p class="way-body">We research what's working in your industry, write the script and hooks, film on site and edit several ad versions. Then we set up the campaign in an ad account in your name, launch it, and hand everything over.</p>
         <div class="way-best">
           <span class="way-label">Best for</span>
           <p>Businesses that want more enquiries and can put budget behind ads.</p>
         </div>
         <div class="way-foot">
-          <p class="way-note">Ad spend is separate and goes straight from you to Meta, with no markup.</p>
           <p class="way-price">One fee, quoted per project.</p>
           <div class="btn-row">
-            <a class="btn" href="#book" data-route="book" data-interest="A video ad project">
-              <span class="btn-label"><span>Talk about an ad project</span><span aria-hidden="true">Talk about an ad project</span></span>
+            <a class="btn" href="/video-ads">
+              <span class="btn-label"><span>See how ad projects work</span><span aria-hidden="true">See how ad projects work</span></span>
               <span class="arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h13M12 6l6 6-6 6"/></svg><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h13M12 6l6 6-6 6"/></svg></span>
             </a>
           </div>
@@ -2242,32 +2257,16 @@
       <article class="way-card" data-anim>
         <span class="way-tag">Monthly or quarterly</span>
         <h3>Monthly content</h3>
-        <p class="way-body">Every pack includes a monthly content plan, a planned shoot, edited videos, a photo set, and captions and cover images for every post. Monthly plans get one shoot a month. Quarterly plans get one bigger shoot that covers the whole quarter, and work out cheaper.</p>
-        <div class="way-best">
-          <span class="way-label">Lite</span>
-          <p>2 videos and 10 photos a month.</p>
-          <p class="way-price">$500 a month, or $1,350 a quarter.</p>
-        </div>
-        <div class="way-best">
-          <span class="way-label">Core &middot; Most popular</span>
-          <p>4 videos and 15 photos a month, plus a monthly check-in on what worked.</p>
-          <p class="way-price">$850 a month, or $2,300 a quarter.</p>
-        </div>
-        <div class="way-best">
-          <span class="way-label">Full</span>
-          <p>6 videos, 25 photos and 2 designed posts (carousels or graphics) a month, plus the monthly check-in, posting and scheduling done for you, and ad-ready cuts in every format.</p>
-          <p class="way-price">$1,500 a month, or $4,000 a quarter.</p>
-        </div>
+        <p class="way-body">A content plan, a planned shoot, edited videos, a photo set, and captions and cover images for every post. Three packs, paid monthly or quarterly.</p>
         <div class="way-best">
           <span class="way-label">Best for</span>
           <p>Businesses that want to grow their socials but have no clue how to do so.</p>
         </div>
         <div class="way-foot">
-          <p class="way-note">Monthly plans start with a 2-month opening period, then run month to month with 30 days' notice. Quarterly plans are paid upfront, one quarter at a time.</p>
-          <p class="way-note">Need more? Extra videos are $150 and extra filming is $75 an hour, always agreed first.</p>
+          <p class="way-price">From $500 a month.</p>
           <div class="btn-row">
-            <a class="btn outline" href="#book" data-route="book" data-interest="Monthly content">
-              <span class="btn-label"><span>Talk about monthly content</span><span aria-hidden="true">Talk about monthly content</span></span>
+            <a class="btn outline" href="/monthly-content">
+              <span class="btn-label"><span>See the monthly packs</span><span aria-hidden="true">See the monthly packs</span></span>
               <span class="arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h13M12 6l6 6-6 6"/></svg><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h13M12 6l6 6-6 6"/></svg></span>
             </a>
           </div>
@@ -2313,8 +2312,8 @@
 <section id="process">
   <div class="shell">
     <div class="section-head center" data-anim>
-      <h2>How an ad project works</h2>
-      <p class="lede">Monthly content runs the same way without the ad launch, with one planned shoot a month, or one per quarter on a quarterly plan.</p>
+      <h2>How it works</h2>
+      <p class="lede">Ad projects and monthly content start the same way. The difference is what happens after the edit.</p>
     </div>
 
     <div class="steps process-steps" data-steps>
@@ -2342,30 +2341,30 @@
         </div>
         <div class="step" data-anim>
           <div>
-            <span class="step-when">One day on site</span>
+            <span class="step-when">On site</span>
             <h3>Film</h3>
-            <p>We bring our own gear. We shoot wide as well as vertical, so it works everywhere it runs.</p>
+            <p>We bring our own gear. We shoot wide as well as vertical, so it works everywhere it runs. Monthly content gets one planned shoot a month, or one per quarter.</p>
           </div>
         </div>
         <div class="step" data-anim>
           <div>
             <span class="step-when">Week two</span>
             <h3>Edit</h3>
-            <p>We cut a few versions with different hooks and formats, so each one fits where it's running.</p>
+            <p>Ads get a few versions with different hooks and formats. Monthly content gets edited videos, a photo set, captions and cover images.</p>
           </div>
         </div>
         <div class="step" data-anim>
           <div>
-            <span class="step-when">Week three</span>
-            <h3>Launch</h3>
-            <p>I set up the campaign in your ad account and launch it.</p>
+            <span class="step-when">Ad project &middot; week three</span>
+            <h3>Launch and handover</h3>
+            <p>We set up the campaign in your ad account and launch it. You get the footage, the ads and the ad account. It's all yours.</p>
           </div>
         </div>
         <div class="step" data-anim>
           <div>
-            <span class="step-when">Week three</span>
-            <h3>Handover</h3>
-            <p>You get the footage, the ads and the ad account. It's all yours.</p>
+            <span class="step-when">Monthly content &middot; every month</span>
+            <h3>Deliver and repeat</h3>
+            <p>Your content arrives ready to post, and we plan the next round. Core and Full get a monthly check-in on what worked.</p>
           </div>
         </div>
     </div>
@@ -2460,60 +2459,59 @@
 
 <!-- ============ RECENT WORK ============ -->
 <section id="work">
-  <div class="section-head center shell" data-anim>
-    <h2>Recent work</h2>
-    <p class="lede">Videos made for businesses around Nelson and further afield.</p>
-  </div>
+  <div class="shell">
+    <div class="section-head center" data-anim>
+      <h2>Case studies</h2>
+      <p class="lede">A closer look at some of the businesses we've made videos for around Nelson.</p>
+    </div>
 
-  <div class="marquee">
-    <div class="marquee-track" data-marquee>
-      <article class="case">
-        <video class="case-video" src="media/johnson-residential-4.mp4" data-poster="media/johnson-residential-4-poster.webp" muted loop playsinline preload="none" data-case-video></video>
-        <div class="case-detail"><span class="name">Johnson Residential<svg class="tick" viewBox="0 0 84 84" aria-label="Meta verified"><path fill="#0064E0" fill-rule="evenodd" d="m50.4.47c1.79-.97,4.02-.37,5.08,1.36l4.99,8.17,9.57.24c2.03.05,3.67,1.69,3.72,3.72l.24,9.57,8.17,4.99c1.74,1.06,2.34,3.3,1.36,5.08l-4.58,8.4,4.58,8.4c.97,1.79.37,4.02-1.36,5.08l-8.17,4.99-.24,9.57c-.05,2.03-1.69,3.67-3.72,3.72l-9.57.24-4.99,8.17c-1.06,1.74-3.3,2.34-5.08,1.36l-8.4-4.58-8.4,4.58c-1.79.97-4.02.37-5.08-1.36l-4.99-8.17-9.57-.24c-2.03-.05-3.67-1.69-3.72-3.72l-.24-9.57-8.17-4.99c-1.74-1.06-2.34-3.3-1.36-5.08l4.58-8.4L.47,33.6c-.97-1.79-.37-4.02,1.36-5.08l8.17-4.99.24-9.57c.05-2.03,1.69-3.67,3.72-3.72l9.57-.24L28.51,1.83c1.06-1.74,3.3-2.34,5.08-1.36l8.4,4.58L50.4.47Zm9.31,34.92c1.62-1.35,1.84-3.76.49-5.38-1.35-1.62-3.76-1.84-5.38-.49l-.26.21c-6.64,5.54-12.84,11.59-18.52,18.1l-6.62-6.62c-1.49-1.49-3.91-1.49-5.4,0-1.49,1.49-1.49,3.91,0,5.4l9.55,9.55c.76.76,1.8,1.16,2.87,1.11,1.07-.05,2.07-.55,2.76-1.37l.21-.26c6.06-7.27,12.77-13.98,20.04-20.04l.26-.21Z"/></svg></span><span class="stat">Residential building</span></div>
+    <div class="studies">
+      <article class="study" data-anim>
+        <div class="study-body">
+          <span class="way-tag">Residential building</span>
+          <h3>Johnson Residential<svg class="tick" viewBox="0 0 84 84" aria-label="Meta verified"><path fill="#0064E0" fill-rule="evenodd" d="m50.4.47c1.79-.97,4.02-.37,5.08,1.36l4.99,8.17,9.57.24c2.03.05,3.67,1.69,3.72,3.72l.24,9.57,8.17,4.99c1.74,1.06,2.34,3.3,1.36,5.08l-4.58,8.4,4.58,8.4c.97,1.79.37,4.02-1.36,5.08l-8.17,4.99-.24,9.57c-.05,2.03-1.69,3.67-3.72,3.72l-9.57.24-4.99,8.17c-1.06,1.74-3.3,2.34-5.08,1.36l-8.4-4.58-8.4,4.58c-1.79.97-4.02.37-5.08-1.36l-4.99-8.17-9.57-.24c-2.03-.05-3.67-1.69-3.72-3.72l-.24-9.57-8.17-4.99c-1.74-1.06-2.34-3.3-1.36-5.08l4.58-8.4L.47,33.6c-.97-1.79-.37-4.02,1.36-5.08l8.17-4.99.24-9.57c.05-2.03,1.69-3.67,3.72-3.72l9.57-.24L28.51,1.83c1.06-1.74,3.3-2.34,5.08-1.36l8.4,4.58L50.4.47Zm9.31,34.92c1.62-1.35,1.84-3.76.49-5.38-1.35-1.62-3.76-1.84-5.38-.49l-.26.21c-6.64,5.54-12.84,11.59-18.52,18.1l-6.62-6.62c-1.49-1.49-3.91-1.49-5.4,0-1.49,1.49-1.49,3.91,0,5.4l9.55,9.55c.76.76,1.8,1.16,2.87,1.11,1.07-.05,2.07-.55,2.76-1.37l.21-.26c6.06-7.27,12.77-13.98,20.04-20.04l.26-.21Z"/></svg></h3>
+          <p>Videos from Johnson Residential's building sites, with the team on camera talking through their homes, from the concrete pour to the finished build.</p>
+          <div class="way-best">
+            <span class="way-label">What we made</span>
+            <p>Short vertical videos filmed on site, with the builders on camera and drone shots of the finished homes.</p>
+          </div>
+        </div>
+        <div class="study-clips">
+            <div class="case"><video class="case-video" src="media/johnson-residential-4.mp4" data-poster="media/johnson-residential-4-poster.webp" muted loop playsinline preload="none" data-case-video aria-hidden="true"></video></div>
+            <div class="case"><video class="case-video" src="media/johnson-residential-3.mp4" data-poster="media/johnson-residential-3-poster.webp" muted loop playsinline preload="none" data-case-video aria-hidden="true"></video></div>
+            <div class="case"><video class="case-video" src="media/johnson-residential-1.mp4" data-poster="media/johnson-residential-1-poster.webp" muted loop playsinline preload="none" data-case-video aria-hidden="true"></video></div>
+        </div>
       </article>
-      <article class="case">
-        <video class="case-video" src="media/sky-automotive-3.mp4" data-poster="media/sky-automotive-3-poster.webp" muted loop playsinline preload="none" data-case-video></video>
-        <div class="case-detail"><span class="name">Sky Automotive<svg class="tick" viewBox="0 0 84 84" aria-label="Meta verified"><path fill="#0064E0" fill-rule="evenodd" d="m50.4.47c1.79-.97,4.02-.37,5.08,1.36l4.99,8.17,9.57.24c2.03.05,3.67,1.69,3.72,3.72l.24,9.57,8.17,4.99c1.74,1.06,2.34,3.3,1.36,5.08l-4.58,8.4,4.58,8.4c.97,1.79.37,4.02-1.36,5.08l-8.17,4.99-.24,9.57c-.05,2.03-1.69,3.67-3.72,3.72l-9.57.24-4.99,8.17c-1.06,1.74-3.3,2.34-5.08,1.36l-8.4-4.58-8.4,4.58c-1.79.97-4.02.37-5.08-1.36l-4.99-8.17-9.57-.24c-2.03-.05-3.67-1.69-3.72-3.72l-.24-9.57-8.17-4.99c-1.74-1.06-2.34-3.3-1.36-5.08l4.58-8.4L.47,33.6c-.97-1.79-.37-4.02,1.36-5.08l8.17-4.99.24-9.57c.05-2.03,1.69-3.67,3.72-3.72l9.57-.24L28.51,1.83c1.06-1.74,3.3-2.34,5.08-1.36l8.4,4.58L50.4.47Zm9.31,34.92c1.62-1.35,1.84-3.76.49-5.38-1.35-1.62-3.76-1.84-5.38-.49l-.26.21c-6.64,5.54-12.84,11.59-18.52,18.1l-6.62-6.62c-1.49-1.49-3.91-1.49-5.4,0-1.49,1.49-1.49,3.91,0,5.4l9.55,9.55c.76.76,1.8,1.16,2.87,1.11,1.07-.05,2.07-.55,2.76-1.37l.21-.26c6.06-7.27,12.77-13.98,20.04-20.04l.26-.21Z"/></svg></span><span class="stat">Automotive servicing</span></div>
+      <article class="study" data-anim>
+        <div class="study-body">
+          <span class="way-tag">Automotive servicing</span>
+          <h3>Sky Automotive<svg class="tick" viewBox="0 0 84 84" aria-label="Meta verified"><path fill="#0064E0" fill-rule="evenodd" d="m50.4.47c1.79-.97,4.02-.37,5.08,1.36l4.99,8.17,9.57.24c2.03.05,3.67,1.69,3.72,3.72l.24,9.57,8.17,4.99c1.74,1.06,2.34,3.3,1.36,5.08l-4.58,8.4,4.58,8.4c.97,1.79.37,4.02-1.36,5.08l-8.17,4.99-.24,9.57c-.05,2.03-1.69,3.67-3.72,3.72l-9.57.24-4.99,8.17c-1.06,1.74-3.3,2.34-5.08,1.36l-8.4-4.58-8.4,4.58c-1.79.97-4.02.37-5.08-1.36l-4.99-8.17-9.57-.24c-2.03-.05-3.67-1.69-3.72-3.72l-.24-9.57-8.17-4.99c-1.74-1.06-2.34-3.3-1.36-5.08l4.58-8.4L.47,33.6c-.97-1.79-.37-4.02,1.36-5.08l8.17-4.99.24-9.57c.05-2.03,1.69-3.67,3.72-3.72l9.57-.24L28.51,1.83c1.06-1.74,3.3-2.34,5.08-1.36l8.4,4.58L50.4.47Zm9.31,34.92c1.62-1.35,1.84-3.76.49-5.38-1.35-1.62-3.76-1.84-5.38-.49l-.26.21c-6.64,5.54-12.84,11.59-18.52,18.1l-6.62-6.62c-1.49-1.49-3.91-1.49-5.4,0-1.49,1.49-1.49,3.91,0,5.4l9.55,9.55c.76.76,1.8,1.16,2.87,1.11,1.07-.05,2.07-.55,2.76-1.37l.21-.26c6.06-7.27,12.77-13.98,20.04-20.04l.26-.21Z"/></svg></h3>
+          <p>Sky Automotive's workshop on camera, from detail work on the cars to the opening of their new Nelson location.</p>
+          <div class="way-best">
+            <span class="way-label">What we made</span>
+            <p>Short vertical videos shot in the workshop, including one for the launch of the new location.</p>
+          </div>
+        </div>
+        <div class="study-clips">
+            <div class="case"><video class="case-video" src="media/sky-automotive-3.mp4" data-poster="media/sky-automotive-3-poster.webp" muted loop playsinline preload="none" data-case-video aria-hidden="true"></video></div>
+            <div class="case"><video class="case-video" src="media/sky-automotive-1.mp4" data-poster="media/sky-automotive-1-poster.webp" muted loop playsinline preload="none" data-case-video aria-hidden="true"></video></div>
+            <div class="case"><video class="case-video" src="media/sky-automotive-2.mp4" data-poster="media/sky-automotive-2-poster.webp" muted loop playsinline preload="none" data-case-video aria-hidden="true"></video></div>
+        </div>
       </article>
-      <article class="case">
-        <video class="case-video" src="media/washrite.mp4" data-poster="media/washrite-poster.webp" muted loop playsinline preload="none" data-case-video></video>
-        <div class="case-detail"><span class="name">Washrite<svg class="tick" viewBox="0 0 84 84" aria-label="Meta verified"><path fill="#0064E0" fill-rule="evenodd" d="m50.4.47c1.79-.97,4.02-.37,5.08,1.36l4.99,8.17,9.57.24c2.03.05,3.67,1.69,3.72,3.72l.24,9.57,8.17,4.99c1.74,1.06,2.34,3.3,1.36,5.08l-4.58,8.4,4.58,8.4c.97,1.79.37,4.02-1.36,5.08l-8.17,4.99-.24,9.57c-.05,2.03-1.69,3.67-3.72,3.72l-9.57.24-4.99,8.17c-1.06,1.74-3.3,2.34-5.08,1.36l-8.4-4.58-8.4,4.58c-1.79.97-4.02.37-5.08-1.36l-4.99-8.17-9.57-.24c-2.03-.05-3.67-1.69-3.72-3.72l-.24-9.57-8.17-4.99c-1.74-1.06-2.34-3.3-1.36-5.08l4.58-8.4L.47,33.6c-.97-1.79-.37-4.02,1.36-5.08l8.17-4.99.24-9.57c.05-2.03,1.69-3.67,3.72-3.72l9.57-.24L28.51,1.83c1.06-1.74,3.3-2.34,5.08-1.36l8.4,4.58L50.4.47Zm9.31,34.92c1.62-1.35,1.84-3.76.49-5.38-1.35-1.62-3.76-1.84-5.38-.49l-.26.21c-6.64,5.54-12.84,11.59-18.52,18.1l-6.62-6.62c-1.49-1.49-3.91-1.49-5.4,0-1.49,1.49-1.49,3.91,0,5.4l9.55,9.55c.76.76,1.8,1.16,2.87,1.11,1.07-.05,2.07-.55,2.76-1.37l.21-.26c6.06-7.27,12.77-13.98,20.04-20.04l.26-.21Z"/></svg></span><span class="stat">Exterior cleaning</span></div>
-      </article>
-      <article class="case">
-        <video class="case-video" src="media/nelson-english-center.mp4" data-poster="media/nelson-english-center-poster.webp" muted loop playsinline preload="none" data-case-video></video>
-        <div class="case-detail"><span class="name">Nelson English Center<svg class="tick" viewBox="0 0 84 84" aria-label="Meta verified"><path fill="#0064E0" fill-rule="evenodd" d="m50.4.47c1.79-.97,4.02-.37,5.08,1.36l4.99,8.17,9.57.24c2.03.05,3.67,1.69,3.72,3.72l.24,9.57,8.17,4.99c1.74,1.06,2.34,3.3,1.36,5.08l-4.58,8.4,4.58,8.4c.97,1.79.37,4.02-1.36,5.08l-8.17,4.99-.24,9.57c-.05,2.03-1.69,3.67-3.72,3.72l-9.57.24-4.99,8.17c-1.06,1.74-3.3,2.34-5.08,1.36l-8.4-4.58-8.4,4.58c-1.79.97-4.02.37-5.08-1.36l-4.99-8.17-9.57-.24c-2.03-.05-3.67-1.69-3.72-3.72l-.24-9.57-8.17-4.99c-1.74-1.06-2.34-3.3-1.36-5.08l4.58-8.4L.47,33.6c-.97-1.79-.37-4.02,1.36-5.08l8.17-4.99.24-9.57c.05-2.03,1.69-3.67,3.72-3.72l9.57-.24L28.51,1.83c1.06-1.74,3.3-2.34,5.08-1.36l8.4,4.58L50.4.47Zm9.31,34.92c1.62-1.35,1.84-3.76.49-5.38-1.35-1.62-3.76-1.84-5.38-.49l-.26.21c-6.64,5.54-12.84,11.59-18.52,18.1l-6.62-6.62c-1.49-1.49-3.91-1.49-5.4,0-1.49,1.49-1.49,3.91,0,5.4l9.55,9.55c.76.76,1.8,1.16,2.87,1.11,1.07-.05,2.07-.55,2.76-1.37l.21-.26c6.06-7.27,12.77-13.98,20.04-20.04l.26-.21Z"/></svg></span><span class="stat">English language school</span></div>
-      </article>
-      <article class="case">
-        <video class="case-video" src="media/johnson-residential-3.mp4" data-poster="media/johnson-residential-3-poster.webp" muted loop playsinline preload="none" data-case-video></video>
-        <div class="case-detail"><span class="name">Johnson Residential<svg class="tick" viewBox="0 0 84 84" aria-label="Meta verified"><path fill="#0064E0" fill-rule="evenodd" d="m50.4.47c1.79-.97,4.02-.37,5.08,1.36l4.99,8.17,9.57.24c2.03.05,3.67,1.69,3.72,3.72l.24,9.57,8.17,4.99c1.74,1.06,2.34,3.3,1.36,5.08l-4.58,8.4,4.58,8.4c.97,1.79.37,4.02-1.36,5.08l-8.17,4.99-.24,9.57c-.05,2.03-1.69,3.67-3.72,3.72l-9.57.24-4.99,8.17c-1.06,1.74-3.3,2.34-5.08,1.36l-8.4-4.58-8.4,4.58c-1.79.97-4.02.37-5.08-1.36l-4.99-8.17-9.57-.24c-2.03-.05-3.67-1.69-3.72-3.72l-.24-9.57-8.17-4.99c-1.74-1.06-2.34-3.3-1.36-5.08l4.58-8.4L.47,33.6c-.97-1.79-.37-4.02,1.36-5.08l8.17-4.99.24-9.57c.05-2.03,1.69-3.67,3.72-3.72l9.57-.24L28.51,1.83c1.06-1.74,3.3-2.34,5.08-1.36l8.4,4.58L50.4.47Zm9.31,34.92c1.62-1.35,1.84-3.76.49-5.38-1.35-1.62-3.76-1.84-5.38-.49l-.26.21c-6.64,5.54-12.84,11.59-18.52,18.1l-6.62-6.62c-1.49-1.49-3.91-1.49-5.4,0-1.49,1.49-1.49,3.91,0,5.4l9.55,9.55c.76.76,1.8,1.16,2.87,1.11,1.07-.05,2.07-.55,2.76-1.37l.21-.26c6.06-7.27,12.77-13.98,20.04-20.04l.26-.21Z"/></svg></span><span class="stat">Residential building</span></div>
-      </article>
-      <article class="case">
-        <video class="case-video" src="media/atk-detailing-3.mp4" data-poster="media/atk-detailing-3-poster.webp" muted loop playsinline preload="none" data-case-video></video>
-        <div class="case-detail"><span class="name">ATK Detailing<svg class="tick" viewBox="0 0 84 84" aria-label="Meta verified"><path fill="#0064E0" fill-rule="evenodd" d="m50.4.47c1.79-.97,4.02-.37,5.08,1.36l4.99,8.17,9.57.24c2.03.05,3.67,1.69,3.72,3.72l.24,9.57,8.17,4.99c1.74,1.06,2.34,3.3,1.36,5.08l-4.58,8.4,4.58,8.4c.97,1.79.37,4.02-1.36,5.08l-8.17,4.99-.24,9.57c-.05,2.03-1.69,3.67-3.72,3.72l-9.57.24-4.99,8.17c-1.06,1.74-3.3,2.34-5.08,1.36l-8.4-4.58-8.4,4.58c-1.79.97-4.02.37-5.08-1.36l-4.99-8.17-9.57-.24c-2.03-.05-3.67-1.69-3.72-3.72l-.24-9.57-8.17-4.99c-1.74-1.06-2.34-3.3-1.36-5.08l4.58-8.4L.47,33.6c-.97-1.79-.37-4.02,1.36-5.08l8.17-4.99.24-9.57c.05-2.03,1.69-3.67,3.72-3.72l9.57-.24L28.51,1.83c1.06-1.74,3.3-2.34,5.08-1.36l8.4,4.58L50.4.47Zm9.31,34.92c1.62-1.35,1.84-3.76.49-5.38-1.35-1.62-3.76-1.84-5.38-.49l-.26.21c-6.64,5.54-12.84,11.59-18.52,18.1l-6.62-6.62c-1.49-1.49-3.91-1.49-5.4,0-1.49,1.49-1.49,3.91,0,5.4l9.55,9.55c.76.76,1.8,1.16,2.87,1.11,1.07-.05,2.07-.55,2.76-1.37l.21-.26c6.06-7.27,12.77-13.98,20.04-20.04l.26-.21Z"/></svg></span><span class="stat">Car detailing</span></div>
-      </article>
-      <article class="case">
-        <video class="case-video" src="media/sky-automotive-1.mp4" data-poster="media/sky-automotive-1-poster.webp" muted loop playsinline preload="none" data-case-video></video>
-        <div class="case-detail"><span class="name">Sky Automotive<svg class="tick" viewBox="0 0 84 84" aria-label="Meta verified"><path fill="#0064E0" fill-rule="evenodd" d="m50.4.47c1.79-.97,4.02-.37,5.08,1.36l4.99,8.17,9.57.24c2.03.05,3.67,1.69,3.72,3.72l.24,9.57,8.17,4.99c1.74,1.06,2.34,3.3,1.36,5.08l-4.58,8.4,4.58,8.4c.97,1.79.37,4.02-1.36,5.08l-8.17,4.99-.24,9.57c-.05,2.03-1.69,3.67-3.72,3.72l-9.57.24-4.99,8.17c-1.06,1.74-3.3,2.34-5.08,1.36l-8.4-4.58-8.4,4.58c-1.79.97-4.02.37-5.08-1.36l-4.99-8.17-9.57-.24c-2.03-.05-3.67-1.69-3.72-3.72l-.24-9.57-8.17-4.99c-1.74-1.06-2.34-3.3-1.36-5.08l4.58-8.4L.47,33.6c-.97-1.79-.37-4.02,1.36-5.08l8.17-4.99.24-9.57c.05-2.03,1.69-3.67,3.72-3.72l9.57-.24L28.51,1.83c1.06-1.74,3.3-2.34,5.08-1.36l8.4,4.58L50.4.47Zm9.31,34.92c1.62-1.35,1.84-3.76.49-5.38-1.35-1.62-3.76-1.84-5.38-.49l-.26.21c-6.64,5.54-12.84,11.59-18.52,18.1l-6.62-6.62c-1.49-1.49-3.91-1.49-5.4,0-1.49,1.49-1.49,3.91,0,5.4l9.55,9.55c.76.76,1.8,1.16,2.87,1.11,1.07-.05,2.07-.55,2.76-1.37l.21-.26c6.06-7.27,12.77-13.98,20.04-20.04l.26-.21Z"/></svg></span><span class="stat">Automotive servicing</span></div>
-      </article>
-      <article class="case">
-        <video class="case-video" src="media/nelson-city-framers-2.mp4" data-poster="media/nelson-city-framers-2-poster.webp" muted loop playsinline preload="none" data-case-video></video>
-        <div class="case-detail"><span class="name">Nelson City Framers<svg class="tick" viewBox="0 0 84 84" aria-label="Meta verified"><path fill="#0064E0" fill-rule="evenodd" d="m50.4.47c1.79-.97,4.02-.37,5.08,1.36l4.99,8.17,9.57.24c2.03.05,3.67,1.69,3.72,3.72l.24,9.57,8.17,4.99c1.74,1.06,2.34,3.3,1.36,5.08l-4.58,8.4,4.58,8.4c.97,1.79.37,4.02-1.36,5.08l-8.17,4.99-.24,9.57c-.05,2.03-1.69,3.67-3.72,3.72l-9.57.24-4.99,8.17c-1.06,1.74-3.3,2.34-5.08,1.36l-8.4-4.58-8.4,4.58c-1.79.97-4.02.37-5.08-1.36l-4.99-8.17-9.57-.24c-2.03-.05-3.67-1.69-3.72-3.72l-.24-9.57-8.17-4.99c-1.74-1.06-2.34-3.3-1.36-5.08l4.58-8.4L.47,33.6c-.97-1.79-.37-4.02,1.36-5.08l8.17-4.99.24-9.57c.05-2.03,1.69-3.67,3.72-3.72l9.57-.24L28.51,1.83c1.06-1.74,3.3-2.34,5.08-1.36l8.4,4.58L50.4.47Zm9.31,34.92c1.62-1.35,1.84-3.76.49-5.38-1.35-1.62-3.76-1.84-5.38-.49l-.26.21c-6.64,5.54-12.84,11.59-18.52,18.1l-6.62-6.62c-1.49-1.49-3.91-1.49-5.4,0-1.49,1.49-1.49,3.91,0,5.4l9.55,9.55c.76.76,1.8,1.16,2.87,1.11,1.07-.05,2.07-.55,2.76-1.37l.21-.26c6.06-7.27,12.77-13.98,20.04-20.04l.26-.21Z"/></svg></span><span class="stat">Framing and construction</span></div>
-      </article>
-      <article class="case">
-        <video class="case-video" src="media/johnson-residential-1.mp4" data-poster="media/johnson-residential-1-poster.webp" muted loop playsinline preload="none" data-case-video></video>
-        <div class="case-detail"><span class="name">Johnson Residential<svg class="tick" viewBox="0 0 84 84" aria-label="Meta verified"><path fill="#0064E0" fill-rule="evenodd" d="m50.4.47c1.79-.97,4.02-.37,5.08,1.36l4.99,8.17,9.57.24c2.03.05,3.67,1.69,3.72,3.72l.24,9.57,8.17,4.99c1.74,1.06,2.34,3.3,1.36,5.08l-4.58,8.4,4.58,8.4c.97,1.79.37,4.02-1.36,5.08l-8.17,4.99-.24,9.57c-.05,2.03-1.69,3.67-3.72,3.72l-9.57.24-4.99,8.17c-1.06,1.74-3.3,2.34-5.08,1.36l-8.4-4.58-8.4,4.58c-1.79.97-4.02.37-5.08-1.36l-4.99-8.17-9.57-.24c-2.03-.05-3.67-1.69-3.72-3.72l-.24-9.57-8.17-4.99c-1.74-1.06-2.34-3.3-1.36-5.08l4.58-8.4L.47,33.6c-.97-1.79-.37-4.02,1.36-5.08l8.17-4.99.24-9.57c.05-2.03,1.69-3.67,3.72-3.72l9.57-.24L28.51,1.83c1.06-1.74,3.3-2.34,5.08-1.36l8.4,4.58L50.4.47Zm9.31,34.92c1.62-1.35,1.84-3.76.49-5.38-1.35-1.62-3.76-1.84-5.38-.49l-.26.21c-6.64,5.54-12.84,11.59-18.52,18.1l-6.62-6.62c-1.49-1.49-3.91-1.49-5.4,0-1.49,1.49-1.49,3.91,0,5.4l9.55,9.55c.76.76,1.8,1.16,2.87,1.11,1.07-.05,2.07-.55,2.76-1.37l.21-.26c6.06-7.27,12.77-13.98,20.04-20.04l.26-.21Z"/></svg></span><span class="stat">Residential building</span></div>
-      </article>
-      <article class="case">
-        <video class="case-video" src="media/sky-automotive-2.mp4" data-poster="media/sky-automotive-2-poster.webp" muted loop playsinline preload="none" data-case-video></video>
-        <div class="case-detail"><span class="name">Sky Automotive<svg class="tick" viewBox="0 0 84 84" aria-label="Meta verified"><path fill="#0064E0" fill-rule="evenodd" d="m50.4.47c1.79-.97,4.02-.37,5.08,1.36l4.99,8.17,9.57.24c2.03.05,3.67,1.69,3.72,3.72l.24,9.57,8.17,4.99c1.74,1.06,2.34,3.3,1.36,5.08l-4.58,8.4,4.58,8.4c.97,1.79.37,4.02-1.36,5.08l-8.17,4.99-.24,9.57c-.05,2.03-1.69,3.67-3.72,3.72l-9.57.24-4.99,8.17c-1.06,1.74-3.3,2.34-5.08,1.36l-8.4-4.58-8.4,4.58c-1.79.97-4.02.37-5.08-1.36l-4.99-8.17-9.57-.24c-2.03-.05-3.67-1.69-3.72-3.72l-.24-9.57-8.17-4.99c-1.74-1.06-2.34-3.3-1.36-5.08l4.58-8.4L.47,33.6c-.97-1.79-.37-4.02,1.36-5.08l8.17-4.99.24-9.57c.05-2.03,1.69-3.67,3.72-3.72l9.57-.24L28.51,1.83c1.06-1.74,3.3-2.34,5.08-1.36l8.4,4.58L50.4.47Zm9.31,34.92c1.62-1.35,1.84-3.76.49-5.38-1.35-1.62-3.76-1.84-5.38-.49l-.26.21c-6.64,5.54-12.84,11.59-18.52,18.1l-6.62-6.62c-1.49-1.49-3.91-1.49-5.4,0-1.49,1.49-1.49,3.91,0,5.4l9.55,9.55c.76.76,1.8,1.16,2.87,1.11,1.07-.05,2.07-.55,2.76-1.37l.21-.26c6.06-7.27,12.77-13.98,20.04-20.04l.26-.21Z"/></svg></span><span class="stat">Automotive servicing</span></div>
-      </article>
-      <article class="case">
-        <video class="case-video" src="media/johnson-residential-2.mp4" data-poster="media/johnson-residential-2-poster.webp" muted loop playsinline preload="none" data-case-video></video>
-        <div class="case-detail"><span class="name">Johnson Residential<svg class="tick" viewBox="0 0 84 84" aria-label="Meta verified"><path fill="#0064E0" fill-rule="evenodd" d="m50.4.47c1.79-.97,4.02-.37,5.08,1.36l4.99,8.17,9.57.24c2.03.05,3.67,1.69,3.72,3.72l.24,9.57,8.17,4.99c1.74,1.06,2.34,3.3,1.36,5.08l-4.58,8.4,4.58,8.4c.97,1.79.37,4.02-1.36,5.08l-8.17,4.99-.24,9.57c-.05,2.03-1.69,3.67-3.72,3.72l-9.57.24-4.99,8.17c-1.06,1.74-3.3,2.34-5.08,1.36l-8.4-4.58-8.4,4.58c-1.79.97-4.02.37-5.08-1.36l-4.99-8.17-9.57-.24c-2.03-.05-3.67-1.69-3.72-3.72l-.24-9.57-8.17-4.99c-1.74-1.06-2.34-3.3-1.36-5.08l4.58-8.4L.47,33.6c-.97-1.79-.37-4.02,1.36-5.08l8.17-4.99.24-9.57c.05-2.03,1.69-3.67,3.72-3.72l9.57-.24L28.51,1.83c1.06-1.74,3.3-2.34,5.08-1.36l8.4,4.58L50.4.47Zm9.31,34.92c1.62-1.35,1.84-3.76.49-5.38-1.35-1.62-3.76-1.84-5.38-.49l-.26.21c-6.64,5.54-12.84,11.59-18.52,18.1l-6.62-6.62c-1.49-1.49-3.91-1.49-5.4,0-1.49,1.49-1.49,3.91,0,5.4l9.55,9.55c.76.76,1.8,1.16,2.87,1.11,1.07-.05,2.07-.55,2.76-1.37l.21-.26c6.06-7.27,12.77-13.98,20.04-20.04l.26-.21Z"/></svg></span><span class="stat">Residential building</span></div>
-      </article>
-      <article class="case">
-        <video class="case-video" src="media/atk-detailing.mp4" data-poster="media/atk-detailing-poster.webp" muted loop playsinline preload="none" data-case-video></video>
-        <div class="case-detail"><span class="name">ATK Detailing<svg class="tick" viewBox="0 0 84 84" aria-label="Meta verified"><path fill="#0064E0" fill-rule="evenodd" d="m50.4.47c1.79-.97,4.02-.37,5.08,1.36l4.99,8.17,9.57.24c2.03.05,3.67,1.69,3.72,3.72l.24,9.57,8.17,4.99c1.74,1.06,2.34,3.3,1.36,5.08l-4.58,8.4,4.58,8.4c.97,1.79.37,4.02-1.36,5.08l-8.17,4.99-.24,9.57c-.05,2.03-1.69,3.67-3.72,3.72l-9.57.24-4.99,8.17c-1.06,1.74-3.3,2.34-5.08,1.36l-8.4-4.58-8.4,4.58c-1.79.97-4.02.37-5.08-1.36l-4.99-8.17-9.57-.24c-2.03-.05-3.67-1.69-3.72-3.72l-.24-9.57-8.17-4.99c-1.74-1.06-2.34-3.3-1.36-5.08l4.58-8.4L.47,33.6c-.97-1.79-.37-4.02,1.36-5.08l8.17-4.99.24-9.57c.05-2.03,1.69-3.67,3.72-3.72l9.57-.24L28.51,1.83c1.06-1.74,3.3-2.34,5.08-1.36l8.4,4.58L50.4.47Zm9.31,34.92c1.62-1.35,1.84-3.76.49-5.38-1.35-1.62-3.76-1.84-5.38-.49l-.26.21c-6.64,5.54-12.84,11.59-18.52,18.1l-6.62-6.62c-1.49-1.49-3.91-1.49-5.4,0-1.49,1.49-1.49,3.91,0,5.4l9.55,9.55c.76.76,1.8,1.16,2.87,1.11,1.07-.05,2.07-.55,2.76-1.37l.21-.26c6.06-7.27,12.77-13.98,20.04-20.04l.26-.21Z"/></svg></span><span class="stat">Car detailing</span></div>
+      <article class="study" data-anim>
+        <div class="study-body">
+          <span class="way-tag">Car detailing</span>
+          <h3>ATK Detailing<svg class="tick" viewBox="0 0 84 84" aria-label="Meta verified"><path fill="#0064E0" fill-rule="evenodd" d="m50.4.47c1.79-.97,4.02-.37,5.08,1.36l4.99,8.17,9.57.24c2.03.05,3.67,1.69,3.72,3.72l.24,9.57,8.17,4.99c1.74,1.06,2.34,3.3,1.36,5.08l-4.58,8.4,4.58,8.4c.97,1.79.37,4.02-1.36,5.08l-8.17,4.99-.24,9.57c-.05,2.03-1.69,3.67-3.72,3.72l-9.57.24-4.99,8.17c-1.06,1.74-3.3,2.34-5.08,1.36l-8.4-4.58-8.4,4.58c-1.79.97-4.02.37-5.08-1.36l-4.99-8.17-9.57-.24c-2.03-.05-3.67-1.69-3.72-3.72l-.24-9.57-8.17-4.99c-1.74-1.06-2.34-3.3-1.36-5.08l4.58-8.4L.47,33.6c-.97-1.79-.37-4.02,1.36-5.08l8.17-4.99.24-9.57c.05-2.03,1.69-3.67,3.72-3.72l9.57-.24L28.51,1.83c1.06-1.74,3.3-2.34,5.08-1.36l8.4,4.58L50.4.47Zm9.31,34.92c1.62-1.35,1.84-3.76.49-5.38-1.35-1.62-3.76-1.84-5.38-.49l-.26.21c-6.64,5.54-12.84,11.59-18.52,18.1l-6.62-6.62c-1.49-1.49-3.91-1.49-5.4,0-1.49,1.49-1.49,3.91,0,5.4l9.55,9.55c.76.76,1.8,1.16,2.87,1.11,1.07-.05,2.07-.55,2.76-1.37l.21-.26c6.06-7.27,12.77-13.98,20.04-20.04l.26-.21Z"/></svg></h3>
+          <p>ATK Detailing's owner on camera, talking through the work and the protection they offer, with the detailing shown up close.</p>
+          <div class="way-best">
+            <span class="way-label">What we made</span>
+            <p>Short vertical videos built around the owner talking to camera, cut with close-ups of the work.</p>
+          </div>
+        </div>
+        <div class="study-clips">
+            <div class="case"><video class="case-video" src="media/atk-detailing-3.mp4" data-poster="media/atk-detailing-3-poster.webp" muted loop playsinline preload="none" data-case-video aria-hidden="true"></video></div>
+            <div class="case"><video class="case-video" src="media/atk-detailing.mp4" data-poster="media/atk-detailing-poster.webp" muted loop playsinline preload="none" data-case-video aria-hidden="true"></video></div>
+        </div>
       </article>
     </div>
   </div>
@@ -2677,6 +2675,8 @@
   <div class="closing-foot">
     <span class="foot-logo"><img src="/img/tui-wordmark.webp" alt="Tui Media" width="639" height="130" loading="lazy" decoding="async"></span>
     <div class="foot-right">
+      <a href="/video-ads">Video ads</a>
+      <a href="/monthly-content">Monthly content</a>
       <span>Nelson, New Zealand</span>
       <a href="mailto:hello@tuimedia.nz">hello@tuimedia.nz</a>
       <span class="foot-copy">&copy; <span data-year>2026</span> Tui Media</span>
@@ -2843,8 +2843,8 @@
 
   /* ---------- page loader: first paint -----------------------------------
      Nothing on the page is load-blocking any more — the case-study videos
-     and their posters are all deferred until the marquee is nearly on
-     screen — so this waits on the document itself, with a floor so the
+     and their posters are all deferred until the case studies are nearly
+     on screen — so this waits on the document itself, with a floor so the
      mark is never up for a single flash frame and a ceiling in case
      something never settles. */
   (function () {
@@ -3323,6 +3323,17 @@
     }
   });
 
+  /* The service pages link here as /?interest=ad#book or
+     /?interest=monthly#book, so the form opens with that option picked,
+     the same as clicking the offer card buttons used to. */
+  (function () {
+    var m = /[?&]interest=(ad|monthly)\b/.exec(location.search);
+    var sel = document.getElementById('f-interest');
+    if (!m || !sel) return;
+    sel.value = m[1] === 'ad' ? 'A video ad project' : 'Monthly content';
+    sel.dispatchEvent(new Event('change', { bubbles: true }));
+  })();
+
   show(location.hash === '#book' ? 'book' : 'home', false);
 
   /* ---------- faq accordion --------------------------------------------
@@ -3673,18 +3684,15 @@
     }
   }
 
-  /* ---------- marquees --------------------------------------------------
-     Both strips run on CSS animations. Each gets its run duplicated here so
-     -50% lands exactly on the copy and the loop has no seam. */
-
-  var track = document.querySelector('[data-marquee]');
-  if (track) track.innerHTML += track.innerHTML;
-
   /* Case-study videos: muted loops that cost nothing until the section is
      nearly on screen. `preload="none"` and the poster held on data-poster
      mean a first load carries none of this — roughly 18MB of video and
      400KB of poster frames that the old `autoplay` markup fetched eagerly,
      whether or not the visitor ever scrolled this far.
+
+     The clips used to ride a moving marquee and now sit still in the
+     case-study panels. The history below is about the strip, but the poll
+     is kept for the reload-on-error healing, which still matters.
 
      WHY THIS IS NOT ONE OBSERVER PER VIDEO ANY MORE. It used to be, and the
      strip was reported dead on the live site: posters painted, every clip
@@ -3720,17 +3728,15 @@
      hammered. A real frame stays on the card through all of it: every poster
      is armed as soon as the section is near, not card by card, and it is
      also painted behind the video, so a card is never an empty box. */
-  var marqueeBox = document.querySelector('.marquee');
+  var studiesBox = document.querySelector('.studies');
   var caseVideos = [].slice.call(document.querySelectorAll('[data-case-video]'));
 
-  if (marqueeBox && caseVideos.length) {
+  if (studiesBox && caseVideos.length) {
     /* 4 fps. The cards cross the frame over seconds, not frames, so a rAF
        loop would be 15x the wakeups to move the same decision. */
     var CASE_TICK = 250;
-    /* Room on the leading (right) side to start a clip before its card has
-       fully arrived, so it is never caught on a still frame at the edge.
-       The track only ever travels left, so the trailing side needs none: a
-       card that has slid out of the frame there is not coming back. */
+    /* Room above and below the viewport to start a clip before its panel
+       has fully arrived, so it is never caught on a still frame. */
     var CASE_LEAD = 300;
     /* How long a clip may be told to play without producing a frame before
        it counts as stuck, and the longest it waits between reload tries. */
@@ -3767,15 +3773,17 @@
     });
 
     function caseTick() {
-      /* The strip is clipped, so a card's own rect is not enough: what
-         matters is the overlap with the frame it is travelling through. */
-      var box = marqueeBox.getBoundingClientRect();
-      var left = box.left;
-      var right = box.right + CASE_LEAD;
+      /* In the viewport, with CASE_LEAD of room above and below so a clip
+         is already going as its panel scrolls in. Sideways it is the
+         viewport edge exactly: on a phone the clips scroll inside their
+         panel, and one parked off to the right should not be decoding. */
+      var vw = window.innerWidth;
+      var vh = window.innerHeight;
       var now = Date.now();
       caseVideos.forEach(function (v) {
         var r = v.getBoundingClientRect();
-        var inFrame = r.right > left && r.left < right;
+        var inFrame = r.bottom > -CASE_LEAD && r.top < vh + CASE_LEAD &&
+                      r.right > 0 && r.left < vw;
         if (inFrame) {
           /* NETWORK_NO_SOURCE is where a failed fetch can leave a video
              without setting .error in every browser */
@@ -3821,7 +3829,7 @@
       new IntersectionObserver(function (entries) {
         caseNear = entries[0].isIntersecting;
         caseRun(caseNear);
-      }, { rootMargin: '100% 0px' }).observe(marqueeBox);
+      }, { rootMargin: '100% 0px' }).observe(studiesBox);
     } else {
       caseNear = true;
       caseRun(true);
