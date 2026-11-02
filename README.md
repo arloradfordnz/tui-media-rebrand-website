@@ -12,14 +12,24 @@ deployed on Vercel.
   - `index.html` — the whole site: markup, styles and script in one file.
   - `work/index.html` — every case study at `/work`, linked from the menu, the
     footer and the home page's case studies: Johnson Residential, ATK Detailing,
-    Landscape Transformers and Sky Automotive, the `CASES` list in its script.
+    Landscape Transformers and Sky Automotive, from `js/cases.js`.
     Laid out as an index: the client list sits on the left, held mid-screen,
     while each client's shots scroll past on the right. The client nearest the
     middle of the screen is bright, the rest are faded, and the current one shows
     its trade beside it and its summary under the list. Clicking a name scrolls
-    to its shots, and `/work#client-name` lands on them. Every shot is the same
+    to its shots, `/work#client-name` lands on them, and a shot opens that client's
+    case study. Every shot is the same
     16:9 frame, and for now they are placeholders: put an `<img>` or `<video>`
     inside a `.cs-shot` and it fills the frame.
+  - `work/case/index.html` — one case study at a time, at
+    `/work/case/?client=atk-detailing`. Clicking a shot on the home page or `/work`
+    opens it. The client's name and summary, one big 16:9 frame, a row of facts
+    (client, industry, what we made), the rest of the shots two to a row, then a
+    link back to the list and on to the next client. An unknown client goes back
+    to `/work`.
+  - `js/cases.js` — the case studies themselves, read by `/work` and
+    `/work/case/`. The home page's four are written into `index.html` by hand, so
+    a new client goes in both.
   - `video-ads/index.html` and `monthly-content/index.html` — the two service
     pages at `/video-ads` and `/monthly-content`, linked from the cards in
     "Two ways to work together" and from the menu. Their book buttons go to `/?interest=ad#book`
@@ -171,9 +181,6 @@ One easing token, `--ease-out: cubic-bezier(0.23, 1, 0.32, 1)`. No libraries.
 
 ## Conventions
 
-- Most sections stop at `--content`. The case studies (home and `/work`) and the
-  reviews run full width inside the page gutter: `.shell.full` on the home page,
-  `.full` on `/work`. The reviews sit four to a row from 1200px.
 - Copy follows the voice rules in `Tui_Media_Rebrand_Master_Reference.md`: plain,
   casual, no em dashes. Reviews are quoted exactly as written.
 - Type and spacing run off tokens at the top of the stylesheet (`--t-*` for type,

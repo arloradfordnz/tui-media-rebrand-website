@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en-NZ">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Case study | Tui Media</title>
+<meta name="description" content="A case study of video work Tui Media has made for a Nelson business.">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#060D1A">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+<link rel="apple-touch-icon" sizes="512x512" href="/favicon-512.png">
+<link rel="preload" href="/fonts/bricolage-grotesque-latin.woff2" as="font" type="font/woff2" crossorigin>
+<script>document.documentElement.classList.add('js');</script>
+<link rel="stylesheet" href="/css/service.css">
+<link rel="stylesheet" href="/css/loader.css">
+<style>
+  /* ---------- one case study ----------
+     The page head names the client, then one big 16:9 frame, the facts in
+     a row, the rest of the shots two to a row, and the next client. Every
+     frame is a placeholder until the landscape cuts exist: put an <img> or
+     a <video> inside a .case-shot and it fills the frame. */
+  .case-shot {
+    position: relative;
+    display: grid; place-items: center;
+    aspect-ratio: 16 / 9;
+    border-radius: var(--radius-sm);
+    background: var(--surface);
+    overflow: hidden;
+    color: var(--muted);
+    font-size: var(--t-micro); font-weight: 600;
+    letter-spacing: 0.08em; text-transform: uppercase;
+  }
+  .case-shot img, .case-shot video {
+    position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block;
+  }
+  .case-facts {
+    display: grid; grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--s-4);
+    margin-top: var(--s-5);
+    padding-top: var(--s-4);
+    border-top: 1px solid var(--rule);
+  }
+  .case-facts dt {
+    font-size: var(--t-micro); font-weight: 700;
+    letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--accent);
+  }
+  .case-facts dd { margin: var(--s-1) 0 0; font-size: 0.9375rem; line-height: 1.6; }
+  .case-gallery {
+    display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--frame);
+    margin-top: var(--s-5);
+  }
+  .case-nav {
+    display: flex; justify-content: space-between; align-items: center; gap: var(--s-3);
+    flex-wrap: wrap;
+    margin-top: var(--s-6);
+    padding-top: var(--s-4);
+    border-top: 1px solid var(--rule);
+  }
+  .case-back { color: var(--muted); text-decoration: none; font-size: 0.9375rem; }
+  .case-next { text-align: right; text-decoration: none; color: var(--ink); }
+  .case-next span {
+    display: block;
+    font-size: var(--t-micro); font-weight: 700;
+    letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--muted);
+  }
+  .case-next b {
+    display: block; margin-top: 4px;
+    font-size: clamp(1.5rem, 3vw, 2.25rem); font-weight: 500;
+    letter-spacing: -0.035em; line-height: 1.1;
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .case-back:hover { color: var(--ink); }
+    .case-next:hover b { color: var(--accent); }
+  }
+  @media (max-width: 700px) {
+    .case-facts { grid-template-columns: 1fr; gap: var(--s-3); }
+    .case-gallery { grid-template-columns: 1fr; }
+    .case-nav { flex-direction: column-reverse; align-items: flex-start; }
+    .case-next { text-align: left; }
+  }
+</style>
+</head>
+<body>
+
+<div class="page-loader" data-page-loader data-first-paint aria-hidden="true">
+  <span class="page-loader__arc page-loader__arc--top"><i></i></span>
+  <span class="page-loader__arc page-loader__arc--bot"><i></i></span>
+  <i class="page-loader__icon"></i>
+</div>
+
+<div class="nav-wrap">
+  <div class="nav">
+    <a class="wordmark" href="/" aria-label="Tui Media, home"><i></i></a>
+    <nav class="nav-links">
+      <a href="/monthly-content"><span class="nav-label"><span>Monthly content</span><span aria-hidden="true">Monthly content</span></span></a>
+      <a href="/video-ads"><span class="nav-label"><span>Video ads</span><span aria-hidden="true">Video ads</span></span></a>
+      <a href="/work" aria-current="page"><span class="nav-label"><span>Case studies</span><span aria-hidden="true">Case studies</span></span></a>
+      <a href="/about"><span class="nav-label"><span>About</span><span aria-hidden="true">About</span></span></a>
+    </nav>
+    <a class="btn" href="/#book">
+      <span class="btn-label"><span>Book a free call</span><span aria-hidden="true">Book a free call</span></span>
+    </a>
+  </div>
+</div>
+
+<main>
+<div class="wrap">
+  <div class="page-head">
+    <p class="avail"><i></i><span>Case study</span></p>
+    <h1 data-case-name>Case study</h1>
+    <p class="lede" data-case-summary></p>
+  </div>
+
+  <!-- Filled from /js/cases.js by the script below, for the client named
+       in the address: /work/case/?client=atk-detailing -->
+  <div data-case></div>
+</div>
+</main>
+
+<div class="closing center" id="contact">
+  <h2>Want something like this?</h2>
+  <p class="lede">It's free and there's no pressure. We'll be honest about whether we can actually help before you spend a cent.</p>
+
+  <div class="btn-row">
+    <a class="btn" href="/#book">
+      <span class="btn-label"><span>Book my free call</span><span aria-hidden="true">Book my free call</span></span>
+    </a>
+  </div>
+  <p class="cta-note"><span class="cta-part"><span class="rating-stars" aria-hidden="true">&#9733;&#9733;&#9733;&#9733;&#9733;</span><a class="rating-link" href="https://share.google/I0Nl8jbacTLDWQb2e" target="_blank" rel="noopener noreferrer">5.0 from 14 Google reviews</a></span><span class="cta-part">Reply within one working day</span></p>
+
+  <div class="closing-foot">
+    <span class="foot-logo"><img src="/img/tui-wordmark.webp" alt="Tui Media" width="639" height="130" loading="lazy" decoding="async"></span>
+    <div class="foot-right">
+      <a href="/">Back to site</a>
+      <a href="/monthly-content">Monthly content</a>
+      <a href="/video-ads">Video ads</a>
+      <a href="/work">Case studies</a>
+      <a href="/about">About</a>
+      <span>Nelson, New Zealand</span>
+      <a href="mailto:hello@tuimedia.nz">hello@tuimedia.nz</a>
+      <span class="foot-copy">&copy; <span data-year>2026</span> Tui Media</span>
+    </div>
+  </div>
+</div>
+
+<script src="/js/cases.js"></script>
+<script>
+(function () {
+  'use strict';
+  var CASES = window.TUI_CASES || [];
+  function esc(t) {
+    return String(t).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  }
+  var yearEl = document.querySelector('[data-year]');
+  if (yearEl) yearEl.textContent = new Date().getFullYear();
+
+  var slug = new URLSearchParams(location.search).get('client');
+  var i = -1;
+  CASES.forEach(function (c, n) { if (c.slug === slug) i = n; });
+  /* an unknown or missing client goes back to the list rather than
+     showing an empty page */
+  if (i < 0) { location.replace('/work'); return; }
+
+  var c = CASES[i];
+  var next = CASES[(i + 1) % CASES.length];
+  document.title = c.name + ' | Tui Media';
+  document.querySelector('[data-case-name]').textContent = c.name;
+  document.querySelector('[data-case-summary]').textContent = c.summary;
+
+  function shot(n) { return '<div class="case-shot">' + esc(c.name) + ' &middot; 0' + n + '</div>'; }
+  var gallery = '';
+  for (var n = 2; n <= Math.max(c.shots, 1); n++) gallery += shot(n);
+
+  document.querySelector('[data-case]').innerHTML =
+      shot(1)
+    + '<dl class="case-facts">'
+    +   '<div><dt>Client</dt><dd>' + esc(c.name) + '</dd></div>'
+    +   '<div><dt>Industry</dt><dd>' + esc(c.trade) + '</dd></div>'
+    +   (c.made ? '<div><dt>What we made</dt><dd>' + esc(c.made) + '</dd></div>' : '')
+    + '</dl>'
+    + (gallery ? '<div class="case-gallery">' + gallery + '</div>' : '')
+    + '<nav class="case-nav" aria-label="Case studies">'
+    +   '<a class="case-back" href="/work">All case studies</a>'
+    +   (next !== c ? '<a class="case-next" href="/work/case/?client=' + next.slug + '"><span>Next case study</span><b>' + esc(next.name) + '</b></a>' : '')
+    + '</nav>';
+})();
+</script>
+
+<script defer src="/js/lenis.min.js"></script>
+<script defer src="/js/smooth-scroll.js"></script>
+<script defer src="/js/page-transition.js"></script>
+<script defer src="/_vercel/insights/script.js"></script>
+</body>
+</html>

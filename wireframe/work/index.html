@@ -106,8 +106,6 @@
     margin: 0 auto;
     padding-inline: var(--frame);
   }
-  /* edge to edge, inside the page gutter */
-  .full { padding-inline: var(--frame); }
 
   /* ---------- nav ----------
      The site's nav, not an approximation of it: same pill, same glass, same
@@ -545,11 +543,9 @@
     <p class="lede">A look at some of the Nelson businesses we've made videos for, and what we made them.</p>
   </div>
 
-</div>
 
-<!-- One group per client, its shots stacked in the right-hand column. Full
-     width, inside the page gutter. Filled from CASES in the script below. -->
-<div class="full">
+  <!-- One group per client, its shots stacked in the right-hand column.
+       Filled from CASES in the script below. -->
   <div class="cs" id="grid" data-cs></div>
 </div>
 
@@ -579,33 +575,17 @@
   </div>
 </div>
 
+<script src="/js/cases.js"></script>
 <script>
 (function () {
   'use strict';
 
-  /* One case study per client. `shots` is how many landscape frames each
-     gets in the right-hand column. They are placeholders for now: once the
-     landscape cuts exist, give a client a list of images in place of the
-     count and render an <img> into each .cs-shot. */
-  var CASES = [
-    { name: "Johnson Residential", trade: "Residential building",
-      summary: "Videos from Johnson Residential's building sites, with the team on camera talking through their homes, from the concrete pour to the finished build.",
-      shots: 3 },
-    { name: "ATK Detailing", trade: "Car detailing",
-      summary: "ATK Detailing's owner on camera, talking through the work and the protection they offer, with the detailing shown up close.",
-      shots: 3 },
-    { name: "Landscape Transformers", trade: "Landscaping",
-      summary: "Videos made for Landscape Transformers.",
-      shots: 3 },
-    { name: "Sky Automotive", trade: "Automotive servicing",
-      summary: "Sky Automotive's workshop on camera, from detail work on the cars to the opening of their new Nelson location.",
-      shots: 3 }
-  ];
+  /* The case studies live in /js/cases.js, shared with /work/case/. */
+  var CASES = window.TUI_CASES || [];
 
   function esc(t) {
     return String(t).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
   }
-  function slugify(t) { return String(t).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, ''); }
 
   var yearEl = document.querySelector('[data-year]');
   if (yearEl) yearEl.textContent = new Date().getFullYear();
@@ -618,9 +598,9 @@
   var groupsHtml = CASES.map(function (c) {
     var shots = '';
     for (var n = 1; n <= c.shots; n++) {
-      shots += '<div class="cs-shot">' + esc(c.name) + ' &middot; 0' + n + '</div>';
+      shots += '<a class="cs-shot" href="/work/case/?client=' + c.slug + '" aria-label="' + esc(c.name) + ' case study">' + esc(c.name) + ' &middot; 0' + n + '</a>';
     }
-    return '<div class="cs-group" id="' + slugify(c.name) + '" data-summary="' + esc(c.summary) + '">'
+    return '<div class="cs-group" id="' + c.slug + '" data-summary="' + esc(c.summary) + '">'
          + '<div class="cs-head"><h2 class="cs-name">' + esc(c.name) + '</h2><span class="cs-trade">' + esc(c.trade) + '</span></div>'
          + shots
          + '</div>';
