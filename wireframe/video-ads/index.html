@@ -312,13 +312,31 @@
   /* Monthly / quarterly switch on the package prices. Without script the
      switch stays hidden and the cards show the monthly price with the
      quarterly one in the line under it. */
+  /* which billing is showing, so the book buttons can pass it (and the
+     package) through to the form */
+  var billingNow = 'monthly';
+  function syncLinks() {
+    [].slice.call(document.querySelectorAll('[data-packs] .pack .btn')).forEach(function (a) {
+      a.href = a.getAttribute('href').replace(/billing=(monthly|quarterly)/, 'billing=' + billingNow);
+    });
+    syncSticky();
+  }
+  function syncSticky() {
+    var bar = document.querySelector('[data-sticky]');
+    var on = document.querySelector('[data-packs] .pack.is-pick');
+    if (!bar || !on) return;
+    var name = on.getAttribute('data-pack');
+    bar.querySelector('[data-sticky-name]').textContent = name;
+    bar.querySelector('[data-sticky-price]').textContent = on.getAttribute('data-' + billingNow + '-price');
+    bar.querySelector('[data-sticky-link]').href = '/?interest=monthly&package=' + name.toLowerCase() + '&billing=' + billingNow + '#book';
+  }
+
   var billing = document.querySelector('[data-billing]');
   if (billing) {
     billing.hidden = false;
     var thumb = billing.querySelector('.billing-thumb');
     var opts = [].slice.call(billing.querySelectorAll('[data-billing-to]'));
     var priced = [].slice.call(document.querySelectorAll('[data-monthly]'));
-    var swapTimer = null;
     /* the thumb is sized and moved to sit under the chosen side; it slides
        because transform and width transition in the CSS */
     function place() {
@@ -337,15 +355,11 @@
         var to = b.getAttribute('data-billing-to');
         opts.forEach(function (o) { o.setAttribute('aria-pressed', o === b ? 'true' : 'false'); });
         place();
-        /* the prices fade out, change, and fade back in */
-        priced.forEach(function (el) { el.classList.add('is-swapping'); });
-        clearTimeout(swapTimer);
-        swapTimer = setTimeout(function () {
-          priced.forEach(function (el) {
-            el.textContent = el.getAttribute('data-' + to);
-            el.classList.remove('is-swapping');
-          });
-        }, 180);
+        billingNow = to;
+        priced.forEach(function (el) { el.textContent = el.getAttribute('data-' + to); });
+        /* each package shows what it saves, on quarterly only */
+        [].slice.call(document.querySelectorAll('[data-save]')).forEach(function (t) { t.hidden = to !== 'quarterly'; });
+        syncLinks();
       });
     });
   }
@@ -361,7 +375,25 @@
       var btn = c.querySelector('.btn');
       if (btn) btn.classList.toggle('outline', !on);
     });
+    syncSticky();
   }
+
+  /* The phone bar: up once the page head has gone, down again at the
+     closing panel so it never covers the real call to action. */
+  var bar = document.querySelector('[data-sticky]');
+  if (bar && 'IntersectionObserver' in window) {
+    var headGone = false, closingIn = false;
+    var link = bar.querySelector('[data-sticky-link]');
+    var show = function () {
+      var on = headGone && !closingIn;
+      bar.classList.toggle('is-on', on);
+      bar.setAttribute('aria-hidden', on ? 'false' : 'true');
+      link.tabIndex = on ? 0 : -1;
+    };
+    new IntersectionObserver(function (e) { headGone = !e[0].isIntersecting; show(); }).observe(document.querySelector('.page-head'));
+    new IntersectionObserver(function (e) { closingIn = e[0].isIntersecting; show(); }).observe(document.querySelector('.closing'));
+  }
+  syncSticky();
   packs.forEach(function (card) {
     card.addEventListener('click', function (e) {
       if (e.target.closest('a')) return;

@@ -173,57 +173,76 @@
     .nav-links a:hover .nav-label > span:nth-child(2) { transform: translateY(0); color: var(--ink); }
   }
 
+  /* ---------- buttons ----------
+     A pill with the arrow in a circle on the left and the label on the
+     right. The label side carries the fill, and the fill is the only thing
+     that moves: a solid button rests filled and the fill slides out to the
+     right on hover; an outline button rests empty and the fill slides in
+     from the right. The label and arrow stay put. */
   .btn {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
     display: inline-flex;
     align-items: center;
     gap: 0.7em;
     height: 44px;
-    padding: 6px 6px 6px 1.15rem;
+    padding: 6px 1.15rem 6px 6px;
     border-radius: var(--radius-pill);
-    background: var(--accent);
+    border: 1px solid var(--accent);
+    background: transparent;
     color: var(--accent-ink);
     font-size: 0.9375rem;
     font-weight: 600;
     letter-spacing: -0.01em;
     text-decoration: none;
-    border: 1px solid transparent;
     white-space: nowrap;
     cursor: pointer;
-    transition: transform 140ms var(--ease-out);
+    transition: color 380ms cubic-bezier(.65, 0, .35, 1), border-color 200ms ease, transform 140ms var(--ease-out);
   }
   .btn:active { transform: scale(0.975); }
-  .nav .btn { margin-left: auto; }
-  .btn-label { display: grid; overflow: hidden; line-height: 1.25; }
-  .btn-label > span {
-    grid-area: 1 / 1;
-    transition: transform 460ms cubic-bezier(.19, 1, .22, 1);
+  /* the fill: from the circle's edge to the end of the pill */
+  .btn::before {
+    content: "";
+    position: absolute;
+    z-index: -1;
+    top: 0; bottom: 0; right: 0; left: 36px;
+    border-radius: var(--radius-pill);
+    background: var(--accent);
+    transition: transform 420ms cubic-bezier(.65, 0, .35, 1);
   }
-  .btn-label > span:nth-child(2) { transform: translateY(115%); }
-  @media (hover: hover) and (pointer: fine) {
-    .btn:hover .btn-label > span:nth-child(1) { transform: translateY(-115%); }
-    .btn:hover .btn-label > span:nth-child(2) { transform: translateY(0); }
-  }
+  .btn-label { order: 2; display: grid; line-height: 1.25; }
+  .btn-label > span:nth-child(2) { display: none; }
   .btn .arrow {
+    order: 1;
     width: 30px; height: 30px;
     flex: none;
     border-radius: 50%;
     display: grid;
     place-items: center;
-    background: var(--accent-ink);
+    border: 1px solid var(--accent);
     color: var(--accent);
-    overflow: hidden;
-    position: relative;
+    background: transparent;
   }
-  .btn .arrow svg {
-    grid-area: 1 / 1;
-    width: 12px; height: 12px;
-    display: block;
-    transition: transform 420ms cubic-bezier(.19, 1, .22, 1);
-  }
-  .btn .arrow svg:nth-child(2) { transform: translateX(-160%); }
+  .btn .arrow svg { width: 12px; height: 12px; display: block; }
+  .btn .arrow svg:nth-child(2) { display: none; }
+  /* the return trip on the book view: the arrow points back */
+  .btn.back .arrow { transform: scaleX(-1); }
+  .nav .btn { margin-left: auto; }
+
+  .btn.outline { border-color: var(--hairline); color: var(--ink); }
+  .btn.outline .arrow { border-color: var(--hairline); }
+  .btn.outline::before { transform: translateX(calc(100% + 2px)); }
+
+  .btn.light { border-color: var(--ink); color: var(--paper); }
+  .btn.light::before { background: var(--ink); }
+  .btn.light .arrow { border-color: var(--ink); color: var(--ink); }
+
   @media (hover: hover) and (pointer: fine) {
-    .btn:hover .arrow svg:nth-child(1) { transform: translateX(160%); }
-    .btn:hover .arrow svg:nth-child(2) { transform: translateX(0); }
+    .btn:hover { color: var(--ink); }
+    .btn:hover::before { transform: translateX(calc(100% + 2px)); }
+    .btn.outline:hover { color: var(--accent-ink); }
+    .btn.outline:hover::before { transform: translateX(0); }
   }
 
   /* ---------- page head ----------
@@ -566,7 +585,7 @@
     html, a, button, .btn, .card, .wordmark, .clips button {
       cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'%3E%3Ccircle cx='8' cy='8' r='8' fill='%236E9BF7'/%3E%3C/svg%3E") 8 8, auto;
     }
-    .btn {
+    .btn.outline {
       cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'%3E%3Ccircle cx='8' cy='8' r='8' fill='%230A1428'/%3E%3C/svg%3E") 8 8, auto;
     }
     .btn .arrow {

@@ -473,77 +473,76 @@
   }
   [data-anim].in { opacity: 1; transform: none; }
 
-  /* ---------- buttons ---------- */
-
+  /* ---------- buttons ----------
+     A pill with the arrow in a circle on the left and the label on the
+     right. The label side carries the fill, and the fill is the only thing
+     that moves: a solid button rests filled and the fill slides out to the
+     right on hover; an outline button rests empty and the fill slides in
+     from the right. The label and arrow stay put. */
   .btn {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
     display: inline-flex;
     align-items: center;
     gap: 0.7em;
     height: 44px;
-    padding: 6px 6px 6px 1.15rem;
+    padding: 6px 1.15rem 6px 6px;
     border-radius: var(--radius-pill);
-    background: var(--accent);
+    border: 1px solid var(--accent);
+    background: transparent;
     color: var(--accent-ink);
     font-size: 0.9375rem;
     font-weight: 600;
     letter-spacing: -0.01em;
     text-decoration: none;
-    border: 1px solid transparent;
     white-space: nowrap;
     cursor: pointer;
+    transition: color 380ms cubic-bezier(.65, 0, .35, 1), border-color 200ms ease, transform 140ms var(--ease-out);
   }
-
-  /* label slides up on hover, the copy underneath takes its place */
-  .btn-label { display: grid; overflow: hidden; line-height: 1.25; }
-  .btn-label > span {
-    grid-area: 1 / 1;
-    transition: transform 460ms cubic-bezier(.19, 1, .22, 1);
+  .btn:active { transform: scale(0.975); }
+  /* the fill: from the circle's edge to the end of the pill */
+  .btn::before {
+    content: "";
+    position: absolute;
+    z-index: -1;
+    top: 0; bottom: 0; right: 0; left: 36px;
+    border-radius: var(--radius-pill);
+    background: var(--accent);
+    transition: transform 420ms cubic-bezier(.65, 0, .35, 1);
   }
-  .btn-label > span:nth-child(2) { transform: translateY(115%); }
-  @media (hover: hover) and (pointer: fine) {
-    .btn:hover .btn-label > span:nth-child(1) { transform: translateY(-115%); }
-    .btn:hover .btn-label > span:nth-child(2) { transform: translateY(0); }
-  }
-
-  /* the circle is the inverse of the button surface */
+  .btn-label { order: 2; display: grid; line-height: 1.25; }
+  .btn-label > span:nth-child(2) { display: none; }
   .btn .arrow {
+    order: 1;
     width: 30px; height: 30px;
     flex: none;
     border-radius: 50%;
     display: grid;
     place-items: center;
-    background: var(--accent-ink);
+    border: 1px solid var(--accent);
     color: var(--accent);
-    overflow: hidden;
-    position: relative;
+    background: transparent;
   }
-  /* two copies stacked in the same cell; the second waits just off the
-     leading edge so it can slide in as the first slides out, same
-     direction the arrow points */
-  .btn .arrow svg {
-    grid-area: 1 / 1;
-    width: 12px; height: 12px;
-    display: block;
-    transition: transform 420ms cubic-bezier(.19, 1, .22, 1);
-  }
-  .btn .arrow svg:nth-child(2) { transform: translateX(-160%); }
-  @media (hover: hover) and (pointer: fine) {
-    .btn:hover .arrow svg:nth-child(1) { transform: translateX(160%); }
-    .btn:hover .arrow svg:nth-child(2) { transform: translateX(0); }
-  }
-
-  /* mirrored for the return trip: arrow points back, and because the flip is on
-     the cell the hover slide reverses with it */
+  .btn .arrow svg { width: 12px; height: 12px; display: block; }
+  .btn .arrow svg:nth-child(2) { display: none; }
+  /* the return trip on the book view: the arrow points back */
   .btn.back .arrow { transform: scaleX(-1); }
 
-  .btn { transition: transform 140ms var(--ease-out), background-color 200ms ease, border-color 200ms ease; }
-  .btn:active { transform: scale(0.975); }
+  .btn.outline { border-color: var(--hairline); color: var(--ink); }
+  .btn.outline .arrow { border-color: var(--hairline); }
+  .btn.outline::before { transform: translateX(calc(100% + 2px)); }
 
-  .btn.light { background: var(--ink); color: var(--paper); }
-  .btn.light .arrow { background: var(--accent); color: var(--accent-ink); }
+  .btn.light { border-color: var(--ink); color: var(--paper); }
+  .btn.light::before { background: var(--ink); }
+  .btn.light .arrow { border-color: var(--ink); color: var(--ink); }
 
-  .btn.outline { background: transparent; color: var(--ink); border-color: var(--hairline); }
-  .btn.outline .arrow { background: var(--accent); color: var(--accent-ink); }
+  @media (hover: hover) and (pointer: fine) {
+    .btn:hover { color: var(--ink); }
+    .btn:hover::before { transform: translateX(calc(100% + 2px)); }
+    .btn.outline:hover { color: var(--accent-ink); }
+    .btn.outline:hover::before { transform: translateX(0); }
+  }
 
   .btn-row { display: flex; gap: var(--s-2); flex-wrap: wrap; }
   .center .btn-row { justify-content: center; }
@@ -2034,16 +2033,19 @@
     /* anything else filled with the accent gets the dark dot, so the cursor
        never disappears into it: the light button's arrow, the review
        initials, the Ads Manager avatar, the "now taking" light */
-    .btn.light .arrow, .say-avatar, .acct-avatar, .avail i {
+    .say-avatar, .acct-avatar, .avail i {
       cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'%3E%3Ccircle cx='8' cy='8' r='8' fill='%230A1428'/%3E%3C/svg%3E") 8 8, auto;
     }
     /* solid buttons are accent, and the outline ones carry an accent arrow
        circle. The dark circle inside a solid button is the exception, so
        it keeps the accent dot. */
-    .btn:not(.outline), .btn.outline .arrow {
+    /* The cursor only shows while hovering, so it follows the hover state:
+       a solid button empties under the pointer (accent dot), an outline
+       one fills (dark dot), and the arrow circle is never filled. */
+    .btn.outline {
       cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'%3E%3Ccircle cx='8' cy='8' r='8' fill='%230A1428'/%3E%3C/svg%3E") 8 8, auto;
     }
-    .btn:not(.outline) .arrow {
+    .btn .arrow {
       cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'%3E%3Ccircle cx='8' cy='8' r='8' fill='%236E9BF7'/%3E%3C/svg%3E") 8 8, auto;
     }
   }
@@ -2067,8 +2069,8 @@
     .logo-track { animation: none; }
     /* a 6px settle instead of a 16px rise */
     [data-anim] { transform: translateY(6px); }
-    /* the two-layer label swap is a vertical wipe - land on the first copy */
-    .btn-label > span:nth-child(2) { display: none; }
+    /* the button fill swaps rather than slides */
+    .btn::before { transition: none; }
     .nav-links .nav-label > span:nth-child(2) { display: none; }
     /* purely decorative pulses, nothing to read in them */
     .avail i::after { animation: none; opacity: 0; }
@@ -3278,6 +3280,16 @@
     if (!m || !sel) return;
     sel.value = m[1] === 'ad' ? 'A video ad project' : 'Monthly content';
     sel.dispatchEvent(new Event('change', { bubbles: true }));
+
+    /* a package button on /monthly-content also says which package and
+       how they'd pay, so that goes in the notes, ready for them to add to */
+    var pk = /[?&]package=(lite|core|full)\b/.exec(location.search);
+    var bl = /[?&]billing=(monthly|quarterly)\b/.exec(location.search);
+    var notes = document.getElementById('f-notes');
+    if (pk && notes && !notes.value) {
+      var name = pk[1].charAt(0).toUpperCase() + pk[1].slice(1);
+      notes.value = 'Interested in the ' + name + ' package' + (bl ? ', paid ' + bl[1] : '') + '.';
+    }
   })();
 
   show(location.hash === '#book' ? 'book' : 'home', false);
