@@ -906,115 +906,79 @@
   .step p { margin-top: var(--s-1); font-size: 0.9375rem; color: var(--muted); max-width: 40ch; }
   .step:nth-child(even) p { margin-left: auto; }
 
-  /* ---------- case studies: the index ----------
-     Two columns on a wide screen. The client list sits on the left, held in
-     the middle of the screen while the shots scroll past on the right. The
-     client whose shots are in view is bright, the rest are faded back, and
-     the current one carries its trade beside it. Every shot is the same
-     landscape frame. For now they are placeholders: put an <img> or a
-     <video> inside a .cs-shot and it fills the frame. On a phone the list
-     is a sticky row under the nav and each client's name sits above its
-     shots. The same block is in index.html and work/index.html. */
-  .cs {
-    --cs-top: calc(var(--nav-h) + var(--frame) * 2);
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-    gap: clamp(1.5rem, 4vw, 4rem);
-    align-items: start;
+  /* ---------- case studies: the stack ----------
+     One card per client, the full width of the content, image only with
+     the client's name in the middle. Every card sticks just under the nav,
+     so the next one slides up and lands on top of it as you scroll; the
+     one being covered eases back and darkens (--p, 0 to 1, set by the
+     script at the foot of the page). Each card sits a few pixels lower
+     than the one before, so the covered cards show as a thin stack of
+     edges above the current one. A card with no picture yet shows the
+     plain --slot-1 ground. /work keeps the two-column index. */
+  .stack {
+    --stack-top: calc(var(--nav-space) + var(--s-2));
+    --stack-step: 14px;
+    --stack-h: min(calc((100vw - var(--frame) * 2) * 9 / 16), calc(var(--content) * 9 / 16), calc(100vh - var(--stack-top) - var(--s-6)));
+    list-style: none; margin: 0; padding: 0;
+    display: flex; flex-direction: column; gap: var(--s-5);
   }
-  .cs-side {
+  .stack-item {
     position: sticky;
-    top: var(--cs-top);
-    height: calc(100vh - var(--cs-top));
-    display: flex; flex-direction: column; justify-content: center;
-    gap: var(--s-4);
+    top: calc(var(--stack-top) + var(--i, 0) * var(--stack-step));
   }
-  .cs-list { display: flex; flex-direction: column; align-items: flex-start; }
-  .cs-list button {
-    appearance: none; -webkit-appearance: none;
-    margin: 0; padding: 1px 0; border: 0; background: none;
-    font: inherit; text-align: left; color: var(--ink);
-    display: inline-flex; align-items: flex-start; gap: 14px;
-    font-size: clamp(1.375rem, 2.4vw, 2.125rem); font-weight: 500;
-    letter-spacing: -0.035em; line-height: 1.15;
-    opacity: 0.2;
-    cursor: pointer;
-    transition: opacity 300ms var(--ease-out);
-  }
-  .cs-list button[aria-current="true"] { opacity: 1; }
-  .cs-meta {
-    display: none;
-    padding-top: 0.55em;
-    font-size: var(--t-micro); font-weight: 600;
-    letter-spacing: 0.08em; text-transform: uppercase; line-height: 1.4;
-    color: var(--muted);
-    max-width: 9em;   /* a two-word trade stacks onto two short lines */
-  }
-  .cs-list button[aria-current="true"] .cs-meta { display: block; }
-  @media (hover: hover) and (pointer: fine) {
-    .cs-list button:hover { opacity: 0.6; }
-    .cs-list button[aria-current="true"]:hover { opacity: 1; }
-  }
-  .cs-info {
-    margin: 0; max-width: 40ch;
-    font-size: 0.9375rem; line-height: 1.6; color: var(--muted);
-    transition: opacity 180ms ease;
-  }
-  .cs-info.is-swapping { opacity: 0; }
-
-  .cs-col, .cs-group { display: flex; flex-direction: column; gap: var(--frame); }
-  .cs-shot {
+  .stack-card {
+    --p: 0;
     position: relative;
     display: grid; place-items: center;
-    aspect-ratio: 16 / 9;
-    border-radius: var(--radius-sm);
-    background: var(--surface);
+    height: var(--stack-h);
+    border-radius: var(--radius);
+    background: var(--slot-1);
     overflow: hidden;
-    color: var(--muted);
-    font-size: var(--t-micro); font-weight: 600;
-    letter-spacing: 0.08em; text-transform: uppercase;
+    isolation: isolate;
+    color: #fff;
     text-decoration: none;
+    transform-origin: 50% 0;
+    transform: scale(calc(1 - var(--p) * 0.06));
+    will-change: transform;
   }
-  .cs-shot img, .cs-shot video {
-    position: absolute; inset: 0;
-    width: 100%; height: 100%; object-fit: cover; display: block;
+  .stack-card img {
+    position: absolute; inset: 0; z-index: -2;
+    width: 100%; height: 100%; object-fit: cover; object-position: 50% 40%;
+    display: block;
+    transition: transform 900ms var(--ease-out);
   }
-
-  /* each client's own name, for screen readers on a wide screen (the list
-     says it there) and on screen on a phone */
-  .cs-head { display: flex; align-items: baseline; justify-content: space-between; gap: var(--s-2); margin-top: var(--s-3); }
-  .cs-group:first-child .cs-head { margin-top: 0; }
-  .cs-name { margin: 0; font-size: clamp(1.25rem, 5vw, 1.5rem); font-weight: 500; letter-spacing: -0.03em; line-height: 1.1; }
-  .cs-trade { font-size: var(--t-micro); font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
-  @media (min-width: 901px) {
-    .cs-head {
-      position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
-      overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
-    }
+  /* an even veil so the name reads on any picture, and the darkening as
+     the next card covers this one */
+  .stack-card::after {
+    content: ""; position: absolute; inset: 0; z-index: -1;
+    background: rgba(6, 13, 26, calc(0.32 + var(--p) * 0.5));
+    transition: background-color 300ms var(--ease-out);
   }
-  @media (max-width: 900px) {
-    .cs { grid-template-columns: minmax(0, 1fr); gap: var(--s-3); }
-    .cs-side {
-      z-index: 5;
-      height: auto;
-      margin-inline: calc(var(--frame) * -1);
-      background: var(--paper);
+  .stack-name {
+    padding-inline: var(--s-3);
+    text-align: center;
+    font-size: clamp(2rem, 6vw, 5rem); font-weight: 500;
+    letter-spacing: -0.04em; line-height: 1;
+    text-wrap: balance;
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .stack-card:hover img { transform: scale(1.04); }
+    .stack-card:hover::after { background: rgba(6, 13, 26, calc(0.22 + var(--p) * 0.5)); }
+  }
+  .stack-card:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; }
+  @media (max-width: 600px) {
+    /* taller on a phone, where a 16:9 card is barely a strip */
+    .stack {
+      --stack-step: 10px; gap: var(--s-4);
+      --stack-h: min(calc((100vw - var(--frame) * 2) * 5 / 4), calc(100svh - var(--stack-top) - var(--s-5)));
     }
-    .cs-info { display: none; }
-    .cs-list {
-      flex-direction: row; align-items: center; gap: var(--s-3);
-      overflow-x: auto; scrollbar-width: none;
-      padding: var(--s-1) var(--frame);
-    }
-    .cs-list::-webkit-scrollbar { display: none; }
-    .cs-list button {
-      flex: none; white-space: nowrap;
-      font-size: var(--t-small); font-weight: 600;
-      letter-spacing: 0.08em; text-transform: uppercase; line-height: 1.5;
-      opacity: 0.45;
-    }
-    .cs-list button[aria-current="true"] { box-shadow: inset 0 -2px 0 var(--accent); }
-    .cs-list button[aria-current="true"] .cs-meta { display: none; }
+    .stack-card { border-radius: var(--radius-sm); }
+  }
+  /* no easing back on reduced motion; the cards still stack, which is
+     only the page scrolling */
+  @media (prefers-reduced-motion: reduce) {
+    .stack-card { transform: none; }
+    .stack-card img { transition: none; }
   }
 
   /* the way through to /work, under the case studies */
@@ -2448,35 +2412,20 @@
       <p class="lede">A look at some of the Nelson businesses we've made videos for.</p>
     </div>
 
-    <div class="cs" data-cs>
-      <div class="cs-side">
-        <div class="cs-list" role="group" aria-label="Clients">
-          <button type="button" aria-current="true">Johnson Residential<span class="cs-meta" aria-hidden="true">Residential building</span></button>
-          <button type="button" aria-current="false">ATK Detailing<span class="cs-meta" aria-hidden="true">Car detailing</span></button>
-          <button type="button" aria-current="false">Landscape Transformers<span class="cs-meta" aria-hidden="true">Landscaping</span></button>
-          <button type="button" aria-current="false">Sky Automotive<span class="cs-meta" aria-hidden="true">Automotive servicing</span></button>
-        </div>
-        <p class="cs-info" aria-hidden="true"></p>
-      </div>
-      <div class="cs-col">
-        <div class="cs-group" id="case-johnson-residential" data-summary="Videos from Johnson Residential&#x27;s building sites, with the team on camera talking through their homes, from the concrete pour to the finished build.">
-          <div class="cs-head"><h3 class="cs-name">Johnson Residential</h3><span class="cs-trade">Residential building</span></div>
-          <a class="cs-shot" href="/work/case/?client=johnson-residential" aria-label="Johnson Residential case study">Johnson Residential</a>
-        </div>
-        <div class="cs-group" id="case-atk-detailing" data-summary="ATK Detailing&#x27;s owner on camera, talking through the work and the protection they offer, with the detailing shown up close.">
-          <div class="cs-head"><h3 class="cs-name">ATK Detailing</h3><span class="cs-trade">Car detailing</span></div>
-          <a class="cs-shot" href="/work/case/?client=atk-detailing" aria-label="ATK Detailing case study">ATK Detailing</a>
-        </div>
-        <div class="cs-group" id="case-landscape-transformers" data-summary="Videos made for Landscape Transformers.">
-          <div class="cs-head"><h3 class="cs-name">Landscape Transformers</h3><span class="cs-trade">Landscaping</span></div>
-          <a class="cs-shot" href="/work/case/?client=landscape-transformers" aria-label="Landscape Transformers case study">Landscape Transformers</a>
-        </div>
-        <div class="cs-group" id="case-sky-automotive" data-summary="Sky Automotive&#x27;s workshop on camera, from detail work on the cars to the opening of their new Nelson location.">
-          <div class="cs-head"><h3 class="cs-name">Sky Automotive</h3><span class="cs-trade">Automotive servicing</span></div>
-          <a class="cs-shot" href="/work/case/?client=sky-automotive" aria-label="Sky Automotive case study">Sky Automotive</a>
-        </div>
-      </div>
-    </div>
+    <ul class="stack" data-stack aria-label="Case studies">
+      <li class="stack-item" id="case-johnson-residential" style="--i:0">
+        <a class="stack-card" href="/work/case/?client=johnson-residential"><img src="/media/johnson-residential-1-poster.webp" alt="" width="608" height="1080" loading="lazy" decoding="async"><span class="stack-name">Johnson Residential</span></a>
+      </li>
+      <li class="stack-item" id="case-atk-detailing" style="--i:1">
+        <a class="stack-card" href="/work/case/?client=atk-detailing"><img src="/media/atk-detailing-poster.webp" alt="" width="608" height="1080" loading="lazy" decoding="async"><span class="stack-name">ATK Detailing</span></a>
+      </li>
+      <li class="stack-item" id="case-landscape-transformers" style="--i:2">
+        <a class="stack-card" href="/work/case/?client=landscape-transformers"><span class="stack-name">Landscape Transformers</span></a>
+      </li>
+      <li class="stack-item" id="case-sky-automotive" style="--i:3">
+        <a class="stack-card" href="/work/case/?client=sky-automotive"><img src="/media/sky-automotive-1-poster.webp" alt="" width="608" height="1080" loading="lazy" decoding="async"><span class="stack-name">Sky Automotive</span></a>
+      </li>
+    </ul>
   </div>
 
   <div class="btn-row work-more" data-anim>
@@ -3825,71 +3774,33 @@
 <script>
 (function () {
   'use strict';
-  /* ---- case studies: the index ----
-     The client whose shots sit nearest the middle of the screen is the
-     current one: it is the bright name in the list, and its summary sits under the
-     list. A name in the list scrolls to that client's shots. */
-  function initCaseIndex(root) {
+  /* ---- case studies: the stack ----
+     Each card sticks under the nav and the next one rises over it. As it
+     does, the card underneath gets --p from 0 (nothing over it) to 1 (fully
+     covered), which the stylesheet turns into a slight shrink and a darker
+     veil. Reduced motion keeps the stacking and skips the shrink. */
+  function initStack(root) {
     if (!root) return;
-    var side = root.querySelector('.cs-side');
-    var list = root.querySelector('.cs-list');
-    var info = root.querySelector('.cs-info');
-    var groups = [].slice.call(root.querySelectorAll('.cs-group'));
-    var btns = [].slice.call(list.querySelectorAll('button'));
-    var active = -1, swapTimer = 0, ticking = false;
-
-    function summary(i) { return groups[i].getAttribute('data-summary') || ''; }
-    function setActive(i) {
-      if (i === active) return;
-      var first = active < 0;
-      active = i;
-      btns.forEach(function (b, n) { b.setAttribute('aria-current', n === i ? 'true' : 'false'); });
-      /* on a phone the list is a row that can run off the edge: keep the
-         current name in view */
-      if (list.scrollWidth > list.clientWidth) {
-        var b = btns[i];
-        list.scrollTo({ left: b.offsetLeft - (list.clientWidth - b.offsetWidth) / 2, behavior: first ? 'auto' : 'smooth' });
-      }
-      if (!info) return;
-      clearTimeout(swapTimer);
-      if (first) { info.textContent = summary(i); return; }
-      info.classList.add('is-swapping');
-      swapTimer = setTimeout(function () { info.textContent = summary(active); info.classList.remove('is-swapping'); }, 180);
-    }
+    var items = [].slice.call(root.querySelectorAll('.stack-item'));
+    var cards = items.map(function (it) { return it.querySelector('.stack-card'); });
+    var ticking = false;
     function update() {
       ticking = false;
-      /* the client whose shots sit nearest the middle of the screen */
-      var mid = window.innerHeight * 0.5, idx = 0, best = Infinity;
-      groups.forEach(function (g, n) {
-        var r = g.getBoundingClientRect();
-        var d = Math.abs((r.top + r.bottom) / 2 - mid);
-        if (d < best) { best = d; idx = n; }
-      });
-      setActive(idx);
+      for (var n = 0; n < items.length - 1; n++) {
+        var r = items[n].getBoundingClientRect();
+        var next = items[n + 1].getBoundingClientRect();
+        var h = r.height || 1;
+        var p = (r.bottom - next.top) / h;
+        p = p < 0 ? 0 : p > 1 ? 1 : p;
+        cards[n].style.setProperty('--p', p.toFixed(3));
+      }
     }
     function onScroll() { if (!ticking) { ticking = true; requestAnimationFrame(update); } }
     window.addEventListener('scroll', onScroll, { passive: true });
     window.addEventListener('resize', onScroll);
     update();
-
-    /* land a client's first shot just under the nav, and under the list
-       too where the list is a row across the top */
-    function offset() {
-      var row = getComputedStyle(list).flexDirection === 'row';
-      return -((parseFloat(getComputedStyle(side).top) || 0) + (row ? side.offsetHeight : 0) + 8);
-    }
-    root.goTo = function (i, instant) {
-      var g = groups[i];
-      if (!g) return;
-      var y = Math.max(0, g.getBoundingClientRect().top + window.pageYOffset + offset());
-      if (window.__lenis) { window.__lenis.scrollTo(y, { immediate: !!instant, force: true }); return; }
-      window.scrollTo({ top: y, behavior: instant ? 'auto' : 'smooth' });
-    };
-    btns.forEach(function (b, n) {
-      b.addEventListener('click', function () { root.goTo(n); });
-    });
   }
-  initCaseIndex(document.querySelector('[data-cs]'));
+  initStack(document.querySelector('[data-stack]'));
 })();
 </script>
 

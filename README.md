@@ -96,9 +96,14 @@ That rests on a few decisions worth not undoing:
 
 - **Nothing is embedded as a data URI.** Images live in `img/` as WebP so they are
   cached across visits instead of being re-downloaded inside the HTML every time.
-- **The home page's case studies** are the same index as `/work`, one placeholder
-  per client, each linking through to that client on `/work`. When real shots go
-  in, make them still images, not video. Nothing on the home page plays by itself, so a first load fetches no clips. (The hero's pointer
+- **The home page's case studies** are a stack of cards, one per client, the full
+  width of the content: a picture with the client's name in the middle, linking
+  to that client's case study. Each card sticks under the nav and the next one
+  slides up over it as you scroll, the covered one easing back and darkening.
+  The pictures are the vertical poster frames from `media/`, cropped to fit and
+  lazy-loaded; Landscape Transformers has none yet and shows the plain ground.
+  When landscape stills exist, swap the `src` in `index.html`. Keep them still
+  images, not video. Nothing on the home page plays by itself, so a first load fetches no clips. (The hero's pointer
   trail is the one exception, and it only starts once the mouse enters the hero.)
   Putting `autoplay` on a `<video>` makes the browser fetch it on load whatever
   `preload` says, so don't.
