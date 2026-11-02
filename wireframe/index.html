@@ -1325,6 +1325,9 @@
     color: var(--error);
   }
   .field-error::before { content: "!"; font-weight: 700; flex: none; }
+  .field-error a { color: inherit; text-decoration: underline; text-underline-offset: 2px; }
+  /* the button while the enquiry is on its way */
+  form .btn:disabled { cursor: progress; opacity: 0.75; }
   input[aria-invalid="true"],
   textarea[aria-invalid="true"],
   .select-wrap:has(select[aria-invalid="true"]) .sel-btn { border-color: var(--error); }
@@ -2048,6 +2051,13 @@
     .rc-tags span:first-child { opacity: 1; }
   }
 </style>
+<!-- With script off or blocked, nothing would ever lift the curtain or fade
+     the sections in, and the page would sit on a navy screen. The other
+     pages guard against this with their .js class; this does it here. -->
+<noscript><style>
+  .page-loader { display: none !important; }
+  [data-anim] { opacity: 1 !important; transform: none !important; }
+</style></noscript>
 </head>
 <body>
 
@@ -2086,7 +2096,7 @@
   <div class="shell">
     <p class="avail"><i></i><span>Now taking on new clients</span></p>
     <h1 tabindex="-1">Bringing you leads<br>through creative video</h1>
-    <p class="lede">Kia ora, we're a Nelson based non-agency that creates video content for local businesses. Whether you want fresh content every month or a one-off ad project, we're the team for the job.</p>
+    <p class="lede">Kia ora, we're a Nelson-based non-agency that creates video content for local businesses. Whether you want fresh content every month or a one-off ad project, we're the team for the job.</p>
     <div class="btn-row">
       <a class="btn" href="#book" data-route="book">
         <span class="btn-label"><span>Book my free call</span><span aria-hidden="true">Book my free call</span></span>
@@ -2463,7 +2473,7 @@
     <div class="team">
       <div class="block" data-anim><img src="/img/arlo-radford.webp" alt="Arlo Radford, founder of Tui Media, on a shoot in Nelson" width="900" height="900" loading="lazy" decoding="async"></div>
       <div class="team-body" data-anim>
-        <p class="measure">Hey there, I'm Arlo, founder and creative director here at Tui Media, and a 17 year old at Nelson College. I've been in the creative industry for over four years now, having grown up with cameras.</p>
+        <p class="measure">Hey there, I'm Arlo, founder and creative director here at Tui Media, and a 17-year-old at Nelson College. I've been in the creative industry for over four years now, having grown up with cameras.</p>
         <p class="measure">At Tui Media I make video content and ads for local businesses. I do everything myself, from scripting to delivering, which means nothing gets lost along the way.</p>
         <p class="measure">Most of the businesses I work with are on a monthly plan, where one shoot turns into a month's worth of reels, photos and posts. Others come to me for a one-off ad project, launched in their own ad account.</p>
         <p class="measure">As well as working with over thirty local businesses here in Nelson, I've partnered with Nikon New Zealand to showcase the release of one of their new cinema cameras.</p>
@@ -2713,7 +2723,7 @@
       <span class="btn-label"><span>Request my free call</span><span aria-hidden="true">Request my free call</span></span>
     </button>
 
-    <p class="field-error" data-submit-error hidden role="alert">Something went wrong sending that. Try again, or email hello@tuimedia.nz directly.</p>
+    <p class="field-error" data-submit-error hidden role="alert"><span>Something went wrong sending that. Try again, or <a href="mailto:hello@tuimedia.nz" data-submit-mail>email it to hello@tuimedia.nz</a> instead. Your answers will already be in the email.</span></p>
     <p class="form-note">Your details are only used to reply to this enquiry. Nothing is shared with anyone else and there's no mailing list.</p>
   </form>
 
@@ -3000,6 +3010,17 @@
   var ctaText = [].slice.call(document.querySelectorAll('[data-cta-text]'));
   var BASE_TITLE = document.title;
 
+  /* Conversion events for Vercel Web Analytics: the form being opened and an
+     enquiry going through, so the dashboard shows how many visitors get as
+     far as the form and how many send it. window.va is the queue Vercel's
+     script reads when it loads, so an event fired before then still counts.
+     (Custom events only show on a Vercel Pro plan; on Hobby this is a no-op.) */
+  /* the same queue and call shape as @vercel/analytics' own track() */
+  window.va = window.va || function () { (window.vaq = window.vaq || []).push([].slice.call(arguments)); };
+  function track(name, data) {
+    try { window.va('event', data ? { name: name, data: data } : { name: name }); } catch (err) {}
+  }
+
   /* the heading each view hands focus to on arrival, so keyboard and screen
      reader users start at the top of the new page rather than wherever they
      were standing on the old one */
@@ -3012,17 +3033,27 @@
     try { h.focus({ preventScroll: true }); } catch (err) { h.focus(); }
   }
 
+  /* Where the visitor was on the home page when the form opened. Coming
+     back with the browser's Back button or "Back to site" lands them there
+     again, not at the top of a ten-screen page they'd already scrolled. */
+  var homeY = 0;
+
   function show(name, moveFocus) {
     var book = name === 'book';
+    if (book && !views.home.hidden) homeY = window.scrollY || window.pageYOffset || 0;
     views.home.hidden = book;
     views.book.hidden = !book;
 
     navCta.setAttribute('href', book ? '#home' : '#book');
     navCta.setAttribute('data-route', book ? 'home' : 'book');
     navCta.classList.toggle('back', book);
-    ctaText.forEach(function (t) { t.textContent = book ? 'Back to Site' : 'Book a free call'; });
+    ctaText.forEach(function (t) { t.textContent = book ? 'Back to site' : 'Book a free call'; });
 
     document.title = book ? 'Book a free call | Tui Media' : BASE_TITLE;
+    if (book && views.book.getAttribute('data-tracked') !== '1') {
+      views.book.setAttribute('data-tracked', '1');
+      track('Form opened');
+    }
     jumpToTop();
     if (moveFocus) focusHead(name);
     onScroll();   /* repaint the scroll-driven bits for the view now showing */
@@ -3040,11 +3071,20 @@
      route has actually been applied - it gets honoured on the far side of
      the curtain instead of being dropped. */
   var pendingAnchor = null;
+  /* set when "Back to site" is what asked for home, so the route lands where
+     the visitor left off. The logo also routes home, and that one means the
+     top of the page, so it leaves this off. */
+  var pendingRestore = false;
 
   function applyRoute(name) {
+    /* read before show() and before the address changes below */
+    var crossing = (name === 'book') !== (location.hash === '#book');
     show(name, true);
     var anchor = pendingAnchor;
     pendingAnchor = null;
+    var restore = pendingRestore && name === 'home' && !anchor;
+    pendingRestore = false;
+    if (restore) returnToHomeY();
     var hash = name === 'book' ? '#book' : '#home';
     if (anchor) {
       var target = null;
@@ -3060,9 +3100,35 @@
         requestAnimationFrame(function () { scrollToCentre(target, false); });
       }
     }
+    /* A move between the page and the form is a new history entry, so the
+       browser's Back button undoes it. This was replaceState, which meant
+       Back from the form skipped the home page altogether and took the
+       visitor off the site, back to the ad or search result they came from.
+       On a phone, Back is how most people leave a form. Anything that stays
+       on the same side (the logo from the home page) still just replaces. */
     if (location.protocol !== 'data:' && location.protocol !== 'about:') {
-      try { history.replaceState(null, '', hash); } catch (err) {}
+      try { history[crossing ? 'pushState' : 'replaceState'](null, '', hash); } catch (err) {}
     }
+  }
+
+  /* back to where the visitor was on the home page. The home view has only
+     just come out of `hidden`, so the page is still the height of the short
+     form as far as the scroller (and Lenis) knows: force the layout, land,
+     then land again next frame once the real height has settled. */
+  function returnToHomeY() {
+    var y = homeY;
+    function land() {
+      void document.documentElement.offsetHeight;
+      if (window.__lenis) {
+        if (window.__lenis.resize) window.__lenis.resize();
+        window.__lenis.scrollTo(y, { immediate: true, force: true });
+        return;
+      }
+      try { window.scrollTo({ top: y, behavior: 'instant' }); }
+      catch (err) { window.scrollTo(0, y); }
+    }
+    land();
+    requestAnimationFrame(land);
   }
 
   /* Every state change here used to hang entirely off `animationend`. If
@@ -3140,7 +3206,7 @@
     }
 
     pendingAnchor = null;
-    startRoute(name);
+    if (startRoute(name)) pendingRestore = name === 'home' && link.hasAttribute('data-nav-cta');
   });
 
   function startRoute(name) {
@@ -3219,6 +3285,9 @@
     var onBook = !views.book.hidden;
 
     if (wantBook !== onBook) show(wantBook ? 'book' : 'home', true);
+
+    /* Back from the form onto the plain home page: pick up where they were */
+    if (onBook && !wantBook && (!hash || hash === '#home')) returnToHomeY();
 
     /* an in-page anchor from the book view lands on a section that was hidden a
        moment ago, so the browser's own jump has nothing to aim at. Do it here. */
@@ -3308,16 +3377,26 @@
     return f || el.parentElement;
   }
 
+  /* A dropdown's real <select> is hidden from assistive tech, and the
+     button standing in for it is what takes focus, so the button carries
+     the error state as well or a screen reader never hears it. */
+  function errorTargets(el) {
+    var btn = el.tagName === 'SELECT' && el.parentNode ? el.parentNode.querySelector('.sel-btn') : null;
+    return btn ? [el, btn] : [el];
+  }
+
   function clearError(el) {
     var id = el.id + '-error';
     var msg = document.getElementById(id);
     if (msg && msg.parentNode) msg.parentNode.removeChild(msg);
-    el.removeAttribute('aria-invalid');
-    var rest = (el.getAttribute('aria-describedby') || '').split(/\s+/).filter(function (t) {
-      return t && t !== id;
+    errorTargets(el).forEach(function (t) {
+      t.removeAttribute('aria-invalid');
+      var rest = (t.getAttribute('aria-describedby') || '').split(/\s+/).filter(function (x) {
+        return x && x !== id;
+      });
+      if (rest.length) t.setAttribute('aria-describedby', rest.join(' '));
+      else t.removeAttribute('aria-describedby');
     });
-    if (rest.length) el.setAttribute('aria-describedby', rest.join(' '));
-    else el.removeAttribute('aria-describedby');
   }
 
   /* the message is written text with its own marker, tied to the input by
@@ -3330,9 +3409,11 @@
     p.id = id;
     p.textContent = text;
     fieldOf(el).appendChild(p);
-    el.setAttribute('aria-invalid', 'true');
-    var described = el.getAttribute('aria-describedby');
-    el.setAttribute('aria-describedby', described ? described + ' ' + id : id);
+    errorTargets(el).forEach(function (t) {
+      t.setAttribute('aria-invalid', 'true');
+      var described = t.getAttribute('aria-describedby');
+      t.setAttribute('aria-describedby', described ? described + ' ' + id : id);
+    });
   }
 
   function controls() {
@@ -3359,7 +3440,7 @@
     data._t = Date.now() - pageOpenedAt;
 
     submitError.hidden = true;
-    submitBtn.disabled = true;
+    sending(true);
 
     fetch('/api/enquiry', {
       method: 'POST',
@@ -3368,17 +3449,46 @@
     }).then(function (res) {
       if (!res.ok) throw new Error('send failed');
 
+      track('Enquiry sent', { interest: data.interest || 'Not given' });
       bookForm.hidden = true;
       if (pageHead) pageHead.hidden = true;
       done.hidden = false;
       jumpToTop();
       if (done.focus) { try { done.focus({ preventScroll: true }); } catch (err) { done.focus(); } }
     }).catch(function () {
+      /* the email fallback carries everything they just typed, so a failed
+         send costs them one more tap instead of the whole form again */
+      if (submitMail) submitMail.href = mailtoFor(data);
       submitError.hidden = false;
-    }).finally(function () {
-      submitBtn.disabled = false;
+    }).then(function () {
+      sending(false);
     });
   });
+
+  /* The API waits on the email and the CRM before it answers, which can take
+     a few seconds. A button that just goes dead for that long reads as
+     broken, so it says what it's doing. */
+  var submitLabels = [].slice.call(submitBtn.querySelectorAll('.btn-label > span'));
+  var submitText = submitLabels.length ? submitLabels[0].textContent : '';
+  function sending(on) {
+    submitBtn.disabled = on;
+    bookForm.setAttribute('aria-busy', on ? 'true' : 'false');
+    submitLabels.forEach(function (s) { s.textContent = on ? 'Sending…' : submitText; });
+  }
+
+  var submitMail = document.querySelector('[data-submit-mail]');
+  var MAIL_LABELS = {
+    name: 'Name:', business: 'Business:', email: 'Email:', interest: 'What are you after?',
+    sell: 'What do you sell?', value: "What's a customer worth?", spend: 'Monthly ad spend:',
+    when: 'When do you want to start?', decision: 'Who signs this off?',
+    capacity: 'Room for more work?', notes: 'Anything else?'
+  };
+  function mailtoFor(d) {
+    var lines = Object.keys(MAIL_LABELS).filter(function (k) { return d[k]; })
+      .map(function (k) { return MAIL_LABELS[k] + ' ' + d[k]; });
+    return 'mailto:hello@tuimedia.nz?subject=' + encodeURIComponent('Enquiry: ' + (d.business || d.name || 'from the website'))
+         + '&body=' + encodeURIComponent(lines.join('\n'));
+  }
 
   /* clear a message the moment the field it belongs to is put right */
   function recheck(e) {
@@ -3408,6 +3518,14 @@
     var btn = document.createElement('button');
     btn.type = 'button';
     btn.className = 'sel-btn';
+    /* the select-only combobox pattern: focus stays on this button while the
+       arrow keys move through the list, and aria-activedescendant (set on
+       the button, the thing that has focus) is what tells a screen reader
+       which option is current. It used to sit on the list, which never has
+       focus, so arrowing through the options was announced as nothing. The
+       button's own text is the chosen value, so it is labelled by the
+       question alone. */
+    btn.setAttribute('role', 'combobox');
     btn.setAttribute('aria-haspopup', 'listbox');
     btn.setAttribute('aria-expanded', 'false');
     var listId = sel.id + '-list';
@@ -3415,7 +3533,7 @@
     var lbl = document.querySelector('label[for="' + sel.id + '"]');
     if (lbl) {
       if (!lbl.id) lbl.id = sel.id + '-label';
-      btn.setAttribute('aria-labelledby', lbl.id + ' ' + sel.id + '-value');
+      btn.setAttribute('aria-labelledby', lbl.id);
     }
     btn.innerHTML = '<span class="sel-val" id="' + sel.id + '-value"></span><span class="sel-chev"></span>';
 
@@ -3458,7 +3576,7 @@
       if (!items.length) return;
       active = (i + items.length) % items.length;
       items.forEach(function (li, n) { li.classList.toggle('is-active', n === active); });
-      list.setAttribute('aria-activedescendant', items[active].id);
+      btn.setAttribute('aria-activedescendant', items[active].id);
       var li = items[active], t = li.offsetTop, b = t + li.offsetHeight;
       if (t < list.scrollTop) list.scrollTop = t;
       else if (b > list.scrollTop + list.clientHeight) list.scrollTop = b - list.clientHeight;
@@ -3486,7 +3604,7 @@
       list.hidden = true;
       wrap.classList.remove('is-open');
       btn.setAttribute('aria-expanded', 'false');
-      list.removeAttribute('aria-activedescendant');
+      btn.removeAttribute('aria-activedescendant');
       items.forEach(function (li) { li.classList.remove('is-active'); });
       if (focusBtn) btn.focus();
     }
@@ -3750,12 +3868,6 @@
     logoCopy.setAttribute('aria-hidden', 'true');
     logoTrack.appendChild(logoCopy);
   }
-})();
-</script>
-
-<script>
-(function () {
-  'use strict';
 })();
 </script>
 

@@ -70,7 +70,11 @@ Absolute paths (`/img/…`, `/fonts/…`) mean it has to be served, not opened a
 ## The two views
 
 `index.html` holds both `#home` and `#book` and swaps between them with a
-click-driven router, with the hash kept in sync so browser back still works. The
+click-driven router. Moving between the page and the form adds a history entry
+(`pushState`), so the browser's Back button closes the form and lands the visitor
+where they were on the page, as does "Back to site"; the logo goes to the top.
+Don't switch it back to `replaceState`: that made Back skip the home page and take
+the visitor off the site, back to the ad or search result they came from. The
 curtain that plays on first paint is the same element that plays between routes,
 driven by one state machine with a timer backing up every `animationend`, so a
 swallowed event can't leave the site looking dead.
@@ -82,6 +86,14 @@ Resend. Customer value and ad spend only appear (and are only required, in the
 form and the function) when the enquiry is for an ad project or both. Spam is
 caught by an off-screen honeypot field and a minimum time on the page; both are
 answered with a quiet 200 and nothing is sent. It needs `RESEND_API_KEY` in the Vercel project's environment variables.
+
+While it sends, the button reads "Sending…" (the function waits on the email and the
+CRM, which can take a few seconds). If the send fails, the error offers a `mailto:`
+link with every answer already in the email body, so the lead isn't lost.
+
+Two custom events go to Vercel Web Analytics: `Form opened` (once per visit) and
+`Enquiry sent` (with the interest picked), for a click → form → sent funnel. Custom
+events only appear on a Vercel Pro plan; on Hobby they're quietly dropped.
 
 ## Performance
 
