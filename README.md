@@ -11,17 +11,21 @@ deployed on Vercel.
   setting in the Vercel project at the same time.
   - `index.html` — the whole site: markup, styles and script in one file.
   - `work/index.html` — every case study at `/work`, linked from the menu, the
-    footer and the home page's case studies. Laid out as a sticky index: the
-    client list on the left and the current client's write-up on the right stay
-    put while every clip scrolls up the middle, each with a small number. The
-    client whose clips are in view is written large in the list; clicking a name
-    scrolls to its clips, and `/work#client-name` lands on them. Each clip plays
-    with sound on click. These are the only clips on the site that carry audio,
-    and they live in `media/work/`. The case studies are the `CASES` list in its script.
+    footer and the home page's case studies: Johnson Residential, ATK Detailing,
+    Landscape Transformers and Sky Automotive, the `CASES` list in its script.
+    Laid out as an index: the client list sits on the left, held mid-screen,
+    while each client's shots scroll past on the right. The client nearest the
+    middle of the screen is bright, the rest are faded, and the current one shows
+    its trade beside it and its summary under the list. Clicking a name scrolls
+    to its shots, and `/work#client-name` lands on them. Every shot is the same
+    16:9 frame, and for now they are placeholders: put an `<img>` or `<video>`
+    inside a `.cs-shot` and it fills the frame.
   - `video-ads/index.html` and `monthly-content/index.html` — the two service
     pages at `/video-ads` and `/monthly-content`, linked from the cards in
     "Two ways to work together" and from the menu. Their book buttons go to `/?interest=ad#book`
     or `/?interest=monthly#book`, which opens the form with that option picked.
+  - Every page but the home page opens on the hero's pill naming the page
+    (About, Monthly content, Video ads, Case studies) above its own headline.
   - Buttons, on every page: the label and nothing else, no arrow or icon. A
     solid button inverts to its outline on hover; an outline button fills.
     Only the colours change, nothing moves.
@@ -82,14 +86,12 @@ That rests on a few decisions worth not undoing:
 
 - **Nothing is embedded as a data URI.** Images live in `img/` as WebP so they are
   cached across visits instead of being re-downloaded inside the HTML every time.
-- **The home page's case studies are still images, not video,** in the same sticky
-  index as `/work`, each linking through to that client on `/work`. Nothing on the
-  home page plays by itself, so a first load fetches no clips. (The hero's pointer
+- **The home page's case studies** are the same index as `/work`, one placeholder
+  per client, each linking through to that client on `/work`. When real shots go
+  in, make them still images, not video. Nothing on the home page plays by itself, so a first load fetches no clips. (The hero's pointer
   trail is the one exception, and it only starts once the mouse enters the hero.)
   Putting `autoplay` on a `<video>` makes the browser fetch it on load whatever
   `preload` says, so don't.
-- **`/work` loads its posters and nothing else.** The clips sit on `data-src`, so
-  the first request for an mp4 there is the first time someone plays one.
 - **Every `<img>` carries `width` and `height`,** so nothing shifts as the
   logos and the portrait decode.
 - **The font is self-hosted** and the latin subset is preloaded. Google Fonts cost
@@ -110,8 +112,9 @@ ffmpeg -i in.mp4 -an -c:v libx264 -preset slow -crf 28 -profile:v high -level 4.
   -movflags +faststart out.mp4
 ```
 
-`/work` is the opposite: one clip at a time, watched deliberately, with sound.
-Those go to `media/work/` at 720x1280, CRF 24, 30fps, AAC 128k:
+`media/work/` holds the vertical cuts with sound that `/work` used to play, at
+720x1280, CRF 24, 30fps, AAC 128k. Nothing shows them while the case studies are
+landscape placeholders; this is how they were made:
 
 ```bash
 ffmpeg -i in.mp4 -c:v libx264 -preset slow -crf 24 -profile:v high -level 4.1 \
@@ -123,9 +126,9 @@ ffmpeg -i in.mp4 -c:v libx264 -preset slow -crf 24 -profile:v high -level 4.1 \
 The hero's cursor trail gets a third, tiny cut in `media/trail/`: 264px wide
 (sharp at 2x on the largest 132px tile), four seconds from 1s in so nothing opens
 on a fade, 24fps, silent, ~100KB each and ~1MB for the set. It is only fetched
-once a mouse first enters the hero, and never on touch or reduced motion. A clip
-added to Recent work joins the trail as soon as its cut exists here, under the
-same name:
+once a mouse first enters the hero, and never on touch or reduced motion. The
+trail plays the `clips` list in `index.html`, which only names clients that have a
+case study; a new clip needs its cut here, under the same name:
 
 ```bash
 ffmpeg -ss 1 -t 4 -i media/in.mp4 -an -c:v libx264 -preset slow -crf 30 \
@@ -180,7 +183,7 @@ One easing token, `--ease-out: cubic-bezier(0.23, 1, 0.32, 1)`. No libraries.
 
 ## SEO
 
-- `/work` is linked from the home page but absent from the sitemap and the nav, and carries both a
+- `/work` is in the menu and footer but absent from the sitemap, and carries both a
   `noindex` meta and an `X-Robots-Tag` from `vercel.json`. None of that is a lock —
   anyone with the URL can open it. It is unlisted, not private.
 - Canonical, `og:url`, the sitemap and every `@id` in the JSON-LD point at
@@ -189,5 +192,5 @@ One easing token, `--ease-out: cubic-bezier(0.23, 1, 0.32, 1)`. No libraries.
 - The JSON-LD graph is ProfessionalService, Person, WebSite, WebPage and FAQPage.
   The FAQ answers there are duplicated in the markup and have to stay in step.
 - There is deliberately no `aggregateRating`. Google does not allow a business to
-  mark up reviews of itself on its own site, and the "5.0 from 12 Google reviews"
+  mark up reviews of itself on its own site, and the "5.0 from 14 Google reviews"
   line stays as plain text for that reason.

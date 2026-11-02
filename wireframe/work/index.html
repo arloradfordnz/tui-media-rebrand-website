@@ -20,7 +20,7 @@
 <meta property="og:site_name" content="Tui Media">
 <meta property="og:url" content="https://www.tuimedia.nz/work">
 <meta property="og:title" content="Case studies | Tui Media">
-<meta property="og:description" content="Case studies of the video content and ads Tui Media has made for Nelson businesses. Click a video and put the sound on.">
+<meta property="og:description" content="Case studies of the video content and ads Tui Media has made for Nelson businesses.">
 <meta property="og:locale" content="en_NZ">
 <meta property="og:image" content="https://www.tuimedia.nz/og.jpg">
 <meta property="og:image:width" content="1200">
@@ -28,7 +28,7 @@
 <meta property="og:image:alt" content="The Tui Media logo, white on navy.">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Case studies | Tui Media">
-<meta name="twitter:description" content="Case studies of the video content and ads Tui Media has made for Nelson businesses. Click a video and put the sound on.">
+<meta name="twitter:description" content="Case studies of the video content and ads Tui Media has made for Nelson businesses.">
 <meta name="twitter:image" content="https://www.tuimedia.nz/og.jpg">
 <meta name="theme-color" content="#060D1A">
 <link rel="icon" href="/favicon-32.png" sizes="32x32">
@@ -236,82 +236,86 @@
     margin: var(--s-3) auto 0;
   }
 
-  /* ---------- case studies: the sticky index ----------
-     Three columns on a wide screen. The client list on the left and the
-     write-up on the right stay put while the clips scroll up the middle,
-     and the client whose clips are in view is the one written large.
-     Each clip carries a small number beside it. On a phone the list turns
-     into a sticky row under the nav and each client's write-up sits above
-     its own clips. The same block is in index.html and work/index.html. */
+  /* ---------- case studies: the index ----------
+     Two columns on a wide screen. The client list sits on the left, held in
+     the middle of the screen while the shots scroll past on the right. The
+     client whose shots are in view is bright, the rest are faded back, and
+     the current one carries its trade beside it. Every shot is the same
+     landscape frame. For now they are placeholders: put an <img> or a
+     <video> inside a .cs-shot and it fills the frame. On a phone the list
+     is a sticky row under the nav and each client's name sits above its
+     shots. The same block is in index.html and work/index.html. */
   .cs {
+    --cs-top: calc(var(--nav-h) + var(--frame) * 2);
     display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(0, var(--cs-col, 340px)) minmax(0, 1fr);
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
     gap: clamp(1.5rem, 4vw, 4rem);
     align-items: start;
   }
-  .cs-list, .cs-info {
+  .cs-side {
     position: sticky;
-    top: calc(var(--nav-h) + var(--frame) * 2 + var(--s-4));
+    top: var(--cs-top);
+    height: calc(100vh - var(--cs-top));
+    display: flex; flex-direction: column; justify-content: center;
+    gap: var(--s-4);
   }
-  .cs-list { display: flex; flex-direction: column; align-items: flex-start; gap: 2px; }
+  .cs-list { display: flex; flex-direction: column; align-items: flex-start; }
   .cs-list button {
     appearance: none; -webkit-appearance: none;
-    margin: 0; padding: 2px 0; border: 0; background: none;
-    font: inherit; text-align: left;
-    font-size: var(--t-small); font-weight: 500;
-    letter-spacing: 0.08em; text-transform: uppercase; line-height: 1.5;
-    color: var(--muted);
+    margin: 0; padding: 1px 0; border: 0; background: none;
+    font: inherit; text-align: left; color: var(--ink);
+    display: inline-flex; align-items: flex-start; gap: 14px;
+    font-size: clamp(1.375rem, 2.4vw, 2.125rem); font-weight: 500;
+    letter-spacing: -0.035em; line-height: 1.15;
+    opacity: 0.2;
     cursor: pointer;
-    transition: color 250ms var(--ease-out), font-size 350ms var(--ease-out), letter-spacing 350ms var(--ease-out);
+    transition: opacity 300ms var(--ease-out);
   }
-  .cs-list button[aria-current="true"] {
-    padding-block: 6px;
-    font-size: clamp(1.375rem, 2.3vw, 2.125rem); font-weight: 700;
-    letter-spacing: -0.02em; line-height: 1.05;
-    color: var(--ink);
-  }
-  @media (hover: hover) and (pointer: fine) {
-    .cs-list button:hover { color: var(--ink); }
-  }
-
-  .cs-info { display: flex; flex-direction: column; align-items: flex-start; gap: var(--s-2); transition: opacity 180ms ease; }
-  .cs-info.is-swapping { opacity: 0; }
-  .cs-info p, .cs-head p { margin: 0; font-size: 0.9375rem; line-height: 1.6; color: var(--muted); }
-  .cs-made { align-self: stretch; padding-top: var(--s-2); border-top: 1px solid var(--rule); }
-  .cs .cs-made p { color: var(--ink); }
-  .cs-label {
-    display: block; margin-bottom: 4px;
-    font-size: var(--t-micro); font-weight: 700;
-    letter-spacing: 0.11em; text-transform: uppercase;
-    color: var(--accent);
-  }
-
-  .cs-col { display: flex; flex-direction: column; gap: var(--s-6); }
-  .cs-group { display: flex; flex-direction: column; gap: var(--s-4); }
-  .cs-head { display: flex; flex-direction: column; align-items: flex-start; gap: var(--s-2); }
-  .cs-name {
-    margin: 0;
-    display: flex; align-items: center; gap: 8px;
-    font-size: clamp(1.25rem, 1.8vw, 1.5rem); font-weight: 500;
-    letter-spacing: -0.03em; line-height: 1.1;
-  }
-  .cs-name .tick { width: 16px; height: 16px; flex: none; }
-
-  /* a clip and its number; three widths in turn so the column steps in and
-     out rather than reading as one strip */
-  .cs-item { margin: 0; width: 100%; display: flex; align-items: flex-end; gap: 10px; }
-  .cs-item > :first-child { flex: 1; min-width: 0; }
-  .cs-item--b { width: 76%; align-self: flex-end; }
-  .cs-item--c { width: 86%; align-self: flex-start; }
-  .cs-num {
-    flex: none; width: 2ch;
-    font-size: var(--t-micro); font-weight: 500;
-    font-variant-numeric: tabular-nums; letter-spacing: 0.04em;
+  .cs-list button[aria-current="true"] { opacity: 1; }
+  .cs-meta {
+    display: none;
+    padding-top: 0.55em;
+    font-size: var(--t-micro); font-weight: 600;
+    letter-spacing: 0.08em; text-transform: uppercase; line-height: 1.4;
     color: var(--muted);
+    max-width: 9em;   /* a two-word trade stacks onto two short lines */
+  }
+  .cs-list button[aria-current="true"] .cs-meta { display: block; }
+  @media (hover: hover) and (pointer: fine) {
+    .cs-list button:hover { opacity: 0.6; }
+    .cs-list button[aria-current="true"]:hover { opacity: 1; }
+  }
+  .cs-info {
+    margin: 0; max-width: 40ch;
+    font-size: 0.9375rem; line-height: 1.6; color: var(--muted);
+    transition: opacity 180ms ease;
+  }
+  .cs-info.is-swapping { opacity: 0; }
+
+  .cs-col, .cs-group { display: flex; flex-direction: column; gap: var(--frame); }
+  .cs-shot {
+    position: relative;
+    display: grid; place-items: center;
+    aspect-ratio: 16 / 9;
+    border-radius: var(--radius-sm);
+    background: var(--surface);
+    overflow: hidden;
+    color: var(--muted);
+    font-size: var(--t-micro); font-weight: 600;
+    letter-spacing: 0.08em; text-transform: uppercase;
+    text-decoration: none;
+  }
+  .cs-shot img, .cs-shot video {
+    position: absolute; inset: 0;
+    width: 100%; height: 100%; object-fit: cover; display: block;
   }
 
-  /* on a wide screen the write-up lives in the right-hand column, so each
-     group's own copy is kept for screen readers only */
+  /* each client's own name, for screen readers on a wide screen (the list
+     says it there) and on screen on a phone */
+  .cs-head { display: flex; align-items: baseline; justify-content: space-between; gap: var(--s-2); margin-top: var(--s-3); }
+  .cs-group:first-child .cs-head { margin-top: 0; }
+  .cs-name { margin: 0; font-size: clamp(1.25rem, 5vw, 1.5rem); font-weight: 500; letter-spacing: -0.03em; line-height: 1.1; }
+  .cs-trade { font-size: var(--t-micro); font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
   @media (min-width: 901px) {
     .cs-head {
       position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
@@ -319,151 +323,64 @@
     }
   }
   @media (max-width: 900px) {
-    .cs { grid-template-columns: minmax(0, 1fr); gap: var(--s-4); }
-    .cs-info { display: none; }
-    .cs-list {
-      top: calc(var(--nav-h) + var(--frame) * 2);
+    .cs { grid-template-columns: minmax(0, 1fr); gap: var(--s-3); }
+    .cs-side {
       z-index: 5;
-      flex-direction: row; align-items: center; gap: var(--s-3);
-      overflow-x: auto; scrollbar-width: none;
+      height: auto;
       margin-inline: calc(var(--frame) * -1);
-      padding: var(--s-1) var(--frame);
       background: var(--paper);
     }
-    .cs-list::-webkit-scrollbar { display: none; }
-    .cs-list button { flex: none; white-space: nowrap; }
-    .cs-list button[aria-current="true"] {
-      padding-block: 2px;
-      font-size: var(--t-small); letter-spacing: 0.08em; line-height: 1.5;
-      box-shadow: inset 0 -2px 0 var(--accent);
+    .cs-info { display: none; }
+    .cs-list {
+      flex-direction: row; align-items: center; gap: var(--s-3);
+      overflow-x: auto; scrollbar-width: none;
+      padding: var(--s-1) var(--frame);
     }
-    .cs-col { width: 100%; max-width: 440px; margin-inline: auto; }
+    .cs-list::-webkit-scrollbar { display: none; }
+    .cs-list button {
+      flex: none; white-space: nowrap;
+      font-size: var(--t-small); font-weight: 600;
+      letter-spacing: 0.08em; text-transform: uppercase; line-height: 1.5;
+      opacity: 0.45;
+    }
+    .cs-list button[aria-current="true"] { box-shadow: inset 0 -2px 0 var(--accent); }
+    .cs-list button[aria-current="true"] .cs-meta { display: none; }
   }
 
   .cs { padding-block: var(--s-5) var(--s-6); }
-  .way-tag {
-    align-self: flex-start;
-    font-size: var(--t-micro); font-weight: 700;
-    letter-spacing: 0.1em; text-transform: uppercase;
-    color: var(--accent); background: var(--accent-soft);
+
+  /* ---------- page pill ----------
+     The home hero's availability pill, naming the page instead. */
+  .avail {
+    display: inline-flex; align-items: center; gap: 9px;
+    padding: 7px 15px 7px 12px;
+    border: 1px solid var(--rule);
     border-radius: var(--radius-pill);
-    padding: 5px 11px;
+    font-size: var(--t-micro); font-weight: 600;
+    letter-spacing: 0.06em; text-transform: uppercase;
+    color: var(--muted);
+    margin: 0 0 var(--s-4);
   }
-
-  /* A card is a button, not a div with a click handler: this page is sent to
-     people who may well open it on a phone or drive it from the keyboard, and
-     play/pause is exactly what a button is for. */
-  .card {
-    appearance: none;
-    -webkit-appearance: none;
-    margin: 0;
-    padding: 0;
-    font: inherit;
-    color: inherit;
-    text-align: left;
-    cursor: pointer;
-
+  .avail i {
     position: relative;
-    display: block;
-    width: 100%;
-    aspect-ratio: 9 / 16;
-    /* No resting border. A hairline of rgba(255,255,255,.13) reads as a pale
-       edge on every card, and worst on the corners where the radius stretches
-       it along the curve. The clip should meet the page directly. */
-    border: 0;
-    border-radius: var(--radius-sm);
-    background: var(--slot-1) center / cover no-repeat;
-    overflow: hidden;
-    isolation: isolate;   /* same reason as the home page: Safari will paint a
-                             <video> over its siblings unless the card owns its
-                             own stacking context */
-    transition: box-shadow 260ms var(--ease-out);
+    width: 7px; height: 7px; border-radius: 50%;
+    background: var(--accent); flex: none;
   }
-  /* The one card playing out loud, and only on click. A ring rather than a
-     border: box-shadow paints outside the box, so nothing about the card's
-     size or the video inside it changes when it turns on. */
-  .card.is-sound { box-shadow: 0 0 0 2px var(--accent); }
-
-  .card video {
-    position: absolute;
-    inset: 0;
-    z-index: 0;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: block;
-    /* Transparent, not var(--slot-1): the card's own background-image (the
-       same poster the video carries) is what shows through here before a
-       frame has decoded. Painting a solid colour on the video itself was
-       the flash on hover — the poster attribute stops covering the element
-       the moment play() is called, and playback has no frame ready yet, so
-       the video's own background showed through for a beat. */
-    background: transparent;
-    /* Hidden until it is genuinely playing, so what you see at rest is
-       always the chosen poster. Warming the clips in advance means the
-       element holds a decoded frame long before anyone asks to watch it,
-       and a browser paints that frame over the poster as soon as it has
-       one — frame zero of a clip that opens on a fade is black, and the
-       card would sit there looking broken. */
-    opacity: 0;
-    transition: opacity 200ms var(--ease-out);
-  }
-  .card.is-live video { opacity: 1; }
-
-  /* ---------- the play / sound affordance ----------
-     One control in the bottom-left that says what the card is doing: a play
-     triangle at rest, bars while it is playing with sound. It is the only
-     thing on the card that changes on click, so it carries the state.
-     Same material as the nav pill — blur plus saturation, not a flat tint —
-     so the control reads as glass sitting on the clip rather than a sticker
-     laid over it. */
-  .state {
-    position: absolute;
-    left: var(--s-2); bottom: var(--s-2);
-    z-index: 2;
-    transform: translateZ(0);
-    display: inline-flex; align-items: center;
-    width: 30px; height: 30px;
-    justify-content: center;
+  .avail i::after {
+    content: "";
+    position: absolute; inset: 0;
     border-radius: 50%;
-    background: var(--nav-bg);
-    -webkit-backdrop-filter: blur(20px) saturate(190%);
-    box-shadow: 0 6px 20px -8px rgba(0, 0, 0, 0.6);
-    color: #fff;
-    pointer-events: none;
-    transition: background 220ms var(--ease-out), box-shadow 220ms var(--ease-out);
-  }
-  /* Lightning CSS folds two backdrop-filter declarations in one rule into
-     one — the standard property gets its own rule for that reason. */
-  .state { backdrop-filter: blur(20px) saturate(190%); }
-  .card.is-sound .state {
     background: var(--accent);
-    color: var(--accent-ink);
+    opacity: 0.5;
+    animation: availPing 2.4s cubic-bezier(0.16, 1, 0.3, 1) infinite;
   }
-  .state svg { width: 13px; height: 13px; flex: none; display: block; }
-  .state .off { margin-left: 1px; }  /* the triangle's own weight sits left of centre; nudge it back */
-  .state .on  { display: none; }
-  .card.is-sound .state .off { display: none; }
-  .card.is-sound .state .on  { display: block; }
-
-  /* Muted hover preview gets its own quiet marker in the opposite corner, so
-     "moving but silent" never reads as "playing". */
-  .silent {
-    position: absolute;
-    right: var(--s-2); bottom: var(--s-2);
-    z-index: 2;
-    transform: translateZ(0);
-    padding: 5px 10px;
-    border-radius: var(--radius-pill);
-    background: rgba(6, 13, 26, 0.72);
-    color: rgba(255, 255, 255, 0.8);
-    font-size: var(--t-micro);
-    pointer-events: none;
-    opacity: 0;
-    transition: opacity 200ms var(--ease-out);
+  @keyframes availPing {
+    0%   { transform: scale(1); opacity: 0.5; }
+    100% { transform: scale(3.2); opacity: 0; }
   }
-  .card.is-preview .silent { opacity: 1; }
-  .card.is-sound .silent { opacity: 0 !important; }
+  @media (prefers-reduced-motion: reduce) {
+    .avail i::after { animation: none; opacity: 0; }
+  }
 
   /* ---------- closing panel (CTA + footer) ----------
      The home page's closing panel, copied rather than approximated: full
@@ -587,7 +504,7 @@
      button where an accent dot would vanish. Real pointers only. Same
      data URIs as index.html; if the dot changes there, it changes here. */
   @media (hover: hover) and (pointer: fine) {
-    html, a, button, .btn, .card, .wordmark {
+    html, a, button, .btn, .wordmark {
       cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'%3E%3Ccircle cx='8' cy='8' r='8' fill='%236E9BF7'/%3E%3C/svg%3E") 8 8, auto;
     }
     .btn.outline {
@@ -597,13 +514,6 @@
 </style>
 </head>
 <body>
-
-<!-- The Meta verified tick, defined once and referenced by every card. -->
-<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
-  <symbol id="tick" viewBox="0 0 84 84">
-    <path fill="#0064E0" fill-rule="evenodd" d="m50.4.47c1.79-.97,4.02-.37,5.08,1.36l4.99,8.17,9.57.24c2.03.05,3.67,1.69,3.72,3.72l.24,9.57,8.17,4.99c1.74,1.06,2.34,3.3,1.36,5.08l-4.58,8.4,4.58,8.4c.97,1.79.37,4.02-1.36,5.08l-8.17,4.99-.24,9.57c-.05,2.03-1.69,3.67-3.72,3.72l-9.57.24-4.99,8.17c-1.06,1.74-3.3,2.34-5.08,1.36l-8.4-4.58-8.4,4.58c-1.79.97-4.02.37-5.08-1.36l-4.99-8.17-9.57-.24c-2.03-.05-3.67-1.69-3.72-3.72l-.24-9.57-8.17-4.99c-1.74-1.06-2.34-3.3-1.36-5.08l4.58-8.4L.47,33.6c-.97-1.79-.37-4.02,1.36-5.08l8.17-4.99.24-9.57c.05-2.03,1.69-3.67,3.72-3.72l9.57-.24L28.51,1.83c1.06-1.74,3.3-2.34,5.08-1.36l8.4,4.58L50.4.47Zm9.31,34.92c1.62-1.35,1.84-3.76.49-5.38-1.35-1.62-3.76-1.84-5.38-.49l-.26.21c-6.64,5.54-12.84,11.59-18.52,18.1l-6.62-6.62c-1.49-1.49-3.91-1.49-5.4,0-1.49,1.49-1.49,3.91,0,5.4l9.55,9.55c.76.76,1.8,1.16,2.87,1.11,1.07-.05,2.07-.55,2.76-1.37l.21-.26c6.06-7.27,12.77-13.98,20.04-20.04l.26-.21Z"/>
-  </symbol>
-</svg>
 
 <div class="page-loader" data-page-loader data-first-paint aria-hidden="true">
   <span class="page-loader__arc page-loader__arc--top"><i></i></span>
@@ -628,14 +538,13 @@
 
 <div class="wrap">
   <div class="page-head">
-    <h1>Case studies</h1>
-    <p class="lede">The businesses we've made videos for, and what we made them. Real clips, not a reel, so click one and put the sound on.</p>
+    <p class="avail"><i></i><span>Case studies</span></p>
+    <h1>Work for Nelson businesses</h1>
+    <p class="lede">A closer look at the businesses we've made videos for, and what we made them.</p>
   </div>
 
-  <!-- One group per client, every clip of theirs in the middle column. Each
-       carries its clip on data-src rather than src: with no src there is no
-       request at all until the first play, so opening the page costs the
-       posters and nothing else. Filled from CASES in the script below. -->
+  <!-- One group per client, its shots stacked in the right-hand column.
+       Filled from CASES in the script below. -->
   <div class="cs" id="grid" data-cs></div>
 </div>
 
@@ -648,7 +557,7 @@
       <span class="btn-label"><span>Book my free call</span><span aria-hidden="true">Book my free call</span></span>
     </a>
   </div>
-  <p class="cta-note"><span class="cta-part"><span class="rating-stars" aria-hidden="true">&#9733;&#9733;&#9733;&#9733;&#9733;</span><a class="rating-link" href="https://share.google/I0Nl8jbacTLDWQb2e" target="_blank" rel="noopener noreferrer">5.0 from 12 Google reviews</a></span><span class="cta-part">Reply within one working day</span></p>
+  <p class="cta-note"><span class="cta-part"><span class="rating-stars" aria-hidden="true">&#9733;&#9733;&#9733;&#9733;&#9733;</span><a class="rating-link" href="https://share.google/I0Nl8jbacTLDWQb2e" target="_blank" rel="noopener noreferrer">5.0 from 14 Google reviews</a></span><span class="cta-part">Reply within one working day</span></p>
 
   <div class="closing-foot">
     <span class="foot-logo"><img src="/img/tui-wordmark.webp" alt="Tui Media" width="639" height="130" loading="lazy" decoding="async"></span>
@@ -669,257 +578,69 @@
 (function () {
   'use strict';
 
-  /* One case study per client, the ones with the most work first. The first
-     clip in each list is the one the card opens on. Only clips cut for this
-     page (media/work/, the versions with audio) are listed. */
+  /* One case study per client. `shots` is how many landscape frames each
+     gets in the right-hand column. They are placeholders for now: once the
+     landscape cuts exist, give a client a list of images in place of the
+     count and render an <img> into each .cs-shot. */
   var CASES = [
-    { name: 'Johnson Residential', trade: 'Residential building',
+    { name: "Johnson Residential", trade: "Residential building",
       summary: "Videos from Johnson Residential's building sites, with the team on camera talking through their homes, from the concrete pour to the finished build.",
-      made: 'Short vertical videos filmed on site, with the builders on camera and drone shots of the finished homes.',
-      clips: ['johnson-residential-4', 'johnson-residential-3', 'johnson-residential-1', 'johnson-residential-2'] },
-    { name: 'Sky Automotive', trade: 'Automotive servicing',
-      summary: "Sky Automotive's workshop on camera, from detail work on the cars to the opening of their new Nelson location.",
-      made: 'Short vertical videos shot in the workshop, including one for the launch of the new location.',
-      clips: ['sky-automotive-3', 'sky-automotive-1'] },
-    { name: 'ATK Detailing', trade: 'Car detailing',
+      shots: 3 },
+    { name: "ATK Detailing", trade: "Car detailing",
       summary: "ATK Detailing's owner on camera, talking through the work and the protection they offer, with the detailing shown up close.",
-      made: 'Short vertical videos built around the owner talking to camera, cut with close-ups of the work.',
-      clips: ['atk-detailing-3', 'atk-detailing'] },
-    { name: 'Washrite', trade: 'Exterior cleaning',
-      summary: "Washrite's owner on camera, explaining what they do and why it's worth getting done.",
-      made: 'A short vertical video built around the owner talking to camera.',
-      clips: ['washrite'] },
-    { name: 'Nelson English Center', trade: 'English language school',
-      summary: 'A sit-down interview at Nelson English Center, filmed in their own building.',
-      made: 'A short vertical interview video.',
-      clips: ['nelson-english-center'] },
-    { name: 'Nelson City Framers', trade: 'Framing and construction',
-      summary: 'Nelson City Framers at work in the workshop, with the framing shown up close.',
-      made: 'A short vertical video of the work in progress.',
-      clips: ['nelson-city-framers-2'] }
+      shots: 3 },
+    { name: "Landscape Transformers", trade: "Landscaping",
+      summary: "Videos made for Landscape Transformers.",
+      shots: 3 },
+    { name: "Sky Automotive", trade: "Automotive servicing",
+      summary: "Sky Automotive's workshop on camera, from detail work on the cars to the opening of their new Nelson location.",
+      shots: 3 }
   ];
-
-  var PLAY_ICON = '<svg class="off" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5.5v13l11-6.5z"/></svg>'
-                + '<svg class="on" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="5.5" y="4.5" width="4" height="15" rx="1.4"/><rect x="14.5" y="4.5" width="4" height="15" rx="1.4"/></svg>';
 
   function esc(t) {
     return String(t).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
   }
+  function slugify(t) { return String(t).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, ''); }
 
   var yearEl = document.querySelector('[data-year]');
   if (yearEl) yearEl.textContent = new Date().getFullYear();
 
   var grid = document.getElementById('grid');
-  function poster(slug) { return '/media/work/' + slug + '-poster.webp'; }
-  function clipSrc(slug) { return '/media/work/' + slug + '.mp4'; }
-  function label(c, n) {
-    return 'Play ' + c.name + (c.clips.length > 1 ? ', clip ' + n + ' of ' + c.clips.length : '') + ', with sound';
-  }
-  function slugify(t) { return String(t).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, ''); }
-  var SIZES = ['a', 'b', 'c'];
-  var k = 0;
   var listHtml = CASES.map(function (c, ci) {
-    return '<button type="button" aria-current="' + (ci === 0) + '">' + esc(c.name) + '</button>';
+    return '<button type="button" aria-current="' + (ci === 0) + '">' + esc(c.name)
+         + '<span class="cs-meta" aria-hidden="true">' + esc(c.trade) + '</span></button>';
   }).join('');
-  var groupsHtml = CASES.map(function (c, ci) {
-    var items = c.clips.map(function (slug, n) {
-      var num = ++k;
-      return '<figure class="cs-item cs-item--' + SIZES[(num - 1) % 3] + '">'
-           + '<button class="card" type="button"'
-           + ' style="background-image:url(' + poster(slug) + ')"'
-           + ' aria-label="' + esc(label(c, n + 1)) + '">'
-           + '<video playsinline loop preload="none" muted'
-           + ' poster="' + poster(slug) + '"'
-           + ' data-src="' + clipSrc(slug) + '"></video>'
-           + '<span class="state">' + PLAY_ICON + '</span>'
-           + '<span class="silent">Muted preview</span>'
-           + '</button>'
-           + '<figcaption class="cs-num" aria-hidden="true">' + (num < 10 ? '0' : '') + num + '</figcaption>'
-           + '</figure>';
-    }).join('');
-    return '<div class="cs-group" id="' + slugify(c.name) + '">'
-         + '<div class="cs-head">'
-         +   '<span class="way-tag">' + esc(c.trade) + '</span>'
-         +   '<h2 class="cs-name">' + esc(c.name) + '<svg class="tick" aria-label="Meta verified"><use href="#tick"></use></svg></h2>'
-         +   '<p>' + esc(c.summary) + '</p>'
-         +   '<div class="cs-made"><span class="cs-label">What we made</span><p>' + esc(c.made) + '</p></div>'
-         + '</div>'
-         + items
+  var groupsHtml = CASES.map(function (c) {
+    var shots = '';
+    for (var n = 1; n <= c.shots; n++) {
+      shots += '<div class="cs-shot">' + esc(c.name) + ' &middot; 0' + n + '</div>';
+    }
+    return '<div class="cs-group" id="' + slugify(c.name) + '" data-summary="' + esc(c.summary) + '">'
+         + '<div class="cs-head"><h2 class="cs-name">' + esc(c.name) + '</h2><span class="cs-trade">' + esc(c.trade) + '</span></div>'
+         + shots
          + '</div>';
   }).join('');
-  var html = '<div class="cs-list" role="group" aria-label="Clients">' + listHtml + '</div>'
-           + '<div class="cs-col">' + groupsHtml + '</div>'
-           + '<div class="cs-info" aria-hidden="true"></div>';
-  grid.innerHTML = html;
+  grid.innerHTML = '<div class="cs-side">'
+                 +   '<div class="cs-list" role="group" aria-label="Clients">' + listHtml + '</div>'
+                 +   '<p class="cs-info" aria-hidden="true"></p>'
+                 + '</div>'
+                 + '<div class="cs-col">' + groupsHtml + '</div>';
 
-  var cards = [].slice.call(grid.querySelectorAll('.card'));
-  /* The one card playing out loud. Only ever one — a grid of eleven clips all
-     talking over each other is the failure mode this page exists to avoid. */
-  var sound = null;
-
-  function video(card) { return card.querySelector('video'); }
-
-  /* ---- three levels of readiness -------------------------------------
-     The two failure modes here pull in opposite directions, and each fix
-     on its own causes the other.
-
-     Arming everything for playback at once was the first one: eleven clips
-     streaming against one connection, ~16MB pulled from a single sweep of
-     the pointer, and the clip you actually wanted queued behind ten you
-     did not. Arming nothing until the click was the second: the click then
-     paid for a connection, the container header and enough frames to
-     start, measured cold at 117ms to 862ms on a fast line and 1.6s to
-     reach metadata on a slow sample. That is the delay between pressing a
-     card and seeing it move.
-
-     So there are three states rather than two. Every card keeps its header
-     warm; only the card in use streams; a card just used stays warm a few
-     seconds in case it is used again. `preload="metadata"` turns out to
-     fetch about a second of video and then stop on its own, which is both
-     cheap (~250KB a clip) and, measured, enough to put time-from-click to
-     ready at zero. */
-
-  /* Header and a moment of video, then the browser stops by itself. */
-  function arm(v) {
-    if (v.src) return;
-    v.preload = 'metadata';
-    v.src = v.getAttribute('data-src');
-  }
-
-  /* Everything it needs to keep playing. */
-  function stream(v) {
-    v.preload = 'auto';
-    if (!v.src) v.src = v.getAttribute('data-src');
-  }
-
-  /* Drop the buffer and the connection, then re-arm: pausing a video does
-     not stop it downloading, and only clearing the source does. */
-  function cool(v) {
-    v.pause();
-    if (v.src) {
-      v.removeAttribute('src');
-      try { v.load(); } catch (err) {}
-    }
-    arm(v);
-  }
-
-  /* Warm the headers one at a time once the page is up. Sequentially, on
-     purpose: it is the concurrency that hurt, not the bytes, and a queue
-     of eleven small requests costs nothing anyone can feel. It waits for
-     the posters to land first, so the grid is never held up by the very
-     thing meant to make it feel quick. */
-  function warm(i) {
-    if (i >= cards.length) return;
-    var v = video(cards[i]);
-    if (v.src) return warm(i + 1);
-    var moved = false;
-    var next = function () { if (!moved) { moved = true; warm(i + 1); } };
-    v.addEventListener('loadedmetadata', next, { once: true });
-    v.addEventListener('error', next, { once: true });
-    setTimeout(next, 2000);   /* one slow file must not stall the queue */
-    arm(v);
-  }
-  if (document.readyState === 'complete') setTimeout(function () { warm(0); }, 300);
-  else window.addEventListener('load', function () { setTimeout(function () { warm(0); }, 300); });
-
-  function stop(card) {
-    if (!card) return;
-    var v = video(card);
-    cool(v);
-    v.muted = true;
-    card.classList.remove('is-sound', 'is-preview');
-  }
-
-  function endPreview(card) {
-    if (card === sound) return;
-    var v = video(card);
-    v.pause();
-    card.classList.remove('is-preview');
-    /* Hold what it buffered for a few seconds. Hovering a card and then
-       clicking it is the ordinary way to use this page, and that click
-       should not pay for the same bytes twice. After that it is dead
-       weight and goes back to being just a warm header. */
-    clearTimeout(card.coolTimer);
-    card.coolTimer = setTimeout(function () {
-      if (card !== sound) cool(v);
-    }, 5000);
-  }
-
-  function withSound(card) {
-    if (sound && sound !== card) stop(sound);
-    var v = video(card);
-    clearTimeout(card.coolTimer);
-    stream(v);
-    card.classList.remove('is-preview');
-    card.classList.add('is-sound');
-    sound = card;
-    /* Unmuting inside the click handler is what makes this allowed: the
-       gesture is still on the stack, so the autoplay policy lets the sound
-       through. Unmuting later — on canplay, say — does not get that. */
-    v.muted = false;
-    v.volume = 1;
-    var p = v.play();
-    if (p) p.catch(function () {
-      /* Blocked anyway (an iOS silent switch, a policy this page cannot see).
-         Fall back to a silent play rather than a dead card. */
-      v.muted = true;
-      card.classList.remove('is-sound');
-      card.classList.add('is-preview');
-      if (sound === card) sound = null;
-      v.play().catch(function () {});
-    });
-  }
-
-  cards.forEach(function (card) {
-    var v = video(card);
-
-    /* The video uncovers the poster only once frames are actually moving,
-       and covers it again the moment they stop. Driven by the element's own
-       events rather than by the click, so a clip that is still catching up
-       never shows a blank frame in place of the poster. */
-    v.addEventListener('playing', function () { card.classList.add('is-live'); });
-    /* Deliberately not 'waiting': a clip that stalls for a moment mid-play
-       should hold its last frame, not snap back to the poster and out
-       again. */
-    ['pause', 'emptied', 'ended'].forEach(function (ev) {
-      v.addEventListener(ev, function () { card.classList.remove('is-live'); });
-    });
-
-    /* Start pulling bytes on the press rather than the release. It is only
-       the length of a click, but it is free, and it costs nothing if the
-       press turns out to be the start of a scroll: this escalates what the
-       element is loading and never starts playback, which stays on click. */
-    card.addEventListener('pointerdown', function () {
-      if (card === sound) return;
-      clearTimeout(card.coolTimer);
-      stream(v);
-    });
-
-    card.addEventListener('click', function () {
-      if (card === sound) { stop(card); sound = null; return; }
-      withSound(card);
-    });
-  });
-
-  /* ---- case studies: the sticky index ----
-     The client whose clips cross the middle of the screen is the current
-     one: its name is written large in the list and its write-up fills the
-     right-hand column. A name in the list scrolls to that client's clips. */
+  /* ---- case studies: the index ----
+     The client whose shots sit nearest the middle of the screen is the
+     current one: it is the bright name in the list, and its summary sits under the
+     list. A name in the list scrolls to that client's shots. */
   function initCaseIndex(root) {
     if (!root) return;
+    var side = root.querySelector('.cs-side');
     var list = root.querySelector('.cs-list');
     var info = root.querySelector('.cs-info');
     var groups = [].slice.call(root.querySelectorAll('.cs-group'));
     var btns = [].slice.call(list.querySelectorAll('button'));
     var active = -1, swapTimer = 0, ticking = false;
 
-    function fillInfo(i) {
-      var head = groups[i].querySelector('.cs-head').cloneNode(true);
-      var name = head.querySelector('.cs-name');
-      if (name) name.remove();
-      info.innerHTML = head.innerHTML;
-    }
-    function setActive(i, instant) {
+    function summary(i) { return groups[i].getAttribute('data-summary') || ''; }
+    function setActive(i) {
       if (i === active) return;
       var first = active < 0;
       active = i;
@@ -932,14 +653,19 @@
       }
       if (!info) return;
       clearTimeout(swapTimer);
-      if (first || instant) { fillInfo(i); return; }
+      if (first) { info.textContent = summary(i); return; }
       info.classList.add('is-swapping');
-      swapTimer = setTimeout(function () { fillInfo(active); info.classList.remove('is-swapping'); }, 180);
+      swapTimer = setTimeout(function () { info.textContent = summary(active); info.classList.remove('is-swapping'); }, 180);
     }
     function update() {
       ticking = false;
-      var mid = window.innerHeight * 0.5, idx = 0;
-      groups.forEach(function (g, n) { if (g.getBoundingClientRect().top <= mid) idx = n; });
+      /* the client whose shots sit nearest the middle of the screen */
+      var mid = window.innerHeight * 0.5, idx = 0, best = Infinity;
+      groups.forEach(function (g, n) {
+        var r = g.getBoundingClientRect();
+        var d = Math.abs((r.top + r.bottom) / 2 - mid);
+        if (d < best) { best = d; idx = n; }
+      });
       setActive(idx);
     }
     function onScroll() { if (!ticking) { ticking = true; requestAnimationFrame(update); } }
@@ -947,9 +673,11 @@
     window.addEventListener('resize', onScroll);
     update();
 
+    /* land a client's first shot just under the nav, and under the list
+       too where the list is a row across the top */
     function offset() {
       var row = getComputedStyle(list).flexDirection === 'row';
-      return -((parseFloat(getComputedStyle(list).top) || 0) + (row ? list.offsetHeight : 0) + 8);
+      return -((parseFloat(getComputedStyle(side).top) || 0) + (row ? side.offsetHeight : 0) + 8);
     }
     root.goTo = function (i, instant) {
       var g = groups[i];
@@ -963,8 +691,9 @@
     });
   }
   initCaseIndex(grid);
-  /* /work#johnson-residential, from a still on the home page: land on that
-     client's clips once the page is laid out */
+
+  /* /work#johnson-residential, from the home page: land on that client's
+     shots once the page is laid out */
   if (location.hash.length > 1) {
     var target = document.getElementById(decodeURIComponent(location.hash.slice(1)));
     var gi = [].slice.call(grid.querySelectorAll('.cs-group')).indexOf(target);
@@ -974,21 +703,6 @@
       else window.addEventListener('load', land);
     }
   }
-
-  /* Leaving the tab kills the sound; nobody wants a page they switched away
-     from still talking. */
-  document.addEventListener('visibilitychange', function () {
-    if (!document.hidden) return;
-    cards.forEach(function (c) { if (c !== sound) endPreview(c); });
-    if (sound) { video(sound).pause(); }
-  });
-
-  /* Escape stops whatever is playing out loud. */
-  document.addEventListener('keydown', function (e) {
-    if (e.key !== 'Escape' || !sound) return;
-    stop(sound);
-    sound = null;
-  });
 })();
 </script>
 

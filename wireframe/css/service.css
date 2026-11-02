@@ -220,6 +220,39 @@ p { margin: 0; }
 .page-head .btn-row { margin-top: var(--s-4); }
 
 
+/* ---------- page pill ----------
+   The home hero's availability pill, naming the page instead. */
+.avail {
+  display: inline-flex; align-items: center; gap: 9px;
+  padding: 7px 15px 7px 12px;
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-pill);
+  font-size: var(--t-micro); font-weight: 600;
+  letter-spacing: 0.06em; text-transform: uppercase;
+  color: var(--muted);
+  margin: 0 0 var(--s-4);
+}
+.avail i {
+  position: relative;
+  width: 7px; height: 7px; border-radius: 50%;
+  background: var(--accent); flex: none;
+}
+.avail i::after {
+  content: "";
+  position: absolute; inset: 0;
+  border-radius: 50%;
+  background: var(--accent);
+  opacity: 0.5;
+  animation: availPing 2.4s cubic-bezier(0.16, 1, 0.3, 1) infinite;
+}
+@keyframes availPing {
+  0%   { transform: scale(1); opacity: 0.5; }
+  100% { transform: scale(3.2); opacity: 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .avail i::after { animation: none; opacity: 0; }
+}
+
 /* ---------- cards: the home page's offer card ---------- */
 
 .two-up   { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--frame); }
@@ -643,13 +676,11 @@ html.lenis, html.lenis body { height: auto; }
 .pick-note + .small-print { margin-top: var(--s-2); }
 
 /* where the content ends up: small cards, three across */
-/* "where your content ends up": the heading, then a wrapped row of pills,
-   both on the left edge of the content */
-.ends-up h2 { margin-bottom: var(--s-4); font-size: clamp(1.75rem, 3.4vw, 2.75rem); }
+/* "where your content ends up": a wrapped row of pills, centred */
 .chips {
-  list-style: none; margin: 0; padding: 0;
-  max-width: 900px;
-  display: flex; flex-wrap: wrap; gap: 10px;
+  list-style: none; margin: 0 auto; padding: 0;
+  max-width: 820px;
+  display: flex; flex-wrap: wrap; justify-content: center; gap: 10px;
 }
 .chips li {
   padding: 10px 20px;
