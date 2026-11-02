@@ -25,7 +25,9 @@
 <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
 <link rel="apple-touch-icon" sizes="512x512" href="/favicon-512.png">
 <link rel="preload" href="/fonts/bricolage-grotesque-latin.woff2" as="font" type="font/woff2" crossorigin>
+<script>document.documentElement.classList.add('js');</script>
 <link rel="stylesheet" href="/css/service.css">
+<link rel="stylesheet" href="/css/loader.css">
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -102,6 +104,12 @@
 </head>
 <body>
 
+<div class="page-loader" data-page-loader data-first-paint aria-hidden="true">
+  <span class="page-loader__arc page-loader__arc--top"><i></i></span>
+  <span class="page-loader__arc page-loader__arc--bot"><i></i></span>
+  <i class="page-loader__icon"></i>
+</div>
+
 <div class="nav-wrap">
   <div class="nav">
     <a class="wordmark" href="/" aria-label="Tui Media, home"><i></i></a>
@@ -109,8 +117,7 @@
       <a href="/monthly-content"><span class="nav-label"><span>Monthly content</span><span aria-hidden="true">Monthly content</span></span></a>
       <a href="/video-ads" aria-current="page"><span class="nav-label"><span>Video ads</span><span aria-hidden="true">Video ads</span></span></a>
       <a href="/work"><span class="nav-label"><span>Case studies</span><span aria-hidden="true">Case studies</span></span></a>
-      <a href="/#about"><span class="nav-label"><span>About</span><span aria-hidden="true">About</span></span></a>
-      <a href="/#faq"><span class="nav-label"><span>Questions</span><span aria-hidden="true">Questions</span></span></a>
+      <a href="/about"><span class="nav-label"><span>About</span><span aria-hidden="true">About</span></span></a>
     </nav>
     <a class="btn" href="/?interest=ad#book">
       <span class="btn-label"><span>Book a free call</span><span aria-hidden="true">Book a free call</span></span>
@@ -158,15 +165,15 @@
       <h2>How it works</h2>
       <p class="lede">From the first call to a live campaign in about three weeks.</p>
     </div>
-      <div class="steps">
-        <span class="spine" aria-hidden="true"></span>
-        <div class="step"><div><span class="step-when">20 minutes</span><h3>Fit call</h3><p>A quick call to see if we're a fit. No pressure.</p></div></div>
-        <div class="step"><div><span class="step-when">Week one</span><h3>Strategy</h3><p>We look into your business, who you're trying to reach and what's likely to get them to act. Then we agree on a plan together.</p></div></div>
-        <div class="step"><div><span class="step-when">Week one</span><h3>Script</h3><p>We write the script, the hooks and the shot list so everyone knows what's being filmed.</p></div></div>
-        <div class="step"><div><span class="step-when">One day on site</span><h3>Film</h3><p>We bring our own gear. We shoot wide as well as vertical, so it works everywhere it runs.</p></div></div>
-        <div class="step"><div><span class="step-when">Week two</span><h3>Edit</h3><p>We cut several versions with different hooks and formats, so each one fits where it's running.</p></div></div>
-        <div class="step"><div><span class="step-when">Week three</span><h3>Launch</h3><p>We set up the campaign in your ad account and launch it.</p></div></div>
-        <div class="step"><div><span class="step-when">Week three</span><h3>Handover</h3><p>You get the footage, the ads and the ad account. It's all yours.</p></div></div>
+      <div class="steps" data-steps>
+        <span class="spine" aria-hidden="true"><i data-spine></i></span>
+        <div class="step" data-anim><div><span class="step-when">20 minutes</span><h3>Fit call</h3><p>A quick call to see if we're a fit. No pressure.</p></div></div>
+        <div class="step" data-anim><div><span class="step-when">Week one</span><h3>Strategy</h3><p>We look into your business, who you're trying to reach and what's likely to get them to act. Then we agree on a plan together.</p></div></div>
+        <div class="step" data-anim><div><span class="step-when">Week one</span><h3>Script</h3><p>We write the script, the hooks and the shot list so everyone knows what's being filmed.</p></div></div>
+        <div class="step" data-anim><div><span class="step-when">One day on site</span><h3>Film</h3><p>We bring our own gear. We shoot wide as well as vertical, so it works everywhere it runs.</p></div></div>
+        <div class="step" data-anim><div><span class="step-when">Week two</span><h3>Edit</h3><p>We cut several versions with different hooks and formats, so each one fits where it's running.</p></div></div>
+        <div class="step" data-anim><div><span class="step-when">Week three</span><h3>Launch</h3><p>We set up the campaign in your ad account and launch it.</p></div></div>
+        <div class="step" data-anim><div><span class="step-when">Week three</span><h3>Handover</h3><p>You get the footage, the ads and the ad account. It's all yours.</p></div></div>
       </div>
   </div>
 </section>
@@ -283,6 +290,7 @@
       <a href="/">Back to site</a>
       <a href="/monthly-content">Monthly content</a>
       <a href="/video-ads">Video ads</a>
+      <a href="/about">About</a>
       <span>Nelson, New Zealand</span>
       <a href="mailto:hello@tuimedia.nz">hello@tuimedia.nz</a>
       <span class="foot-copy">&copy; <span data-year>2026</span> Tui Media</span>
@@ -356,9 +364,19 @@
         opts.forEach(function (o) { o.setAttribute('aria-pressed', o === b ? 'true' : 'false'); });
         place();
         billingNow = to;
-        priced.forEach(function (el) { el.textContent = el.getAttribute('data-' + to); });
-        /* on quarterly, the three-months-of-monthly total sits crossed out beside it */
-        [].slice.call(document.querySelectorAll('[data-was]')).forEach(function (t) { t.hidden = to !== 'quarterly'; });
+        /* the prices dip out and back in rather than snapping */
+        priced.forEach(function (el) { el.classList.add('is-swapping'); });
+        setTimeout(function () {
+          priced.forEach(function (el) {
+            el.textContent = el.getAttribute('data-' + to);
+            el.classList.remove('is-swapping');
+          });
+        }, 140);
+        /* on quarterly, three months of the monthly price eases in, crossed out, above it */
+        [].slice.call(document.querySelectorAll('[data-was]')).forEach(function (t) {
+          t.classList.toggle('is-on', to === 'quarterly');
+          t.setAttribute('aria-hidden', to === 'quarterly' ? 'false' : 'true');
+        });
         syncLinks();
       });
     });
@@ -404,6 +422,44 @@
       if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); pick(card); }
     });
   });
+  /* ---- the home page's timeline: the spine fills as you scroll and each
+     step fades up as it arrives, staggered 60ms when several land together */
+  var stepsEl = document.querySelector('[data-steps]');
+  var spine = document.querySelector('[data-spine]');
+  if (stepsEl && spine) {
+    var sraf = 0;
+    var paintSpine = function () {
+      sraf = 0;
+      var r = stepsEl.getBoundingClientRect();
+      if (!r.height) return;
+      var mark = window.innerHeight * (window.innerWidth <= 900 ? 0.72 : 0.5);
+      var p = Math.min(1, Math.max(0, (mark - r.top) / r.height));
+      spine.style.setProperty('--spine', p.toFixed(4));
+    };
+    var onSpine = function () { if (sraf) cancelAnimationFrame(sraf); sraf = requestAnimationFrame(paintSpine); };
+    window.addEventListener('scroll', onSpine, { passive: true });
+    window.addEventListener('resize', onSpine);
+    paintSpine();
+  }
+  var anims = [].slice.call(document.querySelectorAll('[data-anim]'));
+  if (anims.length && 'IntersectionObserver' in window) {
+    var io = new IntersectionObserver(function (entries) {
+      var n = 0;
+      entries.forEach(function (e) {
+        if (!e.isIntersecting) return;
+        e.target.style.setProperty('--anim-delay', (n++ * 60) + 'ms');
+        e.target.classList.add('in');
+        io.unobserve(e.target);
+      });
+    }, { rootMargin: '0px 0px -8% 0px' });
+    anims.forEach(function (el) {
+      /* anything already scrolled past shows straight away */
+      if (el.getBoundingClientRect().bottom < 0) el.classList.add('in'); else io.observe(el);
+    });
+  } else {
+    anims.forEach(function (el) { el.classList.add('in'); });
+  }
+
   var y = document.querySelector('[data-year]');
   if (y) y.textContent = new Date().getFullYear();
 })();
@@ -411,6 +467,7 @@
 
 <script defer src="/js/lenis.min.js"></script>
 <script defer src="/js/smooth-scroll.js"></script>
+<script defer src="/js/page-transition.js"></script>
 <script defer src="/_vercel/insights/script.js"></script>
 
 </body>

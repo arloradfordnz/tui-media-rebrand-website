@@ -2096,8 +2096,7 @@
       <a href="/monthly-content"><span class="nav-label"><span>Monthly content</span><span aria-hidden="true">Monthly content</span></span></a>
       <a href="/video-ads"><span class="nav-label"><span>Video ads</span><span aria-hidden="true">Video ads</span></span></a>
       <a href="/work"><span class="nav-label"><span>Case studies</span><span aria-hidden="true">Case studies</span></span></a>
-      <a href="#about"><span class="nav-label"><span>About</span><span aria-hidden="true">About</span></span></a>
-      <a href="#faq"><span class="nav-label"><span>Questions</span><span aria-hidden="true">Questions</span></span></a>
+      <a href="/about"><span class="nav-label"><span>About</span><span aria-hidden="true">About</span></span></a>
     </nav>
     <a class="btn" href="#book" data-route="book" data-nav-cta>
       <span class="btn-label"><span data-cta-text>Book a free call</span><span aria-hidden="true" data-cta-text>Book a free call</span></span>
@@ -2601,6 +2600,7 @@
     <div class="foot-right">
       <a href="/monthly-content">Monthly content</a>
       <a href="/video-ads">Video ads</a>
+      <a href="/about">About</a>
       <span>Nelson, New Zealand</span>
       <a href="mailto:hello@tuimedia.nz">hello@tuimedia.nz</a>
       <span class="foot-copy">&copy; <span data-year>2026</span> Tui Media</span>
@@ -3125,6 +3125,8 @@
 
   function advanceCurtain() {
     if (!curtainEl) return;
+    /* leaving for another page (js/page-transition.js): let it cover and go */
+    if (curtainEl.hasAttribute('data-leaving')) return;
     clearCurtainTimer();
     if (curtainEl.classList.contains('page-loader--enter')) {
       var name = curtainPending;
@@ -3781,6 +3783,7 @@
 
 <script defer src="/js/lenis.min.js"></script>
 <script defer src="/js/smooth-scroll.js"></script>
+<script defer src="/js/page-transition.js"></script>
 <script defer src="/_vercel/insights/script.js"></script>
 
 </body>

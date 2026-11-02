@@ -27,6 +27,11 @@ deployed on Vercel.
     inertial scrolling. Touch and reduced-motion visitors keep native scrolling.
     Remove the two `<script>` tags to switch it off. Pages jump through
     `window.__lenis.scrollTo` rather than `window.scrollTo`, so the two don't fight.
+  - `about/index.html` — the About page at `/about`, generated from the same
+    template as the two service pages.
+  - `css/loader.css` and `js/page-transition.js` — the page curtain on every page
+    but the home page (which has its own inline). Clicking through to another
+    page on the site drops the curtain, then navigates; the next page lifts it.
   - `css/service.css` — shared by the two service pages: the site's tokens, nav,
     buttons and closing panel, plus the offer card, timeline and FAQ from
     `index.html`, copied rather than shared, so a change there needs making here too.

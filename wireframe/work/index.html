@@ -33,6 +33,8 @@
 <meta name="theme-color" content="#060D1A">
 <link rel="icon" href="/favicon-32.png" sizes="32x32">
 <link rel="icon" href="/favicon-512.png" sizes="512x512">
+<script>document.documentElement.classList.add('js');</script>
+<link rel="stylesheet" href="/css/loader.css">
 <link rel="preload" href="/fonts/bricolage-grotesque-latin.woff2" as="font" type="font/woff2" crossorigin>
 
 <style>
@@ -587,6 +589,12 @@
   </symbol>
 </svg>
 
+<div class="page-loader" data-page-loader data-first-paint aria-hidden="true">
+  <span class="page-loader__arc page-loader__arc--top"><i></i></span>
+  <span class="page-loader__arc page-loader__arc--bot"><i></i></span>
+  <i class="page-loader__icon"></i>
+</div>
+
 <div class="nav-wrap">
   <div class="nav">
     <a class="wordmark" href="/" aria-label="Tui Media, home"><i></i></a>
@@ -594,8 +602,7 @@
       <a href="/monthly-content"><span class="nav-label"><span>Monthly content</span><span aria-hidden="true">Monthly content</span></span></a>
       <a href="/video-ads"><span class="nav-label"><span>Video ads</span><span aria-hidden="true">Video ads</span></span></a>
       <a href="/work" aria-current="page"><span class="nav-label"><span>Case studies</span><span aria-hidden="true">Case studies</span></span></a>
-      <a href="/#about"><span class="nav-label"><span>About</span><span aria-hidden="true">About</span></span></a>
-      <a href="/#faq"><span class="nav-label"><span>Questions</span><span aria-hidden="true">Questions</span></span></a>
+      <a href="/about"><span class="nav-label"><span>About</span><span aria-hidden="true">About</span></span></a>
     </nav>
     <a class="btn" href="/#book">
       <span class="btn-label"><span>Book a free call</span><span aria-hidden="true">Book a free call</span></span>
@@ -634,6 +641,7 @@
       <a href="/">Back to site</a>
       <a href="/monthly-content">Monthly content</a>
       <a href="/video-ads">Video ads</a>
+      <a href="/about">About</a>
       <span>Nelson, New Zealand</span>
       <a href="mailto:hello@tuimedia.nz">hello@tuimedia.nz</a>
       <span class="foot-copy">&copy; <span data-year>2026</span> Tui Media</span>
@@ -918,6 +926,7 @@
 
 <script defer src="/js/lenis.min.js"></script>
 <script defer src="/js/smooth-scroll.js"></script>
+<script defer src="/js/page-transition.js"></script>
 <script defer src="/_vercel/insights/script.js"></script>
 
 </body>
