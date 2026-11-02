@@ -10,18 +10,21 @@ deployed on Vercel.
   The folder name is historical; renaming it means changing the Root Directory
   setting in the Vercel project at the same time.
   - `index.html` — the whole site: markup, styles and script in one file.
-  - `work/index.html` — every case study at `/work`, in a grid, linked from the
-    "See all case studies" button under the home page's case studies. Each card
-    plays its clip with sound on click, and numbered buttons switch between a
-    client's clips. These are the only clips on the site that carry audio, and
-    they live in `media/work/`. The case studies are the `CASES` list in its script.
+  - `work/index.html` — every case study at `/work`, linked from the menu, the
+    footer and the home page's case studies. Laid out as a sticky index: the
+    client list on the left and the current client's write-up on the right stay
+    put while every clip scrolls up the middle, each with a small number. The
+    client whose clips are in view is written large in the list; clicking a name
+    scrolls to its clips, and `/work#client-name` lands on them. Each clip plays
+    with sound on click. These are the only clips on the site that carry audio,
+    and they live in `media/work/`. The case studies are the `CASES` list in its script.
   - `video-ads/index.html` and `monthly-content/index.html` — the two service
     pages at `/video-ads` and `/monthly-content`, linked from the cards in
     "Two ways to work together" and from the menu. Their book buttons go to `/?interest=ad#book`
     or `/?interest=monthly#book`, which opens the form with that option picked.
-  - Buttons, on every page: one colour edge to edge, a plain arrow before the
-    label. A solid button's fill slides out to the right on hover, leaving the
-    outline; an outline button's fill slides in. Nothing else on the button moves.
+  - Buttons, on every page: the label and nothing else, no arrow or icon. A
+    solid button inverts to its outline on hover; an outline button fills.
+    Only the colours change, nothing moves.
   - `js/` — `lenis.min.js` (Lenis 1.1.20, MIT, self-hosted) and `smooth-scroll.js`,
     the small script every page loads to give the mouse wheel and trackpad
     inertial scrolling. Touch and reduced-motion visitors keep native scrolling.
@@ -79,7 +82,8 @@ That rests on a few decisions worth not undoing:
 
 - **Nothing is embedded as a data URI.** Images live in `img/` as WebP so they are
   cached across visits instead of being re-downloaded inside the HTML every time.
-- **The home page's case studies are still images, not video.** Nothing on the
+- **The home page's case studies are still images, not video,** in the same sticky
+  index as `/work`, each linking through to that client on `/work`. Nothing on the
   home page plays by itself, so a first load fetches no clips. (The hero's pointer
   trail is the one exception, and it only starts once the mouse enters the hero.)
   Putting `autoplay` on a `<video>` makes the browser fetch it on load whatever
@@ -170,9 +174,9 @@ One easing token, `--ease-out: cubic-bezier(0.23, 1, 0.32, 1)`. No libraries.
 - Breakpoints at 1024px (pad spacing), 900px (process, team, intro and
   what-you-keep stack), 700px (fit and two-ways cards stack) and 620px (tighter
   nav, smaller cases).
-- **Button labels appear twice.** The hover slide keeps a duplicate label
-  underneath, both inside `.btn-label`, so changing button text means changing it
-  in both spans.
+- **Button labels appear twice.** Each button's `.btn-label` holds the label in
+  two spans (the second is hidden, left from the old hover slide), so changing
+  button text means changing it in both.
 
 ## SEO
 
