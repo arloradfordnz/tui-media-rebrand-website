@@ -171,6 +171,11 @@ One easing token, `--ease-out: cubic-bezier(0.23, 1, 0.32, 1)`. No libraries.
 
 ## Conventions
 
+- Most sections stop at `--content`. The case studies (home and `/work`) and the
+  reviews run full width inside the page gutter: `.shell.full` on the home page,
+  `.full` on `/work`. The reviews sit four to a row from 1200px.
+- Copy follows the voice rules in `Tui_Media_Rebrand_Master_Reference.md`: plain,
+  casual, no em dashes. Reviews are quoted exactly as written.
 - Type and spacing run off tokens at the top of the stylesheet (`--t-*` for type,
   `--s-*` for space, `--frame` for the page edge, `--content` for where content
   stops). Change those, not the individual rules.

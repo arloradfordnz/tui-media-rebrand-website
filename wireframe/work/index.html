@@ -106,6 +106,8 @@
     margin: 0 auto;
     padding-inline: var(--frame);
   }
+  /* edge to edge, inside the page gutter */
+  .full { padding-inline: var(--frame); }
 
   /* ---------- nav ----------
      The site's nav, not an approximation of it: same pill, same glass, same
@@ -540,17 +542,20 @@
   <div class="page-head">
     <p class="avail"><i></i><span>Case studies</span></p>
     <h1>Work for Nelson businesses</h1>
-    <p class="lede">A closer look at the businesses we've made videos for, and what we made them.</p>
+    <p class="lede">A look at some of the Nelson businesses we've made videos for, and what we made them.</p>
   </div>
 
-  <!-- One group per client, its shots stacked in the right-hand column.
-       Filled from CASES in the script below. -->
+</div>
+
+<!-- One group per client, its shots stacked in the right-hand column. Full
+     width, inside the page gutter. Filled from CASES in the script below. -->
+<div class="full">
   <div class="cs" id="grid" data-cs></div>
 </div>
 
 <div class="closing center" id="contact">
   <h2>Start with a 20&#8209;minute call.</h2>
-  <p class="lede">Free, and no pressure. We'll tell you straight whether we can help before you spend anything.</p>
+  <p class="lede">It's free and there's no pressure. We'll be honest about whether we can actually help before you spend a cent.</p>
 
   <div class="btn-row">
     <a class="btn" href="/#book">

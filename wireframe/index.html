@@ -140,7 +140,7 @@
     {
       "@type": "Question",
       "name": "Can you promise results?",
-      "acceptedAnswer": { "@type": "Answer", "text": "No, and be careful of anyone who says they can. What we do is research what's working in your industry and build the ads around it, with several versions and hooks so you're not betting on just one." }
+      "acceptedAnswer": { "@type": "Answer", "text": "No, and honestly, be wary of anyone who does. What we can do is research what's working in your industry and build your ads around that, with a few versions and hooks so you're not relying on just one." }
     },
     {
       "@type": "Question",
@@ -440,6 +440,9 @@
   /* ---------- primitives ---------- */
 
   .shell { width: 100%; max-width: var(--content); margin-inline: auto; padding-inline: var(--frame); }
+  /* edge to edge, keeping only the page gutter: the case studies and the
+     reviews, which have more to show than the content width allows */
+  .shell.full { max-width: none; }
   section { padding-block: var(--s-7); }
 
   h1, h2, h3 {
@@ -1930,6 +1933,7 @@
   /* ---------- reviews ---------- */
 
   .says { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--frame); }
+  @media (min-width: 1200px) { .says { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
   .say {
     margin: 0;
     background: var(--surface);
@@ -2216,14 +2220,14 @@
   <div class="shell">
     <div class="section-head center" data-anim>
       <h2>Two ways to work together</h2>
-      <p class="lede">Start with whichever suits you. You can add the other later.</p>
+      <p class="lede">Start with whichever one suits you, and add the other later if you want.</p>
     </div>
 
     <div class="two-up">
       <article class="way-card" data-anim>
         <span class="way-tag">Monthly or quarterly</span>
         <h3>Monthly content</h3>
-        <p class="way-body">A content plan, a planned shoot, edited videos, a photo set, and captions and cover images for every post. Three packages, paid monthly or quarterly.</p>
+        <p class="way-body">We plan it, film it and edit it, then hand you a month's worth of videos and photos with captions ready to go. Three packages, paid monthly or quarterly.</p>
         <div class="way-best">
           <span class="way-label">Best for</span>
           <p>Businesses that want to grow their socials but have no clue how to do so.</p>
@@ -2241,10 +2245,10 @@
       <article class="way-card" data-anim>
         <span class="way-tag">One fee</span>
         <h3>Video ad project</h3>
-        <p class="way-body">We research what's working in your industry, write the script and hooks, film on site and edit several ad versions. Then we set up the campaign in an ad account in your name, launch it, and hand everything over.</p>
+        <p class="way-body">We dig into what's working in your industry, write the script, film it and cut a few different versions. Then we set up the campaign in your own ad account, launch it and hand the whole thing over to you.</p>
         <div class="way-best">
           <span class="way-label">Best for</span>
-          <p>Businesses that want more enquiries and can put budget behind ads.</p>
+          <p>Businesses after more enquiries that have some budget to put behind ads.</p>
         </div>
         <div class="way-foot">
           <p class="way-price">One fee, quoted per project.</p>
@@ -2264,7 +2268,7 @@
   <div class="shell">
     <div class="section-head center" data-anim>
       <h2>Who we work with</h2>
-      <p class="lede">We only take on a few clients at a time, so it has to be a good fit both ways.</p>
+      <p class="lede">We don't take on everyone. We keep our client list small, so it needs to be a good fit for both of us.</p>
     </div>
 
     <div class="two-up">
@@ -2296,7 +2300,7 @@
   <div class="shell">
     <div class="section-head center" data-anim>
       <h2>How it works</h2>
-      <p class="lede">Monthly content and ad projects start the same way. The difference is what happens after the edit.</p>
+      <p class="lede">Monthly content and ad projects start off the same. Where they split is after the edit.</p>
     </div>
 
     <div class="steps process-steps" data-steps>
@@ -2312,35 +2316,35 @@
           <div>
             <span class="step-when">Week one</span>
             <h3>Strategy</h3>
-            <p>We look into your business, who you're trying to reach and what's likely to get them to act. Then we agree on a plan together.</p>
+            <p>We get to know your business, who your customers are and what's going to get them to reach out. Then we lock in a plan together.</p>
           </div>
         </div>
         <div class="step" data-anim>
           <div>
             <span class="step-when">Week one</span>
             <h3>Script</h3>
-            <p>We write the script and shot list so everyone knows what's being filmed.</p>
+            <p>We write the script and a shot list, so there's no guessing on the day.</p>
           </div>
         </div>
         <div class="step" data-anim>
           <div>
             <span class="step-when">On site</span>
             <h3>Film</h3>
-            <p>We bring our own gear. We shoot wide as well as vertical, so it works everywhere it runs. Monthly content gets one planned shoot a month, or one per quarter.</p>
+            <p>We turn up with all our own gear and film both vertical and wide, so it works wherever it ends up. Monthly content gets one shoot a month, or one bigger one a quarter.</p>
           </div>
         </div>
         <div class="step" data-anim>
           <div>
             <span class="step-when">Week two</span>
             <h3>Edit</h3>
-            <p>Monthly content gets edited videos, a photo set, captions and cover images. Ads get a few versions with different hooks and formats.</p>
+            <p>Monthly content comes back as edited videos, a photo set, captions and covers. Ads come back as a few versions, each with a different hook.</p>
           </div>
         </div>
         <div class="step" data-anim>
           <div>
             <span class="step-when">Monthly content &middot; every month</span>
             <h3>Deliver and repeat</h3>
-            <p>Your content arrives ready to post, and we plan the next round. Core and Full get a monthly check-in on what worked.</p>
+            <p>You get it all ready to post, and we start planning next month. Core and Full also get a check-in on what's been working.</p>
           </div>
         </div>
         <div class="step" data-anim>
@@ -2360,7 +2364,7 @@
   <div class="shell">
     <div class="section-head center" data-anim>
       <h2>What you keep</h2>
-      <p class="lede">When an ad project ends, everything is yours. No files held back, no account you can't log into. Raw files are kept for 6 months.</p>
+      <p class="lede">Once an ad project wraps up, it's all yours. We don't hang onto anything or lock you out of your own account, and we keep the raw files for 6 months as a backup.</p>
     </div>
 
     <div class="keep-grid">
@@ -2389,7 +2393,7 @@
           </div>
         </div>
         <h3>The raw footage</h3>
-        <p>Every take from the shoot, including outtakes and b-roll, in a folder in your name.</p>
+        <p>Every single take from the shoot, outtakes and b-roll included, in a folder with your name on it.</p>
       </div>
       <div class="keep-card" data-anim>
         <div class="keep-stage" aria-hidden="true">
@@ -2406,7 +2410,7 @@
           </div>
         </div>
         <h3>The final ads</h3>
-        <p>Cut for reels, feed, square and in-stream, so nothing gets badly cropped.</p>
+        <p>Cut to fit reels, feed, square and in-stream, so nothing ends up awkwardly cropped.</p>
       </div>
       <div class="keep-card" data-anim>
         <div class="keep-stage" aria-hidden="true">
@@ -2434,7 +2438,7 @@
           </div>
         </div>
         <h3>The ad account</h3>
-        <p>Set up in your name before any money is spent. If we ever stop working together, it stays with you, along with everything it's learned.</p>
+        <p>Set up in your name before a cent gets spent. If we ever stop working together, it stays with you, along with all the data it's built up.</p>
       </div>
     </div>
   </div>
@@ -2442,10 +2446,10 @@
 
 <!-- ============ RECENT WORK ============ -->
 <section id="work">
-  <div class="shell">
+  <div class="shell full">
     <div class="section-head center" data-anim>
       <h2>Case studies</h2>
-      <p class="lede">A closer look at some of the businesses we've made videos for around Nelson.</p>
+      <p class="lede">A look at some of the Nelson businesses we've made videos for.</p>
     </div>
 
     <div class="cs" data-cs>
@@ -2492,7 +2496,7 @@
      relationship and the video itself, NOT to ad performance, so the
      heading promises exactly that and nothing more. -->
 <section id="says">
-  <div class="shell">
+  <div class="shell full">
     <div class="section-head center" data-anim>
       <h2>What clients say</h2>
       <p class="rating" data-anim>
@@ -2504,7 +2508,7 @@
       <figure class="say" data-anim>
         <span class="say-mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 17h3l2-4V7H5v6h3zm8 0h3l2-4V7h-6v6h3z"/></svg></span>
         <blockquote><p>We worked with Tūī media on and off for a period of 8months and during this time they were absolutely brilliant. Great communication, always flexible and full of great ideas. Highly recommend Tūī Media</p></blockquote>
-        <figcaption><span class="say-avatar" aria-hidden="true">NB</span><span class="say-who"><b>Nate Bainbridge</b><span>Google review</span></span></figcaption>
+        <figcaption><span class="say-avatar" aria-hidden="true">NB</span><span class="say-who"><b>Nate Bainbridge</b><span>Team Bainbridge</span></span></figcaption>
       </figure>
       <figure class="say" data-anim>
         <span class="say-mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 17h3l2-4V7H5v6h3zm8 0h3l2-4V7h-6v6h3z"/></svg></span>
@@ -2532,10 +2536,10 @@
     <div class="team">
       <div class="block" data-anim><img src="/img/arlo-radford.webp" alt="Arlo Radford, founder of Tui Media, on a shoot in Nelson" width="900" height="900" loading="lazy" decoding="async"></div>
       <div class="team-body" data-anim>
-        <p class="measure">Hey, I'm Arlo, the founder of Tui Media. I'm 17, at Nelson College, and I've been behind a camera for over four years.</p>
-        <p class="measure">At Tui Media I make video content and ads for local businesses. I plan the shoot, film it, edit it and deliver it myself, so nothing gets lost along the way.</p>
-        <p class="measure">Most businesses work with me monthly: one planned shoot that turns into a month of reels, photos and posts. Others come for a one-off ad project, researched, scripted, filmed and launched in their own ad account.</p>
-        <p class="measure">So far that's over thirty Nelson businesses, from builders and workshops to Nelson City Council, and I've partnered with Nikon New Zealand on the release of one of their cinema cameras.</p>
+        <p class="measure">Hey there, I'm Arlo, founder and creative director here at Tui Media, and a 17 year old at Nelson College. I've been in the creative industry for over four years now, having grown up with cameras.</p>
+        <p class="measure">At Tui Media I make video content and ads for local businesses. I do everything myself, from scripting to delivering, which means nothing gets lost along the way.</p>
+        <p class="measure">Most of the businesses I work with are on a monthly plan, where one shoot turns into a month's worth of reels, photos and posts. Others come to me for a one-off ad project, launched in their own ad account.</p>
+        <p class="measure">As well as working with over thirty local businesses here in Nelson, I've partnered with Nikon New Zealand to showcase the release of one of their new cinema cameras.</p>
         <div class="btn-row">
           <a class="btn" href="#book" data-route="book">
             <span class="btn-label"><span>Get in touch</span><span aria-hidden="true">Get in touch</span></span>
@@ -2589,7 +2593,7 @@
           <span class="faq-q">Can you promise results?</span>
           <span class="faq-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></span>
         </button>
-        <div class="faq-panel" id="faq-a5" role="region" aria-labelledby="faq-q5" inert><div><p class="faq-a">No, and be careful of anyone who says they can. What we do is research what's working in your industry and build the ads around it, with several versions and hooks so you're not betting on just one.</p></div></div>
+        <div class="faq-panel" id="faq-a5" role="region" aria-labelledby="faq-q5" inert><div><p class="faq-a">No, and honestly, be wary of anyone who does. What we can do is research what's working in your industry and build your ads around that, with a few versions and hooks so you're not relying on just one.</p></div></div>
       </div>
 
       <div class="faq-item" data-anim>
@@ -2627,7 +2631,7 @@
 <!-- ============ CLOSING PANEL (CTA + FOOTER) ============ -->
 <div class="closing center" id="contact">
   <h2 data-anim>Start with a 20&#8209;minute call.</h2>
-  <p class="lede" data-anim>Free, and no pressure. We'll tell you straight whether we can help before you spend anything.</p>
+  <p class="lede" data-anim>It's free and there's no pressure. We'll be honest about whether we can actually help before you spend a cent.</p>
 
   <div class="btn-row">
     <a class="btn" href="#book" data-route="book">
@@ -2656,7 +2660,7 @@
 <main class="page" data-view="book" hidden>
   <div class="page-head" data-page-head>
     <h2 tabindex="-1">Let's see if we're a fit</h2>
-    <p class="lede">Two minutes. If we can't help, we'll say so and point you at someone who can.</p>
+    <p class="lede">Takes about two minutes. If we're not the right fit, we'll tell you and point you to someone who is.</p>
   </div>
 
   <form data-form novalidate>
@@ -2788,7 +2792,7 @@
 
   <div class="done" data-done hidden tabindex="-1" aria-live="polite">
     <h2>Received.</h2>
-    <p class="lede">We'll get back to you within one working day. If it looks like a fit, the reply has a booking link in it.</p>
+    <p class="lede">We'll get back to you within one working day. If it looks like a good fit, we'll send through a link to book your call.</p>
   </div>
 </main>
 
