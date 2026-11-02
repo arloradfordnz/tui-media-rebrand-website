@@ -292,6 +292,14 @@
   }
   section[id], div[id] { scroll-margin-top: calc(var(--nav-h) + var(--frame) * 2 + 8px); }
   @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+
+  /* Lenis (js/smooth-scroll.js) drives the scrolling, so the browser's own
+     smooth scroll has to stand down or the two fight each other. */
+  html.lenis, html.lenis body { height: auto; }
+  .lenis.lenis-smooth { scroll-behavior: auto !important; }
+  .lenis.lenis-stopped { overflow: clip; }
+  .lenis.lenis-smooth iframe { pointer-events: none; }
+
   ::selection { background: var(--accent); color: var(--accent-ink); }
 
   /* ---------- page loader / curtain --------------------------------------
@@ -936,8 +944,10 @@
   .step:nth-child(even) p { margin-left: auto; }
 
   /* ---------- case studies ----------
-     A grid of cards, one per client: a clip of theirs on top, what we did
-     underneath. Same --surface panel and type as the offer cards. */
+     A grid of cards, one per client: a still from their work on top, what
+     we did underneath. Same --surface panel and type as the offer cards.
+     Stills, not clips: nothing here plays by itself. Swap the image for a
+     screenshot by changing the <img> src. */
 
   .studies { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--frame); }
   .study {
@@ -951,6 +961,7 @@
   /* the clip fills the card's width, cropped a little shorter than 9:16 so
      a row of three doesn't run two screens tall */
   .study .case { width: auto; aspect-ratio: 4 / 5; }
+  .study .case img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; }
   .study-body { display: flex; flex-direction: column; gap: var(--s-2); padding: 0 var(--s-2) var(--s-2); }
   .study-body .way-tag { align-self: flex-start; }
   .study-body h3 {
@@ -968,10 +979,6 @@
     aspect-ratio: 9 / 16;        /* 720 x 1280 */
     flex: none;
     position: relative;
-    /* the clip's poster is painted here as well as on the video (set in JS
-       when the strip is near), so whatever state the video is in — still
-       loading, reloading after a dropped connection, refused by Low Power
-       Mode — the card shows a real frame, never an empty box */
     background: var(--slot-1) center / cover no-repeat;
     border-radius: var(--radius-sm);
     overflow: hidden;
@@ -979,36 +986,6 @@
                               sibling's z-index unless this element owns its own
                               stacking context */
   }
-  .case-video {
-    position: absolute;
-    inset: 0;
-    z-index: 0;   /* an explicit level, so the overlay below is ordered against it rather than against `auto` */
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: block;
-  }
-  /* the overlay sits at the top of the frame with a scrim behind it, so
-     the name and stat stay legible over whatever the video is doing */
-  .case-detail {
-    position: absolute;
-    left: 0; right: 0; top: 0;
-    /* Safari promotes the <video> to its own composited layer and then paints
-       it over ordinary siblings whatever their z-index says. Promoting the
-       overlay too puts both in the same league, and the z-index sticks. */
-    z-index: 2;
-    transform: translateZ(0);
-    padding: var(--s-2) var(--s-3) var(--s-4);
-    display: grid;
-    gap: 2px;
-    background: linear-gradient(to bottom, rgba(0, 0, 0, 0.55), transparent);
-  }
-  .case-detail .name {
-    display: flex; align-items: center; gap: 6px;
-    font-size: 0.9375rem; font-weight: 500; letter-spacing: -0.02em; color: #fff;
-  }
-  .case-detail .tick { width: 13px; height: 13px; flex: none; }
-  .case-detail .stat { font-size: var(--t-small); color: rgba(255, 255, 255, 0.72); }
 
   /* the way through to /work, under the case studies */
   .work-more { justify-content: center; margin-top: var(--s-5); padding-inline: var(--frame); }
@@ -2054,6 +2031,12 @@
       cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'%3E%3Ccircle cx='8' cy='8' r='8' fill='%236E9BF7'/%3E%3C/svg%3E") 8 8, auto;
     }
     input, textarea { cursor: text; }
+    /* anything else filled with the accent gets the dark dot, so the cursor
+       never disappears into it: the light button's arrow, the review
+       initials, the Ads Manager avatar, the "now taking" light */
+    .btn.light .arrow, .say-avatar, .acct-avatar, .avail i {
+      cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'%3E%3Ccircle cx='8' cy='8' r='8' fill='%230A1428'/%3E%3C/svg%3E") 8 8, auto;
+    }
     /* solid buttons are accent, and the outline ones carry an accent arrow
        circle. The dark circle inside a solid button is the exception, so
        it keeps the accent dot. */
@@ -2063,6 +2046,12 @@
     .btn:not(.outline) .arrow {
       cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'%3E%3Ccircle cx='8' cy='8' r='8' fill='%236E9BF7'/%3E%3C/svg%3E") 8 8, auto;
     }
+  }
+
+  /* The menu is five links now and is centred in the pill, so below ~960px
+     it runs into the button. Hide it there, the same as on a phone. */
+  @media (max-width: 960px) {
+    .nav-links { display: none; }
   }
 
   /* ---------- reduced motion ---------------------------------------------
@@ -2118,10 +2107,9 @@
   <div class="nav">
     <a class="wordmark" href="#home" data-route="home" aria-label="Tui Media, home"><i></i></a>
     <nav class="nav-links">
-      <a href="#services"><span class="nav-label"><span>Services</span><span aria-hidden="true">Services</span></span></a>
-      <a href="#fit"><span class="nav-label"><span>Fit</span><span aria-hidden="true">Fit</span></span></a>
-      <a href="#process"><span class="nav-label"><span>Process</span><span aria-hidden="true">Process</span></span></a>
-      <a href="#work"><span class="nav-label"><span>Work</span><span aria-hidden="true">Work</span></span></a>
+      <a href="/monthly-content"><span class="nav-label"><span>Monthly content</span><span aria-hidden="true">Monthly content</span></span></a>
+      <a href="/video-ads"><span class="nav-label"><span>Video ads</span><span aria-hidden="true">Video ads</span></span></a>
+      <a href="/work"><span class="nav-label"><span>Case studies</span><span aria-hidden="true">Case studies</span></span></a>
       <a href="#about"><span class="nav-label"><span>About</span><span aria-hidden="true">About</span></span></a>
       <a href="#faq"><span class="nav-label"><span>Questions</span><span aria-hidden="true">Questions</span></span></a>
     </nav>
@@ -2440,7 +2428,7 @@
 
     <div class="studies">
       <article class="study" data-anim>
-        <div class="case"><video class="case-video" src="media/johnson-residential-4.mp4" data-poster="media/johnson-residential-4-poster.webp" muted loop playsinline preload="none" data-case-video aria-hidden="true"></video></div>
+        <div class="case"><img src="/media/johnson-residential-4-poster.webp" alt="" width="720" height="1280" loading="lazy" decoding="async"></div>
         <div class="study-body">
           <span class="way-tag">Residential building</span>
           <h3>Johnson Residential<svg class="tick" viewBox="0 0 84 84" aria-label="Meta verified"><path fill="#0064E0" fill-rule="evenodd" d="m50.4.47c1.79-.97,4.02-.37,5.08,1.36l4.99,8.17,9.57.24c2.03.05,3.67,1.69,3.72,3.72l.24,9.57,8.17,4.99c1.74,1.06,2.34,3.3,1.36,5.08l-4.58,8.4,4.58,8.4c.97,1.79.37,4.02-1.36,5.08l-8.17,4.99-.24,9.57c-.05,2.03-1.69,3.67-3.72,3.72l-9.57.24-4.99,8.17c-1.06,1.74-3.3,2.34-5.08,1.36l-8.4-4.58-8.4,4.58c-1.79.97-4.02.37-5.08-1.36l-4.99-8.17-9.57-.24c-2.03-.05-3.67-1.69-3.72-3.72l-.24-9.57-8.17-4.99c-1.74-1.06-2.34-3.3-1.36-5.08l4.58-8.4L.47,33.6c-.97-1.79-.37-4.02,1.36-5.08l8.17-4.99.24-9.57c.05-2.03,1.69-3.67,3.72-3.72l9.57-.24L28.51,1.83c1.06-1.74,3.3-2.34,5.08-1.36l8.4,4.58L50.4.47Zm9.31,34.92c1.62-1.35,1.84-3.76.49-5.38-1.35-1.62-3.76-1.84-5.38-.49l-.26.21c-6.64,5.54-12.84,11.59-18.52,18.1l-6.62-6.62c-1.49-1.49-3.91-1.49-5.4,0-1.49,1.49-1.49,3.91,0,5.4l9.55,9.55c.76.76,1.8,1.16,2.87,1.11,1.07-.05,2.07-.55,2.76-1.37l.21-.26c6.06-7.27,12.77-13.98,20.04-20.04l.26-.21Z"/></svg></h3>
@@ -2448,7 +2436,7 @@
         </div>
       </article>
       <article class="study" data-anim>
-        <div class="case"><video class="case-video" src="media/sky-automotive-3.mp4" data-poster="media/sky-automotive-3-poster.webp" muted loop playsinline preload="none" data-case-video aria-hidden="true"></video></div>
+        <div class="case"><img src="/media/sky-automotive-3-poster.webp" alt="" width="720" height="1280" loading="lazy" decoding="async"></div>
         <div class="study-body">
           <span class="way-tag">Automotive servicing</span>
           <h3>Sky Automotive<svg class="tick" viewBox="0 0 84 84" aria-label="Meta verified"><path fill="#0064E0" fill-rule="evenodd" d="m50.4.47c1.79-.97,4.02-.37,5.08,1.36l4.99,8.17,9.57.24c2.03.05,3.67,1.69,3.72,3.72l.24,9.57,8.17,4.99c1.74,1.06,2.34,3.3,1.36,5.08l-4.58,8.4,4.58,8.4c.97,1.79.37,4.02-1.36,5.08l-8.17,4.99-.24,9.57c-.05,2.03-1.69,3.67-3.72,3.72l-9.57.24-4.99,8.17c-1.06,1.74-3.3,2.34-5.08,1.36l-8.4-4.58-8.4,4.58c-1.79.97-4.02.37-5.08-1.36l-4.99-8.17-9.57-.24c-2.03-.05-3.67-1.69-3.72-3.72l-.24-9.57-8.17-4.99c-1.74-1.06-2.34-3.3-1.36-5.08l4.58-8.4L.47,33.6c-.97-1.79-.37-4.02,1.36-5.08l8.17-4.99.24-9.57c.05-2.03,1.69-3.67,3.72-3.72l9.57-.24L28.51,1.83c1.06-1.74,3.3-2.34,5.08-1.36l8.4,4.58L50.4.47Zm9.31,34.92c1.62-1.35,1.84-3.76.49-5.38-1.35-1.62-3.76-1.84-5.38-.49l-.26.21c-6.64,5.54-12.84,11.59-18.52,18.1l-6.62-6.62c-1.49-1.49-3.91-1.49-5.4,0-1.49,1.49-1.49,3.91,0,5.4l9.55,9.55c.76.76,1.8,1.16,2.87,1.11,1.07-.05,2.07-.55,2.76-1.37l.21-.26c6.06-7.27,12.77-13.98,20.04-20.04l.26-.21Z"/></svg></h3>
@@ -2456,7 +2444,7 @@
         </div>
       </article>
       <article class="study" data-anim>
-        <div class="case"><video class="case-video" src="media/atk-detailing-3.mp4" data-poster="media/atk-detailing-3-poster.webp" muted loop playsinline preload="none" data-case-video aria-hidden="true"></video></div>
+        <div class="case"><img src="/media/atk-detailing-3-poster.webp" alt="" width="720" height="1280" loading="lazy" decoding="async"></div>
         <div class="study-body">
           <span class="way-tag">Car detailing</span>
           <h3>ATK Detailing<svg class="tick" viewBox="0 0 84 84" aria-label="Meta verified"><path fill="#0064E0" fill-rule="evenodd" d="m50.4.47c1.79-.97,4.02-.37,5.08,1.36l4.99,8.17,9.57.24c2.03.05,3.67,1.69,3.72,3.72l.24,9.57,8.17,4.99c1.74,1.06,2.34,3.3,1.36,5.08l-4.58,8.4,4.58,8.4c.97,1.79.37,4.02-1.36,5.08l-8.17,4.99-.24,9.57c-.05,2.03-1.69,3.67-3.72,3.72l-9.57.24-4.99,8.17c-1.06,1.74-3.3,2.34-5.08,1.36l-8.4-4.58-8.4,4.58c-1.79.97-4.02.37-5.08-1.36l-4.99-8.17-9.57-.24c-2.03-.05-3.67-1.69-3.72-3.72l-.24-9.57-8.17-4.99c-1.74-1.06-2.34-3.3-1.36-5.08l4.58-8.4L.47,33.6c-.97-1.79-.37-4.02,1.36-5.08l8.17-4.99.24-9.57c.05-2.03,1.69-3.67,3.72-3.72l9.57-.24L28.51,1.83c1.06-1.74,3.3-2.34,5.08-1.36l8.4,4.58L50.4.47Zm9.31,34.92c1.62-1.35,1.84-3.76.49-5.38-1.35-1.62-3.76-1.84-5.38-.49l-.26.21c-6.64,5.54-12.84,11.59-18.52,18.1l-6.62-6.62c-1.49-1.49-3.91-1.49-5.4,0-1.49,1.49-1.49,3.91,0,5.4l9.55,9.55c.76.76,1.8,1.16,2.87,1.11,1.07-.05,2.07-.55,2.76-1.37l.21-.26c6.06-7.27,12.77-13.98,20.04-20.04l.26-.21Z"/></svg></h3>
@@ -3077,8 +3065,7 @@
     ctaText.forEach(function (t) { t.textContent = book ? 'Back to Site' : 'Book a free call'; });
 
     document.title = book ? 'Book a free call | Tui Media' : BASE_TITLE;
-    try { window.scrollTo({ top: 0, behavior: 'instant' }); }
-    catch (err) { window.scrollTo(0, 0); }
+    jumpToTop();
     if (moveFocus) focusHead(name);
     onScroll();   /* repaint the scroll-driven bits for the view now showing */
   }
@@ -3219,6 +3206,14 @@
      heading above the fold and leave the section before it still on screen.
      Those centre on their heading block instead, and sit a little above true
      centre rather than dead centre, so what follows reads as "more to see". */
+  /* to the top at once, through Lenis when it's running so its own idea of
+     where the page is stays in step with the real one */
+  function jumpToTop() {
+    if (window.__lenis) { window.__lenis.scrollTo(0, { immediate: true, force: true }); return; }
+    try { window.scrollTo({ top: 0, behavior: 'instant' }); }
+    catch (err) { window.scrollTo(0, 0); }
+  }
+
   function scrollToCentre(target, animate) {
     var tall = target.id === 'process' || target.offsetHeight > window.innerHeight;
     var ref = tall ? (target.querySelector('.section-head') || target) : target;
@@ -3230,6 +3225,7 @@
        jumps that are meant to be instant (arriving from the book view, or a
        hashchange onto a section that was hidden a frame ago) were animating
        from the top of a nine-screen page. Ask for instant explicitly. */
+    if (window.__lenis) { window.__lenis.scrollTo(dest, animate ? { duration: 1.4 } : { immediate: true }); return; }
     try { window.scrollTo({ top: dest, behavior: animate ? 'smooth' : 'instant' }); }
     catch (err) { window.scrollTo(0, dest); }
   }
@@ -3405,8 +3401,7 @@
       bookForm.hidden = true;
       if (pageHead) pageHead.hidden = true;
       done.hidden = false;
-      try { window.scrollTo({ top: 0, behavior: 'instant' }); }
-      catch (err) { window.scrollTo(0, 0); }
+      jumpToTop();
       if (done.focus) { try { done.focus({ preventScroll: true }); } catch (err) { done.focus(); } }
     }).catch(function () {
       submitError.hidden = false;
@@ -3456,6 +3451,7 @@
 
     var list = document.createElement('ul');
     list.className = 'sel-list';
+    list.setAttribute('data-lenis-prevent', '');   /* scrolls itself, not the page */
     list.id = listId;
     list.setAttribute('role', 'listbox');
     if (lbl) list.setAttribute('aria-labelledby', lbl.id);
@@ -3634,166 +3630,6 @@
     }
   }
 
-  /* Case-study videos: muted loops that cost nothing until the section is
-     nearly on screen. `preload="none"` and the poster held on data-poster
-     mean a first load carries none of this — roughly 18MB of video and
-     400KB of poster frames that the old `autoplay` markup fetched eagerly,
-     whether or not the visitor ever scrolled this far.
-
-     The clips used to ride a moving marquee and now sit still in the
-     case-study panels. The history below is about the strip, but the poll
-     is kept for the reload-on-error healing, which still matters.
-
-     WHY THIS IS NOT ONE OBSERVER PER VIDEO ANY MORE. It used to be, and the
-     strip was reported dead on the live site: posters painted, every clip
-     parked on frame one. The old shape gave each video exactly ONE chance —
-     an IntersectionObserver callback, calling play() on a video that, with
-     `preload="none"`, has no data yet and therefore cannot start
-     synchronously. The same scroll that armed a card fired a second callback
-     for the cards clipped outside the strip, and that `pause()` landed on a
-     play that had not begun. There was no retry anywhere, so whatever state
-     that race left a card in was the state it kept for the life of the page.
-     On top of that the track's transform is a compositor animation
-     (`will-change: transform` + `translate3d`), and an observer is not a
-     dependable way to watch something moving on the compositor: the cards
-     change position without the main thread laying anything out again.
-
-     So visibility is polled here rather than observed. One observer on the
-     strip — which never moves, and so is exactly what an observer is good at
-     — decides whether the section deserves any work, and only while it does
-     a timer walks the cards and matches playback to what is really within
-     the frame. The poll is the point: every tick is another chance, so no
-     single lost race can leave a card stuck the way one could before.
-
-     Queried after the clone above so it picks up both copies of the track.
-
-     THE POLL ALSO HEALS. Calling play() again is enough for a clip that was
-     merely paused, but not for one whose download failed: an errored video
-     rejects play() on the spot and sits on its poster for the rest of the
-     visit. Measured locally, a 2.5s network drop as the strip arrived (a
-     phone changing towers, a tunnel, Wi-Fi handing over to 4G) left six of
-     the six cards on screen frozen for good. So a clip in the frame that has
-     errored, or has been asked to play but has had no frame to show for a
-     while, is reloaded from scratch, backing off so a dead connection is not
-     hammered. A real frame stays on the card through all of it: every poster
-     is armed as soon as the section is near, not card by card, and it is
-     also painted behind the video, so a card is never an empty box. */
-  var studiesBox = document.querySelector('.studies');
-  var caseVideos = [].slice.call(document.querySelectorAll('[data-case-video]'));
-
-  if (studiesBox && caseVideos.length) {
-    /* 4 fps. The cards cross the frame over seconds, not frames, so a rAF
-       loop would be 15x the wakeups to move the same decision. */
-    var CASE_TICK = 250;
-    /* Room above and below the viewport to start a clip before its panel
-       has fully arrived, so it is never caught on a still frame. */
-    var CASE_LEAD = 300;
-    /* How long a clip may be told to play without producing a frame before
-       it counts as stuck, and the longest it waits between reload tries. */
-    var CASE_STALL_MS = 6000;
-    var CASE_RETRY_MAX_MS = 8000;
-    var caseTimer = null;
-
-    function caseArm(v) {
-      var poster = v.getAttribute('data-poster');
-      if (!poster) return;
-      v.poster = poster;
-      v.removeAttribute('data-poster');
-      v.parentNode.style.backgroundImage = 'url("' + poster + '")';
-    }
-
-    /* Start over: load() drops the error and the dead connection, and
-       re-runs the source selection from the src attribute. */
-    function caseReload(v, now) {
-      v._tries = (v._tries || 0) + 1;
-      /* 1s, 2s, 4s, then every 8s. A failed try is one tiny request, so
-         waiting longer buys nothing but a longer frozen card. */
-      v._retryAt = now + Math.min(CASE_RETRY_MAX_MS, 500 * Math.pow(2, v._tries));
-      v._askedAt = now;
-      v.load();
-      var p = v.play(); if (p) p.catch(function () {});
-    }
-
-    caseVideos.forEach(function (v) {
-      /* a clip that gets going again earns a clean slate for next time */
-      v.addEventListener('playing', function () { v._tries = 0; v._askedAt = 0; });
-      /* bytes still arriving means slow, not stuck: a clip on a poor
-         connection is left to finish rather than restarted from nothing */
-      v.addEventListener('progress', function () { v._progressAt = Date.now(); });
-    });
-
-    function caseTick() {
-      /* In the viewport, with CASE_LEAD of room above and below so a clip
-         is already going as its panel scrolls in. Sideways it is the
-         viewport edge exactly: on a phone the clips scroll inside their
-         panel, and one parked off to the right should not be decoding. */
-      var vw = window.innerWidth;
-      var vh = window.innerHeight;
-      var now = Date.now();
-      caseVideos.forEach(function (v) {
-        var r = v.getBoundingClientRect();
-        var inFrame = r.bottom > -CASE_LEAD && r.top < vh + CASE_LEAD &&
-                      r.right > 0 && r.left < vw;
-        if (inFrame) {
-          /* NETWORK_NO_SOURCE is where a failed fetch can leave a video
-             without setting .error in every browser */
-          var dead = v.error || v.networkState === 3;
-          /* asked to play, still nothing to show for it */
-          var stuck = !v.paused && v.readyState < 2 && v._askedAt &&
-                      now - Math.max(v._askedAt, v._progressAt || 0) > CASE_STALL_MS;
-          if (dead || stuck) {
-            if (now >= (v._retryAt || 0)) caseReload(v, now);
-          } else if (v.paused) {
-            /* Re-issuing play() on a video that is already playing is a
-               no-op, which is what makes the poll self-healing: a play
-               cut short by a pause is simply reissued on the next tick
-               instead of leaving the card stuck, the way it used to. */
-            if (!v._askedAt) v._askedAt = now;
-            var p = v.play(); if (p) p.catch(function () {});
-          }
-        } else if (!v.paused) {
-          v.pause();
-          v._askedAt = 0;
-        }
-      });
-    }
-
-    function caseRun(on) {
-      /* Nothing decodes while the section is off screen or the tab is in
-         the background — the whole point of the observer below. */
-      if (on && !document.hidden) {
-        caseVideos.forEach(caseArm);
-        if (!caseTimer) { caseTick(); caseTimer = setInterval(caseTick, CASE_TICK); }
-      } else if (caseTimer) {
-        clearInterval(caseTimer);
-        caseTimer = null;
-        caseVideos.forEach(function (v) { if (!v.paused) v.pause(); v._askedAt = 0; });
-      }
-    }
-
-    /* A screen ahead rather than a fixed 400px: a flick on a phone covers
-       400px in a blink, and the posters need to have landed by the time
-       the strip does. */
-    var caseNear = false;
-    if ('IntersectionObserver' in window) {
-      new IntersectionObserver(function (entries) {
-        caseNear = entries[0].isIntersecting;
-        caseRun(caseNear);
-      }, { rootMargin: '100% 0px' }).observe(studiesBox);
-    } else {
-      caseNear = true;
-      caseRun(true);
-    }
-    document.addEventListener('visibilitychange', function () { caseRun(caseNear); });
-    /* back from /work through the back/forward cache: the page is restored
-       as it was left, so give the strip its kick again */
-    window.addEventListener('pageshow', function (e) { if (e.persisted) caseRun(caseNear); });
-    /* the connection is back: retry anything waiting out its backoff now */
-    window.addEventListener('online', function () {
-      caseVideos.forEach(function (v) { v._retryAt = 0; });
-    });
-  }
-
   /* ---------- hero video trail ------------------------------------------
      As the pointer moves across the hero, a clip drops in under it every
      GAP px of travel, drifts a little the way the pointer was heading, then
@@ -3811,20 +3647,19 @@
        clip is paused when the tab is hidden.
 
      Mouse and trackpad only (touch has no hover to trail), and off for
-     reduced motion. The clip list is read off the Recent work strip, so a
-     clip added there only needs its trail cut in media/trail/ to join in. */
+     reduced motion. The clips are listed below; each needs its trail cut
+     and poster in media/trail/. */
   (function () {
     var hero = document.querySelector('.hero');
     if (!hero || reduceMotion || !Element.prototype.animate) return;
     if (!window.matchMedia('(hover: hover) and (pointer: fine)').matches) return;
 
     var saveData = !!(navigator.connection && navigator.connection.saveData);
-    var clips = [], seen = {};
-    [].slice.call(document.querySelectorAll('[data-case-video]')).forEach(function (v) {
-      var m = /([^\/]+)\.mp4$/.exec(v.getAttribute('src') || '');
-      if (!m || seen[m[1]]) return;
-      seen[m[1]] = true;
-      clips.push({ src: '/media/trail/' + m[1] + '.mp4', poster: '/media/trail/' + m[1] + '.webp' });
+    var clips = ['johnson-residential-4', 'sky-automotive-3', 'washrite', 'johnson-residential-3',
+                 'nelson-english-center', 'atk-detailing-3', 'sky-automotive-1', 'nelson-city-framers-2',
+                 'johnson-residential-1', 'sky-automotive-2', 'johnson-residential-2', 'atk-detailing'
+                ].map(function (slug) {
+      return { src: '/media/trail/' + slug + '.mp4', poster: '/media/trail/' + slug + '.webp' };
     });
     if (!clips.length) return;
 
@@ -3948,6 +3783,8 @@
 })();
 </script>
 
+<script defer src="/js/lenis.min.js"></script>
+<script defer src="/js/smooth-scroll.js"></script>
 <script defer src="/_vercel/insights/script.js"></script>
 
 </body>

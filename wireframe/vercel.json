@@ -20,6 +20,12 @@
       ]
     },
     {
+      "source": "/js/(.*)",
+      "headers": [
+        { "key": "Cache-Control", "value": "public, max-age=86400, stale-while-revalidate=86400" }
+      ]
+    },
+    {
       "source": "/work(/.*)?",
       "headers": [
         { "key": "X-Robots-Tag", "value": "noindex, nofollow, noarchive" }

@@ -546,3 +546,62 @@ p { margin: 0; }
   .billing button[aria-pressed="false"]:hover { color: var(--ink); }
   .billing button { cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'%3E%3Ccircle cx='8' cy='8' r='8' fill='%236E9BF7'/%3E%3C/svg%3E") 8 8, auto; }
 }
+
+/* the switch's sliding thumb: the buttons sit over it with no fill of
+   their own, and it moves to whichever is pressed */
+.billing { position: relative; }
+.billing button { position: relative; z-index: 1; background: transparent !important; }
+.billing-thumb {
+  position: absolute;
+  top: 4px; bottom: 4px; left: 0;
+  width: 0;
+  border-radius: var(--radius-pill);
+  background: var(--accent);
+  pointer-events: none;
+}
+.billing.is-ready .billing-thumb {
+  transition: transform 420ms cubic-bezier(.65, 0, .35, 1), width 420ms cubic-bezier(.65, 0, .35, 1);
+}
+/* prices fade and lift a touch as they change over */
+[data-monthly] { transition: opacity 180ms ease, transform 180ms ease; }
+[data-monthly].is-swapping { opacity: 0; transform: translateY(-4px); }
+
+/* ---------- picking a package ---------- */
+.way-card.pack { cursor: pointer; transition: box-shadow 260ms var(--ease-out); }
+.way-card.pack:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+@media (hover: hover) and (pointer: fine) {
+  .way-card.pack:not(.is-pick):hover { box-shadow: 0 0 0 1px var(--rule-2); }
+}
+.btn { transition: transform 140ms var(--ease-out), background-color 260ms ease, border-color 260ms ease, color 260ms ease; }
+
+/* ---------- cursor over the accent ----------
+   The dot is the accent, so over anything filled with the accent it goes
+   dark instead of disappearing into it. */
+@media (hover: hover) and (pointer: fine) {
+  .way-card.pack {
+    cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'%3E%3Ccircle cx='8' cy='8' r='8' fill='%236E9BF7'/%3E%3C/svg%3E") 8 8, auto;
+  }
+  .billing button[aria-pressed="true"] {
+    cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'%3E%3Ccircle cx='8' cy='8' r='8' fill='%230A1428'/%3E%3C/svg%3E") 8 8, auto;
+  }
+}
+
+/* The menu is five links now and is centred in the pill, so below ~960px
+   it runs into the button. Hide it there, the same as on a phone. */
+@media (max-width: 960px) {
+  .nav-links { display: none; }
+}
+
+/* the nav link for the page you're on */
+.nav-links a[aria-current="page"] { color: var(--ink); }
+
+@media (prefers-reduced-motion: reduce) {
+  * { animation: none !important; transition: none !important; }
+}
+
+/* Lenis (js/smooth-scroll.js) drives the scrolling, so the browser's own
+   smooth scroll has to stand down or the two fight each other. */
+html.lenis, html.lenis body { height: auto; }
+.lenis.lenis-smooth { scroll-behavior: auto !important; }
+.lenis.lenis-stopped { overflow: clip; }
+.lenis.lenis-smooth iframe { pointer-events: none; }

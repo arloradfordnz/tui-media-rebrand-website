@@ -161,6 +161,7 @@
     font-weight: 500;
   }
   .nav-links a { color: var(--muted); text-decoration: none; white-space: nowrap; }
+  .nav-links a[aria-current="page"] { color: var(--ink); }
   .nav-links .nav-label { display: inline-grid; overflow: hidden; line-height: 1.3; }
   .nav-links .nav-label > span {
     grid-area: 1 / 1;
@@ -312,6 +313,12 @@
     transition: background 200ms var(--ease-out), color 200ms var(--ease-out), border-color 200ms var(--ease-out);
   }
   .clips button[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+  /* the dot goes dark over the chosen (accent-filled) clip button */
+  @media (hover: hover) and (pointer: fine) {
+    .clips button[aria-pressed="true"] {
+      cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'%3E%3Ccircle cx='8' cy='8' r='8' fill='%230A1428'/%3E%3C/svg%3E") 8 8, auto;
+    }
+  }
 
   /* A card is a button, not a div with a click handler: this page is sent to
      people who may well open it on a phone or drive it from the keyboard, and
@@ -525,6 +532,12 @@
     .closing-foot .foot-right { flex-direction: column; gap: var(--s-2); justify-content: center; }
   }
 
+  /* The menu is five links now and is centred in the pill, so below ~960px
+     it runs into the button. Hide it there, the same as on a phone. */
+  @media (max-width: 960px) {
+    .nav-links { display: none; }
+  }
+
   @media (max-width: 1024px) {
     .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   }
@@ -535,6 +548,14 @@
   @media (prefers-reduced-motion: reduce) {
     * { animation: none !important; transition: none !important; }
   }
+
+  /* Lenis (js/smooth-scroll.js) drives the scrolling, so the browser's own
+     smooth scroll has to stand down or the two fight each other. */
+  html.lenis, html.lenis body { height: auto; }
+  .lenis.lenis-smooth { scroll-behavior: auto !important; }
+  .lenis.lenis-stopped { overflow: clip; }
+  .lenis.lenis-smooth iframe { pointer-events: none; }
+
 
   /* ---------- cursor ----------
      The home page's dot, so the pointer does not change on the way over
@@ -567,10 +588,9 @@
   <div class="nav">
     <a class="wordmark" href="/" aria-label="Tui Media, home"><i></i></a>
     <nav class="nav-links">
-      <a href="/#services"><span class="nav-label"><span>Services</span><span aria-hidden="true">Services</span></span></a>
-      <a href="/#fit"><span class="nav-label"><span>Fit</span><span aria-hidden="true">Fit</span></span></a>
-      <a href="/#process"><span class="nav-label"><span>Process</span><span aria-hidden="true">Process</span></span></a>
-      <a href="/#work"><span class="nav-label"><span>Work</span><span aria-hidden="true">Work</span></span></a>
+      <a href="/monthly-content"><span class="nav-label"><span>Monthly content</span><span aria-hidden="true">Monthly content</span></span></a>
+      <a href="/video-ads"><span class="nav-label"><span>Video ads</span><span aria-hidden="true">Video ads</span></span></a>
+      <a href="/work" aria-current="page"><span class="nav-label"><span>Case studies</span><span aria-hidden="true">Case studies</span></span></a>
       <a href="/#about"><span class="nav-label"><span>About</span><span aria-hidden="true">About</span></span></a>
       <a href="/#faq"><span class="nav-label"><span>Questions</span><span aria-hidden="true">Questions</span></span></a>
     </nav>
@@ -776,19 +796,6 @@
     card.classList.remove('is-sound', 'is-preview');
   }
 
-  function preview(card) {
-    /* Silent, so it needs no gesture and cannot interrupt the card that is
-       actually playing out loud. */
-    if (sound) return;
-    var v = video(card);
-    clearTimeout(card.coolTimer);
-    stream(v);
-    v.muted = true;
-    card.classList.add('is-preview');
-    var p = v.play();
-    if (p) p.catch(function () { card.classList.remove('is-preview'); });
-  }
-
   function endPreview(card) {
     if (card === sound) return;
     var v = video(card);
@@ -858,28 +865,6 @@
       if (card === sound) { stop(card); sound = null; return; }
       withSound(card);
     });
-
-    /* Hover previews are gated on a real pointer, so a tap on a phone does
-       not fire one on the way to the click. The delay is hover intent: moving
-       the pointer to the far side of the grid crosses three or four cards on
-       the way, and without it each of those crossings starts a download for
-       a clip nobody asked to see. */
-    if (window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
-      var dwell = null;
-      card.addEventListener('mouseenter', function () {
-        clearTimeout(dwell);
-        dwell = setTimeout(function () { preview(card); }, 160);
-      });
-      card.addEventListener('mouseleave', function () {
-        clearTimeout(dwell);
-        endPreview(card);
-      });
-    }
-
-    /* Keyboard focus is the other way to arrive at a card, and it should
-       behave like hover does: a look, not a commitment. */
-    card.addEventListener('focus', function () { preview(card); });
-    card.addEventListener('blur', function () { endPreview(card); });
   });
 
   /* The numbered buttons under a case study swap which of that client's
@@ -928,6 +913,8 @@
 })();
 </script>
 
+<script defer src="/js/lenis.min.js"></script>
+<script defer src="/js/smooth-scroll.js"></script>
 <script defer src="/_vercel/insights/script.js"></script>
 
 </body>

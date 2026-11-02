@@ -17,8 +17,13 @@ deployed on Vercel.
     they live in `media/work/`. The case studies are the `CASES` list in its script.
   - `video-ads/index.html` and `monthly-content/index.html` — the two service
     pages at `/video-ads` and `/monthly-content`, linked from the cards in
-    "Two ways to work together". Their book buttons go to `/?interest=ad#book`
+    "Two ways to work together" and from the menu. Their book buttons go to `/?interest=ad#book`
     or `/?interest=monthly#book`, which opens the form with that option picked.
+  - `js/` — `lenis.min.js` (Lenis 1.1.20, MIT, self-hosted) and `smooth-scroll.js`,
+    the small script every page loads to give the mouse wheel and trackpad
+    inertial scrolling. Touch and reduced-motion visitors keep native scrolling.
+    Remove the two `<script>` tags to switch it off. Pages jump through
+    `window.__lenis.scrollTo` rather than `window.scrollTo`, so the two don't fight.
   - `css/service.css` — shared by the two service pages: the site's tokens, nav,
     buttons and closing panel, plus the offer card, timeline and FAQ from
     `index.html`, copied rather than shared, so a change there needs making here too.
@@ -66,17 +71,11 @@ That rests on a few decisions worth not undoing:
 
 - **Nothing is embedded as a data URI.** Images live in `img/` as WebP so they are
   cached across visits instead of being re-downloaded inside the HTML every time.
-- **Case-study videos are `preload="none"` with no `autoplay`,** and their posters
-  are held on `data-poster` rather than `poster`. One IntersectionObserver on the
-  *strip* decides when the section is worth any work, a screen out; that arms every
-  poster (on the video and painted behind it on the card), and a 4fps poll then
-  matches playback to the cards actually inside the frame. It is a poll and not an
-  observer per video on purpose — see the long comment above `caseTick` in
-  `index.html`, which is the bug that made the strip sit static. The poll also
-  reloads any clip in the frame that has errored or stalled, with a short backoff:
-  without that, one dropped connection froze a card for the rest of the visit.
-  Putting `autoplay` back makes the browser fetch every clip on load regardless of
-  what `preload` says.
+- **The home page's case studies are still images, not video.** Nothing on the
+  home page plays by itself, so a first load fetches no clips. (The hero's pointer
+  trail is the one exception, and it only starts once the mouse enters the hero.)
+  Putting `autoplay` on a `<video>` makes the browser fetch it on load whatever
+  `preload` says, so don't.
 - **`/work` loads its posters and nothing else.** The clips sit on `data-src`, so
   the first request for an mp4 there is the first time someone plays one.
 - **Every `<img>` carries `width` and `height`,** so nothing shifts as the

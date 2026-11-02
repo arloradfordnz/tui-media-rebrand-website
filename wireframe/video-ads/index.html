@@ -106,10 +106,9 @@
   <div class="nav">
     <a class="wordmark" href="/" aria-label="Tui Media, home"><i></i></a>
     <nav class="nav-links">
-      <a href="/#services"><span class="nav-label"><span>Services</span><span aria-hidden="true">Services</span></span></a>
-      <a href="/#fit"><span class="nav-label"><span>Fit</span><span aria-hidden="true">Fit</span></span></a>
-      <a href="/#process"><span class="nav-label"><span>Process</span><span aria-hidden="true">Process</span></span></a>
-      <a href="/#work"><span class="nav-label"><span>Work</span><span aria-hidden="true">Work</span></span></a>
+      <a href="/monthly-content"><span class="nav-label"><span>Monthly content</span><span aria-hidden="true">Monthly content</span></span></a>
+      <a href="/video-ads" aria-current="page"><span class="nav-label"><span>Video ads</span><span aria-hidden="true">Video ads</span></span></a>
+      <a href="/work"><span class="nav-label"><span>Case studies</span><span aria-hidden="true">Case studies</span></span></a>
       <a href="/#about"><span class="nav-label"><span>About</span><span aria-hidden="true">About</span></span></a>
       <a href="/#faq"><span class="nav-label"><span>Questions</span><span aria-hidden="true">Questions</span></span></a>
     </nav>
@@ -316,21 +315,70 @@
   var billing = document.querySelector('[data-billing]');
   if (billing) {
     billing.hidden = false;
+    var thumb = billing.querySelector('.billing-thumb');
     var opts = [].slice.call(billing.querySelectorAll('[data-billing-to]'));
     var priced = [].slice.call(document.querySelectorAll('[data-monthly]'));
+    var swapTimer = null;
+    /* the thumb is sized and moved to sit under the chosen side; it slides
+       because transform and width transition in the CSS */
+    function place() {
+      var on = billing.querySelector('[aria-pressed="true"]');
+      thumb.style.width = on.offsetWidth + 'px';
+      thumb.style.transform = 'translateX(' + on.offsetLeft + 'px)';
+    }
+    place();
+    /* turned on a frame later, so the first placement doesn't animate in */
+    requestAnimationFrame(function () { requestAnimationFrame(function () { billing.classList.add('is-ready'); }); });
+    window.addEventListener('resize', place);
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(place);
     opts.forEach(function (b) {
       b.addEventListener('click', function () {
+        if (b.getAttribute('aria-pressed') === 'true') return;
         var to = b.getAttribute('data-billing-to');
         opts.forEach(function (o) { o.setAttribute('aria-pressed', o === b ? 'true' : 'false'); });
-        priced.forEach(function (el) { el.textContent = el.getAttribute('data-' + to); });
+        place();
+        /* the prices fade out, change, and fade back in */
+        priced.forEach(function (el) { el.classList.add('is-swapping'); });
+        clearTimeout(swapTimer);
+        swapTimer = setTimeout(function () {
+          priced.forEach(function (el) {
+            el.textContent = el.getAttribute('data-' + to);
+            el.classList.remove('is-swapping');
+          });
+        }, 180);
       });
     });
   }
+
+  /* Clicking a package (anywhere but its button) moves the outline to it,
+     and its button becomes the solid one. Enter or Space does the same. */
+  var packs = [].slice.call(document.querySelectorAll('[data-packs] .pack'));
+  function pick(card) {
+    packs.forEach(function (c) {
+      var on = c === card;
+      c.classList.toggle('is-pick', on);
+      c.setAttribute('aria-checked', on ? 'true' : 'false');
+      var btn = c.querySelector('.btn');
+      if (btn) btn.classList.toggle('outline', !on);
+    });
+  }
+  packs.forEach(function (card) {
+    card.addEventListener('click', function (e) {
+      if (e.target.closest('a')) return;
+      pick(card);
+    });
+    card.addEventListener('keydown', function (e) {
+      if (e.target !== card) return;
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); pick(card); }
+    });
+  });
   var y = document.querySelector('[data-year]');
   if (y) y.textContent = new Date().getFullYear();
 })();
 </script>
 
+<script defer src="/js/lenis.min.js"></script>
+<script defer src="/js/smooth-scroll.js"></script>
 <script defer src="/_vercel/insights/script.js"></script>
 
 </body>
