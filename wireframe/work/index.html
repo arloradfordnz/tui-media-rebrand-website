@@ -174,20 +174,20 @@
   }
 
   /* ---------- buttons ----------
-     A pill with the arrow in a circle on the left and the label on the
-     right. The label side carries the fill, and the fill is the only thing
-     that moves: a solid button rests filled and the fill slides out to the
-     right on hover; an outline button rests empty and the fill slides in
-     from the right. The label and arrow stay put. */
+     One colour, edge to edge: the fill covers the whole pill, arrow and
+     label together. A solid button rests filled and the fill slides out
+     to the right on hover, leaving the outline; an outline button rests
+     empty and the fill slides in from the right. Only the fill moves;
+     the button itself never shifts or scales. */
   .btn {
     position: relative;
     isolation: isolate;
     overflow: hidden;
     display: inline-flex;
     align-items: center;
-    gap: 0.7em;
+    gap: 0.55em;
     height: 44px;
-    padding: 6px 1.15rem 6px 6px;
+    padding: 0 1.3rem 0 1.1rem;
     border-radius: var(--radius-pill);
     border: 1px solid var(--accent);
     background: transparent;
@@ -198,50 +198,37 @@
     text-decoration: none;
     white-space: nowrap;
     cursor: pointer;
-    transition: color 380ms cubic-bezier(.65, 0, .35, 1), border-color 200ms ease, transform 140ms var(--ease-out);
+    transition: color 420ms cubic-bezier(.65, 0, .35, 1), border-color 420ms cubic-bezier(.65, 0, .35, 1);
   }
-  .btn:active { transform: scale(0.975); }
-  /* the fill: from the circle's edge to the end of the pill */
   .btn::before {
     content: "";
     position: absolute;
     z-index: -1;
-    top: 0; bottom: 0; right: 0; left: 36px;
-    border-radius: var(--radius-pill);
+    inset: 0;
+    border-radius: inherit;
     background: var(--accent);
     transition: transform 420ms cubic-bezier(.65, 0, .35, 1);
   }
   .btn-label { order: 2; display: grid; line-height: 1.25; }
   .btn-label > span:nth-child(2) { display: none; }
-  .btn .arrow {
-    order: 1;
-    width: 30px; height: 30px;
-    flex: none;
-    border-radius: 50%;
-    display: grid;
-    place-items: center;
-    border: 1px solid var(--accent);
-    color: var(--accent);
-    background: transparent;
-  }
-  .btn .arrow svg { width: 12px; height: 12px; display: block; }
+  /* just the arrow, no circle, in the button's own colour */
+  .btn .arrow { order: 1; display: grid; place-items: center; flex: none; color: currentColor; }
+  .btn .arrow svg { width: 13px; height: 13px; display: block; }
   .btn .arrow svg:nth-child(2) { display: none; }
   /* the return trip on the book view: the arrow points back */
   .btn.back .arrow { transform: scaleX(-1); }
   .nav .btn { margin-left: auto; }
 
   .btn.outline { border-color: var(--hairline); color: var(--ink); }
-  .btn.outline .arrow { border-color: var(--hairline); }
   .btn.outline::before { transform: translateX(calc(100% + 2px)); }
 
   .btn.light { border-color: var(--ink); color: var(--paper); }
   .btn.light::before { background: var(--ink); }
-  .btn.light .arrow { border-color: var(--ink); color: var(--ink); }
 
   @media (hover: hover) and (pointer: fine) {
     .btn:hover { color: var(--ink); }
     .btn:hover::before { transform: translateX(calc(100% + 2px)); }
-    .btn.outline:hover { color: var(--accent-ink); }
+    .btn.outline:hover { color: var(--accent-ink); border-color: var(--accent); }
     .btn.outline:hover::before { transform: translateX(0); }
   }
 
@@ -252,9 +239,9 @@
      next; this one gets the same shape with its own thing to say. */
   .page-head {
     text-align: center;
-    max-width: 640px;
+    max-width: 720px;
     margin: 0 auto;
-    padding-top: var(--s-5);
+    padding-top: clamp(3.5rem, 9vw, 7.5rem);
   }
   /* h1, h2, h3 on the main site share one rule (weight 500, -0.035em
      tracking, 0.98 line-height); h2 there carries the clamp this heading
@@ -587,9 +574,6 @@
     }
     .btn.outline {
       cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'%3E%3Ccircle cx='8' cy='8' r='8' fill='%230A1428'/%3E%3C/svg%3E") 8 8, auto;
-    }
-    .btn .arrow {
-      cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'%3E%3Ccircle cx='8' cy='8' r='8' fill='%236E9BF7'/%3E%3C/svg%3E") 8 8, auto;
     }
   }
 </style>

@@ -142,20 +142,20 @@ body {
 }
 
 /* ---------- buttons ----------
-   A pill with the arrow in a circle on the left and the label on the
-   right. The label side carries the fill, and the fill is the only thing
-   that moves: a solid button rests filled and the fill slides out to the
-   right on hover; an outline button rests empty and the fill slides in
-   from the right. The label and arrow stay put. */
+   One colour, edge to edge: the fill covers the whole pill, arrow and
+   label together. A solid button rests filled and the fill slides out
+   to the right on hover, leaving the outline; an outline button rests
+   empty and the fill slides in from the right. Only the fill moves;
+   the button itself never shifts or scales. */
 .btn {
   position: relative;
   isolation: isolate;
   overflow: hidden;
   display: inline-flex;
   align-items: center;
-  gap: 0.7em;
+  gap: 0.55em;
   height: 44px;
-  padding: 6px 1.15rem 6px 6px;
+  padding: 0 1.3rem 0 1.1rem;
   border-radius: var(--radius-pill);
   border: 1px solid var(--accent);
   background: transparent;
@@ -166,53 +166,38 @@ body {
   text-decoration: none;
   white-space: nowrap;
   cursor: pointer;
-  transition: color 380ms cubic-bezier(.65, 0, .35, 1), border-color 200ms ease, transform 140ms var(--ease-out);
+  transition: color 420ms cubic-bezier(.65, 0, .35, 1), border-color 420ms cubic-bezier(.65, 0, .35, 1);
 }
-.btn:active { transform: scale(0.975); }
-/* the fill: from the circle's edge to the end of the pill */
 .btn::before {
   content: "";
   position: absolute;
   z-index: -1;
-  top: 0; bottom: 0; right: 0; left: 36px;
-  border-radius: var(--radius-pill);
+  inset: 0;
+  border-radius: inherit;
   background: var(--accent);
   transition: transform 420ms cubic-bezier(.65, 0, .35, 1);
 }
 .btn-label { order: 2; display: grid; line-height: 1.25; }
 .btn-label > span:nth-child(2) { display: none; }
-.btn .arrow {
-  order: 1;
-  width: 30px; height: 30px;
-  flex: none;
-  border-radius: 50%;
-  display: grid;
-  place-items: center;
-  border: 1px solid var(--accent);
-  color: var(--accent);
-  background: transparent;
-}
-.btn .arrow svg { width: 12px; height: 12px; display: block; }
+/* just the arrow, no circle, in the button's own colour */
+.btn .arrow { order: 1; display: grid; place-items: center; flex: none; color: currentColor; }
+.btn .arrow svg { width: 13px; height: 13px; display: block; }
 .btn .arrow svg:nth-child(2) { display: none; }
 /* the return trip on the book view: the arrow points back */
 .btn.back .arrow { transform: scaleX(-1); }
 .nav .btn { margin-left: auto; }
 
 .btn.outline { border-color: var(--hairline); color: var(--ink); }
-.btn.outline .arrow { border-color: var(--hairline); }
 .btn.outline::before { transform: translateX(calc(100% + 2px)); }
 
 .btn.light { border-color: var(--ink); color: var(--paper); }
 .btn.light::before { background: var(--ink); }
-.btn.light .arrow { border-color: var(--ink); color: var(--ink); }
 
 @media (hover: hover) and (pointer: fine) {
   .btn:hover { color: var(--ink); }
   .btn:hover::before { transform: translateX(calc(100% + 2px)); }
-  .btn.outline:hover { color: var(--accent-ink); }
+  .btn.outline:hover { color: var(--accent-ink); border-color: var(--accent); }
   .btn.outline:hover::before { transform: translateX(0); }
-}
-  .btn:hover .arrow svg:nth-child(2) { transform: translateX(0); }
 }
 
 /* ---------- page head ----------
@@ -222,10 +207,12 @@ body {
    next; this one gets the same shape with its own thing to say. */
 .page-head {
   text-align: center;
-  max-width: 640px;
+  max-width: 720px;
   margin: 0 auto;
-  padding-top: var(--s-5);
+  /* a proper opening: room above and below, everything on the centre line */
+  padding-block: clamp(3.5rem, 9vw, 7.5rem) clamp(2.5rem, 6vw, 5rem);
 }
+.page-head .btn-row { justify-content: center; }
 /* h1, h2, h3 on the main site share one rule (weight 500, -0.035em
    tracking, 0.98 line-height); h2 there carries the clamp this heading
    uses. Reproduced rather than referenced, same as everything else in
@@ -254,7 +241,6 @@ p { margin: 0; }
 .section-head { margin-bottom: var(--s-5); }
 .section-head .lede { margin-top: var(--s-3); }
 .page-head .btn-row { margin-top: var(--s-4); }
-.page-head { padding-bottom: var(--s-4); }
 
 
 /* ---------- cards: the home page's offer card ---------- */
@@ -517,9 +503,6 @@ p { margin: 0; }
   .btn.outline {
     cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'%3E%3Ccircle cx='8' cy='8' r='8' fill='%230A1428'/%3E%3C/svg%3E") 8 8, auto;
   }
-  .btn .arrow {
-    cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'%3E%3Ccircle cx='8' cy='8' r='8' fill='%236E9BF7'/%3E%3C/svg%3E") 8 8, auto;
-  }
 }
 
 /* ---------- monthly / quarterly switch ----------
@@ -615,17 +598,48 @@ html.lenis, html.lenis body { height: auto; }
 
 /* ---------- package details ---------- */
 
-/* the price, with "You save" beside it on quarterly */
-.price-row { display: flex; align-items: center; flex-wrap: wrap; gap: 6px 10px; }
-.save-tag {
-  font-size: var(--t-micro); font-weight: 700;
-  letter-spacing: 0.06em; text-transform: uppercase;
-  color: var(--accent); background: var(--accent-soft);
-  border-radius: var(--radius-pill);
-  padding: 5px 10px;
-  white-space: nowrap;
+/* the package name, with "Most popular" beside it on Core */
+.pack-head { display: flex; align-items: center; flex-wrap: wrap; gap: 8px 12px; min-height: 2.2rem; }
+.pack-head .way-tag { align-self: center; }
+
+/* the price; on quarterly, three months of the monthly price sits
+   crossed out in front of it */
+.price-row { display: flex; align-items: baseline; flex-wrap: wrap; gap: 4px 12px; }
+.was {
+  font-size: clamp(1.125rem, 1.6vw, 1.375rem);
+  color: var(--muted);
+  text-decoration-thickness: 2px;
+  text-decoration-color: var(--muted);
 }
-.save-tag[hidden] { display: none; }
+.was[hidden] { display: none; }
+
+/* read out, not shown */
+.vh {
+  position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0;
+  overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
+}
+
+/* what a package doesn't include: a grey cross, the line dimmed */
+.ticks li.no { color: var(--muted); }
+.ticks li.no .fit-icon { background: rgba(239, 242, 248, 0.06); color: var(--muted); }
+
+/* "what you get" as rows: name on the left, the list on the right,
+   a hairline between each */
+.get-rows { border-bottom: 1px solid var(--rule); }
+.get-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 2fr);
+  gap: var(--s-3) var(--s-5);
+  padding-block: var(--s-5);
+  border-top: 1px solid var(--rule);
+}
+.get-head { display: flex; flex-direction: column; align-items: flex-start; gap: var(--s-2); }
+.get-head h3 { font-size: clamp(1.5rem, 2.4vw, 2rem); letter-spacing: -0.03em; }
+.get-row .ticks { align-self: center; }
+@media (max-width: 900px) {
+  .get-row { grid-template-columns: 1fr; padding-block: var(--s-4); }
+}
+
 .pick-note { margin-top: var(--s-4); text-align: center; color: var(--ink); font-size: 0.9375rem; }
 .pick-note + .small-print { margin-top: var(--s-2); }
 

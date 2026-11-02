@@ -19,9 +19,9 @@ deployed on Vercel.
     pages at `/video-ads` and `/monthly-content`, linked from the cards in
     "Two ways to work together" and from the menu. Their book buttons go to `/?interest=ad#book`
     or `/?interest=monthly#book`, which opens the form with that option picked.
-  - Buttons, on every page: the arrow sits in a circle on the left and the label
-    side carries the fill. A solid button's fill slides out to the right on hover;
-    an outline button's slides in. Nothing else on the button moves.
+  - Buttons, on every page: one colour edge to edge, a plain arrow before the
+    label. A solid button's fill slides out to the right on hover, leaving the
+    outline; an outline button's fill slides in. Nothing else on the button moves.
   - `js/` — `lenis.min.js` (Lenis 1.1.20, MIT, self-hosted) and `smooth-scroll.js`,
     the small script every page loads to give the mouse wheel and trackpad
     inertial scrolling. Touch and reduced-motion visitors keep native scrolling.

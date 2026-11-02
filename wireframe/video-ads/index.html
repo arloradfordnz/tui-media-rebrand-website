@@ -357,8 +357,8 @@
         place();
         billingNow = to;
         priced.forEach(function (el) { el.textContent = el.getAttribute('data-' + to); });
-        /* each package shows what it saves, on quarterly only */
-        [].slice.call(document.querySelectorAll('[data-save]')).forEach(function (t) { t.hidden = to !== 'quarterly'; });
+        /* on quarterly, the three-months-of-monthly total sits crossed out beside it */
+        [].slice.call(document.querySelectorAll('[data-was]')).forEach(function (t) { t.hidden = to !== 'quarterly'; });
         syncLinks();
       });
     });
