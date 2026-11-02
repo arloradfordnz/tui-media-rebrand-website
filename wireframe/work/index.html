@@ -236,118 +236,52 @@
     margin: var(--s-3) auto 0;
   }
 
-  /* ---------- case studies: the index ----------
-     Two columns on a wide screen. The client list sits on the left, held in
-     the middle of the screen while the shots scroll past on the right. The
-     client whose shots are in view is bright, the rest are faded back, and
-     the current one carries its trade beside it. Every shot is the same
-     landscape frame. For now they are placeholders: put an <img> or a
-     <video> inside a .cs-shot and it fills the frame. On a phone the list
-     is a sticky row under the nav and each client's name sits above its
-     shots. The same block is in index.html and work/index.html. */
-  .cs {
-    --cs-top: calc(var(--nav-h) + var(--frame) * 2);
+  /* ---------- case studies: the grid ----------
+     Two to a row (one on a phone). Each is a picture, then the client's
+     name with their trade as a small subheading under it, on the left.
+     The whole card links to that client's case study. A card with no
+     picture yet shows the plain --slot-1 ground. The same block is in
+     index.html and work/index.html. */
+  .wk-grid {
+    list-style: none; margin: 0; padding: 0;
     display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-    gap: clamp(1.5rem, 4vw, 4rem);
-    align-items: start;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--s-5) clamp(1rem, 2.4vw, 2rem);
   }
-  .cs-side {
-    position: sticky;
-    top: var(--cs-top);
-    height: calc(100vh - var(--cs-top));
-    display: flex; flex-direction: column; justify-content: center;
-    gap: var(--s-4);
-  }
-  .cs-list { display: flex; flex-direction: column; align-items: flex-start; }
-  .cs-list button {
-    appearance: none; -webkit-appearance: none;
-    margin: 0; padding: 1px 0; border: 0; background: none;
-    font: inherit; text-align: left; color: var(--ink);
-    display: inline-flex; align-items: flex-start; gap: 14px;
-    font-size: clamp(1.375rem, 2.4vw, 2.125rem); font-weight: 500;
-    letter-spacing: -0.035em; line-height: 1.15;
-    opacity: 0.2;
-    cursor: pointer;
-    transition: opacity 300ms var(--ease-out);
-  }
-  .cs-list button[aria-current="true"] { opacity: 1; }
-  .cs-meta {
-    display: none;
-    padding-top: 0.55em;
-    font-size: var(--t-micro); font-weight: 600;
-    letter-spacing: 0.08em; text-transform: uppercase; line-height: 1.4;
-    color: var(--muted);
-    max-width: 9em;   /* a two-word trade stacks onto two short lines */
-  }
-  .cs-list button[aria-current="true"] .cs-meta { display: block; }
-  @media (hover: hover) and (pointer: fine) {
-    .cs-list button:hover { opacity: 0.6; }
-    .cs-list button[aria-current="true"]:hover { opacity: 1; }
-  }
-  .cs-info {
-    margin: 0; max-width: 40ch;
-    font-size: 0.9375rem; line-height: 1.6; color: var(--muted);
-    transition: opacity 180ms ease;
-  }
-  .cs-info.is-swapping { opacity: 0; }
-
-  .cs-col, .cs-group { display: flex; flex-direction: column; gap: var(--frame); }
-  .cs-shot {
-    position: relative;
-    display: grid; place-items: center;
+  .wk { display: block; color: inherit; text-decoration: none; }
+  .wk-img {
+    position: relative; display: block;
     aspect-ratio: 16 / 9;
     border-radius: var(--radius-sm);
-    background: var(--surface);
+    background: var(--slot-1);
     overflow: hidden;
-    color: var(--muted);
-    font-size: var(--t-micro); font-weight: 600;
-    letter-spacing: 0.08em; text-transform: uppercase;
-    text-decoration: none;
   }
-  .cs-shot img, .cs-shot video {
+  .wk-img img {
     position: absolute; inset: 0;
-    width: 100%; height: 100%; object-fit: cover; display: block;
+    width: 100%; height: 100%; object-fit: cover; object-position: 50% 40%;
+    display: block;
+    transition: transform 700ms var(--ease-out);
+  }
+  .wk-text { display: block; margin-top: var(--s-2); text-align: left; }
+  .wk-name { display: block; margin: 0; font-size: clamp(1.125rem, 1.45vw, 1.375rem); font-weight: 500; letter-spacing: -0.02em; line-height: 1.2; }
+  .wk-trade {
+    display: block; margin-top: 4px;
+    font-size: var(--t-micro); font-weight: 600;
+    letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted);
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .wk:hover .wk-img img { transform: scale(1.03); }
+  }
+  .wk:focus-visible { outline: none; }
+  .wk:focus-visible .wk-img { outline: 2px solid var(--accent); outline-offset: 4px; }
+  @media (max-width: 640px) {
+    .wk-grid { grid-template-columns: minmax(0, 1fr); gap: var(--s-4); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .wk-img img { transition: none; }
   }
 
-  /* each client's own name, for screen readers on a wide screen (the list
-     says it there) and on screen on a phone */
-  .cs-head { display: flex; align-items: baseline; justify-content: space-between; gap: var(--s-2); margin-top: var(--s-3); }
-  .cs-group:first-child .cs-head { margin-top: 0; }
-  .cs-name { margin: 0; font-size: clamp(1.25rem, 5vw, 1.5rem); font-weight: 500; letter-spacing: -0.03em; line-height: 1.1; }
-  .cs-trade { font-size: var(--t-micro); font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
-  @media (min-width: 901px) {
-    .cs-head {
-      position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
-      overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
-    }
-  }
-  @media (max-width: 900px) {
-    .cs { grid-template-columns: minmax(0, 1fr); gap: var(--s-3); }
-    .cs-side {
-      z-index: 5;
-      height: auto;
-      margin-inline: calc(var(--frame) * -1);
-      background: var(--paper);
-    }
-    .cs-info { display: none; }
-    .cs-list {
-      flex-direction: row; align-items: center; gap: var(--s-3);
-      overflow-x: auto; scrollbar-width: none;
-      padding: var(--s-1) var(--frame);
-    }
-    .cs-list::-webkit-scrollbar { display: none; }
-    .cs-list button {
-      flex: none; white-space: nowrap;
-      font-size: var(--t-small); font-weight: 600;
-      letter-spacing: 0.08em; text-transform: uppercase; line-height: 1.5;
-      opacity: 0.45;
-    }
-    .cs-list button[aria-current="true"] { box-shadow: inset 0 -2px 0 var(--accent); }
-    .cs-list button[aria-current="true"] .cs-meta { display: none; }
-  }
-
-  .cs { padding-block: var(--s-5) var(--s-6); }
+  .wk-grid { padding-block: var(--s-5) var(--s-6); }
 
   /* ---------- page pill ----------
      The home hero's availability pill, naming the page instead. */
@@ -544,9 +478,9 @@
   </div>
 
 
-  <!-- One group per client, its shots stacked in the right-hand column.
-       Filled from CASES in the script below. -->
-  <div class="cs" id="grid" data-cs></div>
+  <!-- One card per client, two to a row. Filled from CASES in the
+       script below. -->
+  <ul class="wk-grid" id="grid" aria-label="Case studies"></ul>
 </div>
 
 <div class="closing center" id="contact">
@@ -591,99 +525,27 @@
   if (yearEl) yearEl.textContent = new Date().getFullYear();
 
   var grid = document.getElementById('grid');
-  var listHtml = CASES.map(function (c, ci) {
-    return '<button type="button" aria-current="' + (ci === 0) + '">' + esc(c.name)
-         + '<span class="cs-meta" aria-hidden="true">' + esc(c.trade) + '</span></button>';
+  grid.innerHTML = CASES.map(function (c) {
+    var img = c.image
+      ? '<img src="' + esc(c.image) + '" alt="" width="608" height="1080" loading="lazy" decoding="async">'
+      : '';
+    return '<li id="' + c.slug + '"><a class="wk" href="/work/case/?client=' + c.slug + '">'
+         + '<span class="wk-img">' + img + '</span>'
+         + '<span class="wk-text"><span class="wk-name">' + esc(c.name) + '</span>'
+         + '<span class="wk-trade">' + esc(c.trade) + '</span></span>'
+         + '</a></li>';
   }).join('');
-  var groupsHtml = CASES.map(function (c) {
-    var shots = '';
-    for (var n = 1; n <= c.shots; n++) {
-      shots += '<a class="cs-shot" href="/work/case/?client=' + c.slug + '" aria-label="' + esc(c.name) + ' case study">' + esc(c.name) + ' &middot; 0' + n + '</a>';
-    }
-    return '<div class="cs-group" id="' + c.slug + '" data-summary="' + esc(c.summary) + '">'
-         + '<div class="cs-head"><h2 class="cs-name">' + esc(c.name) + '</h2><span class="cs-trade">' + esc(c.trade) + '</span></div>'
-         + shots
-         + '</div>';
-  }).join('');
-  grid.innerHTML = '<div class="cs-side">'
-                 +   '<div class="cs-list" role="group" aria-label="Clients">' + listHtml + '</div>'
-                 +   '<p class="cs-info" aria-hidden="true"></p>'
-                 + '</div>'
-                 + '<div class="cs-col">' + groupsHtml + '</div>';
 
-  /* ---- case studies: the index ----
-     The client whose shots sit nearest the middle of the screen is the
-     current one: it is the bright name in the list, and its summary sits under the
-     list. A name in the list scrolls to that client's shots. */
-  function initCaseIndex(root) {
-    if (!root) return;
-    var side = root.querySelector('.cs-side');
-    var list = root.querySelector('.cs-list');
-    var info = root.querySelector('.cs-info');
-    var groups = [].slice.call(root.querySelectorAll('.cs-group'));
-    var btns = [].slice.call(list.querySelectorAll('button'));
-    var active = -1, swapTimer = 0, ticking = false;
-
-    function summary(i) { return groups[i].getAttribute('data-summary') || ''; }
-    function setActive(i) {
-      if (i === active) return;
-      var first = active < 0;
-      active = i;
-      btns.forEach(function (b, n) { b.setAttribute('aria-current', n === i ? 'true' : 'false'); });
-      /* on a phone the list is a row that can run off the edge: keep the
-         current name in view */
-      if (list.scrollWidth > list.clientWidth) {
-        var b = btns[i];
-        list.scrollTo({ left: b.offsetLeft - (list.clientWidth - b.offsetWidth) / 2, behavior: first ? 'auto' : 'smooth' });
-      }
-      if (!info) return;
-      clearTimeout(swapTimer);
-      if (first) { info.textContent = summary(i); return; }
-      info.classList.add('is-swapping');
-      swapTimer = setTimeout(function () { info.textContent = summary(active); info.classList.remove('is-swapping'); }, 180);
-    }
-    function update() {
-      ticking = false;
-      /* the client whose shots sit nearest the middle of the screen */
-      var mid = window.innerHeight * 0.5, idx = 0, best = Infinity;
-      groups.forEach(function (g, n) {
-        var r = g.getBoundingClientRect();
-        var d = Math.abs((r.top + r.bottom) / 2 - mid);
-        if (d < best) { best = d; idx = n; }
-      });
-      setActive(idx);
-    }
-    function onScroll() { if (!ticking) { ticking = true; requestAnimationFrame(update); } }
-    window.addEventListener('scroll', onScroll, { passive: true });
-    window.addEventListener('resize', onScroll);
-    update();
-
-    /* land a client's first shot just under the nav, and under the list
-       too where the list is a row across the top */
-    function offset() {
-      var row = getComputedStyle(list).flexDirection === 'row';
-      return -((parseFloat(getComputedStyle(side).top) || 0) + (row ? side.offsetHeight : 0) + 8);
-    }
-    root.goTo = function (i, instant) {
-      var g = groups[i];
-      if (!g) return;
-      var y = Math.max(0, g.getBoundingClientRect().top + window.pageYOffset + offset());
-      if (window.__lenis) { window.__lenis.scrollTo(y, { immediate: !!instant, force: true }); return; }
-      window.scrollTo({ top: y, behavior: instant ? 'auto' : 'smooth' });
-    };
-    btns.forEach(function (b, n) {
-      b.addEventListener('click', function () { root.goTo(n); });
-    });
-  }
-  initCaseIndex(grid);
-
-  /* /work#johnson-residential, from the home page: land on that client's
-     shots once the page is laid out */
+  /* /work#johnson-residential: land on that client's card once the page is
+     laid out, just under the nav */
   if (location.hash.length > 1) {
     var target = document.getElementById(decodeURIComponent(location.hash.slice(1)));
-    var gi = [].slice.call(grid.querySelectorAll('.cs-group')).indexOf(target);
-    if (gi > -1) {
-      var land = function () { grid.goTo(gi, true); };
+    if (target && grid.contains(target)) {
+      var land = function () {
+        var y = Math.max(0, target.getBoundingClientRect().top + window.pageYOffset - 100);
+        if (window.__lenis) window.__lenis.scrollTo(y, { immediate: true, force: true });
+        else window.scrollTo(0, y);
+      };
       if (document.readyState === 'complete') land();
       else window.addEventListener('load', land);
     }

@@ -906,79 +906,49 @@
   .step p { margin-top: var(--s-1); font-size: 0.9375rem; color: var(--muted); max-width: 40ch; }
   .step:nth-child(even) p { margin-left: auto; }
 
-  /* ---------- case studies: the stack ----------
-     One card per client, the full width of the content, image only with
-     the client's name in the middle. Every card sticks just under the nav,
-     so the next one slides up and lands on top of it as you scroll; the
-     one being covered eases back and darkens (--p, 0 to 1, set by the
-     script at the foot of the page). Each card sits a few pixels lower
-     than the one before, so the covered cards show as a thin stack of
-     edges above the current one. A card with no picture yet shows the
-     plain --slot-1 ground. /work keeps the two-column index. */
-  .stack {
-    --stack-top: calc(var(--nav-space) + var(--s-2));
-    --stack-step: 14px;
-    --stack-h: min(calc((100vw - var(--frame) * 2) * 9 / 16), calc(var(--content) * 9 / 16), calc(100vh - var(--stack-top) - var(--s-6)));
+  /* ---------- case studies: the grid ----------
+     Two to a row (one on a phone). Each is a picture, then the client's
+     name with their trade as a small subheading under it, on the left.
+     The whole card links to that client's case study. A card with no
+     picture yet shows the plain --slot-1 ground. The same block is in
+     index.html and work/index.html. */
+  .wk-grid {
     list-style: none; margin: 0; padding: 0;
-    display: flex; flex-direction: column; gap: var(--s-5);
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--s-5) clamp(1rem, 2.4vw, 2rem);
   }
-  .stack-item {
-    position: sticky;
-    top: calc(var(--stack-top) + var(--i, 0) * var(--stack-step));
-  }
-  .stack-card {
-    --p: 0;
-    position: relative;
-    display: grid; place-items: center;
-    height: var(--stack-h);
-    border-radius: var(--radius);
+  .wk { display: block; color: inherit; text-decoration: none; }
+  .wk-img {
+    position: relative; display: block;
+    aspect-ratio: 16 / 9;
+    border-radius: var(--radius-sm);
     background: var(--slot-1);
     overflow: hidden;
-    isolation: isolate;
-    color: #fff;
-    text-decoration: none;
-    transform-origin: 50% 0;
-    transform: scale(calc(1 - var(--p) * 0.06));
-    will-change: transform;
   }
-  .stack-card img {
-    position: absolute; inset: 0; z-index: -2;
+  .wk-img img {
+    position: absolute; inset: 0;
     width: 100%; height: 100%; object-fit: cover; object-position: 50% 40%;
     display: block;
-    transition: transform 900ms var(--ease-out);
+    transition: transform 700ms var(--ease-out);
   }
-  /* an even veil so the name reads on any picture, and the darkening as
-     the next card covers this one */
-  .stack-card::after {
-    content: ""; position: absolute; inset: 0; z-index: -1;
-    background: rgba(6, 13, 26, calc(0.32 + var(--p) * 0.5));
-    transition: background-color 300ms var(--ease-out);
-  }
-  .stack-name {
-    padding-inline: var(--s-3);
-    text-align: center;
-    font-size: clamp(2rem, 6vw, 5rem); font-weight: 500;
-    letter-spacing: -0.04em; line-height: 1;
-    text-wrap: balance;
+  .wk-text { display: block; margin-top: var(--s-2); text-align: left; }
+  .wk-name { display: block; margin: 0; font-size: clamp(1.125rem, 1.45vw, 1.375rem); font-weight: 500; letter-spacing: -0.02em; line-height: 1.2; }
+  .wk-trade {
+    display: block; margin-top: 4px;
+    font-size: var(--t-micro); font-weight: 600;
+    letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted);
   }
   @media (hover: hover) and (pointer: fine) {
-    .stack-card:hover img { transform: scale(1.04); }
-    .stack-card:hover::after { background: rgba(6, 13, 26, calc(0.22 + var(--p) * 0.5)); }
+    .wk:hover .wk-img img { transform: scale(1.03); }
   }
-  .stack-card:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; }
-  @media (max-width: 600px) {
-    /* taller on a phone, where a 16:9 card is barely a strip */
-    .stack {
-      --stack-step: 10px; gap: var(--s-4);
-      --stack-h: min(calc((100vw - var(--frame) * 2) * 5 / 4), calc(100svh - var(--stack-top) - var(--s-5)));
-    }
-    .stack-card { border-radius: var(--radius-sm); }
+  .wk:focus-visible { outline: none; }
+  .wk:focus-visible .wk-img { outline: 2px solid var(--accent); outline-offset: 4px; }
+  @media (max-width: 640px) {
+    .wk-grid { grid-template-columns: minmax(0, 1fr); gap: var(--s-4); }
   }
-  /* no easing back on reduced motion; the cards still stack, which is
-     only the page scrolling */
   @media (prefers-reduced-motion: reduce) {
-    .stack-card { transform: none; }
-    .stack-card img { transition: none; }
+    .wk-img img { transition: none; }
   }
 
   /* the way through to /work, under the case studies */
@@ -2412,18 +2382,30 @@
       <p class="lede">A look at some of the Nelson businesses we've made videos for.</p>
     </div>
 
-    <ul class="stack" data-stack aria-label="Case studies">
-      <li class="stack-item" id="case-johnson-residential" style="--i:0">
-        <a class="stack-card" href="/work/case/?client=johnson-residential"><img src="/media/johnson-residential-1-poster.webp" alt="" width="608" height="1080" loading="lazy" decoding="async"><span class="stack-name">Johnson Residential</span></a>
+    <ul class="wk-grid" aria-label="Case studies">
+      <li>
+        <a class="wk" href="/work/case/?client=johnson-residential">
+          <span class="wk-img"><img src="/media/johnson-residential-1-poster.webp" alt="" width="608" height="1080" loading="lazy" decoding="async"></span>
+          <span class="wk-text"><span class="wk-name">Johnson Residential</span><span class="wk-trade">Residential building</span></span>
+        </a>
       </li>
-      <li class="stack-item" id="case-atk-detailing" style="--i:1">
-        <a class="stack-card" href="/work/case/?client=atk-detailing"><img src="/media/atk-detailing-poster.webp" alt="" width="608" height="1080" loading="lazy" decoding="async"><span class="stack-name">ATK Detailing</span></a>
+      <li>
+        <a class="wk" href="/work/case/?client=atk-detailing">
+          <span class="wk-img"><img src="/media/atk-detailing-poster.webp" alt="" width="608" height="1080" loading="lazy" decoding="async"></span>
+          <span class="wk-text"><span class="wk-name">ATK Detailing</span><span class="wk-trade">Car detailing</span></span>
+        </a>
       </li>
-      <li class="stack-item" id="case-landscape-transformers" style="--i:2">
-        <a class="stack-card" href="/work/case/?client=landscape-transformers"><span class="stack-name">Landscape Transformers</span></a>
+      <li>
+        <a class="wk" href="/work/case/?client=landscape-transformers">
+          <span class="wk-img"></span>
+          <span class="wk-text"><span class="wk-name">Landscape Transformers</span><span class="wk-trade">Landscaping</span></span>
+        </a>
       </li>
-      <li class="stack-item" id="case-sky-automotive" style="--i:3">
-        <a class="stack-card" href="/work/case/?client=sky-automotive"><img src="/media/sky-automotive-1-poster.webp" alt="" width="608" height="1080" loading="lazy" decoding="async"><span class="stack-name">Sky Automotive</span></a>
+      <li>
+        <a class="wk" href="/work/case/?client=sky-automotive">
+          <span class="wk-img"><img src="/media/sky-automotive-1-poster.webp" alt="" width="608" height="1080" loading="lazy" decoding="async"></span>
+          <span class="wk-text"><span class="wk-name">Sky Automotive</span><span class="wk-trade">Automotive servicing</span></span>
+        </a>
       </li>
     </ul>
   </div>
@@ -3774,33 +3756,6 @@
 <script>
 (function () {
   'use strict';
-  /* ---- case studies: the stack ----
-     Each card sticks under the nav and the next one rises over it. As it
-     does, the card underneath gets --p from 0 (nothing over it) to 1 (fully
-     covered), which the stylesheet turns into a slight shrink and a darker
-     veil. Reduced motion keeps the stacking and skips the shrink. */
-  function initStack(root) {
-    if (!root) return;
-    var items = [].slice.call(root.querySelectorAll('.stack-item'));
-    var cards = items.map(function (it) { return it.querySelector('.stack-card'); });
-    var ticking = false;
-    function update() {
-      ticking = false;
-      for (var n = 0; n < items.length - 1; n++) {
-        var r = items[n].getBoundingClientRect();
-        var next = items[n + 1].getBoundingClientRect();
-        var h = r.height || 1;
-        var p = (r.bottom - next.top) / h;
-        p = p < 0 ? 0 : p > 1 ? 1 : p;
-        cards[n].style.setProperty('--p', p.toFixed(3));
-      }
-    }
-    function onScroll() { if (!ticking) { ticking = true; requestAnimationFrame(update); } }
-    window.addEventListener('scroll', onScroll, { passive: true });
-    window.addEventListener('resize', onScroll);
-    update();
-  }
-  initStack(document.querySelector('[data-stack]'));
 })();
 </script>
 

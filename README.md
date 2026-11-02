@@ -13,14 +13,10 @@ deployed on Vercel.
   - `work/index.html` — every case study at `/work`, linked from the menu, the
     footer and the home page's case studies: Johnson Residential, ATK Detailing,
     Landscape Transformers and Sky Automotive, from `js/cases.js`.
-    Laid out as an index: the client list sits on the left, held mid-screen,
-    while each client's shots scroll past on the right. The client nearest the
-    middle of the screen is bright, the rest are faded, and the current one shows
-    its trade beside it and its summary under the list. Clicking a name scrolls
-    to its shots, `/work#client-name` lands on them, and a shot opens that client's
-    case study. Every shot is the same
-    16:9 frame, and for now they are placeholders: put an `<img>` or `<video>`
-    inside a `.cs-shot` and it fills the frame.
+    Laid out as a grid, two to a row (one on a phone): each client's picture
+    with their name and trade under it on the left, linking to their case
+    study. `/work#client-name` lands on that client's card. The home page has
+    the same grid.
   - `work/case/index.html` — one case study at a time, at
     `/work/case/?client=atk-detailing`. Clicking a shot on the home page or `/work`
     opens it. The client's name and summary, one big 16:9 frame, a row of facts
@@ -96,14 +92,13 @@ That rests on a few decisions worth not undoing:
 
 - **Nothing is embedded as a data URI.** Images live in `img/` as WebP so they are
   cached across visits instead of being re-downloaded inside the HTML every time.
-- **The home page's case studies** are a stack of cards, one per client, the full
-  width of the content: a picture with the client's name in the middle, linking
-  to that client's case study. Each card sticks under the nav and the next one
-  slides up over it as you scroll, the covered one easing back and darkening.
-  The pictures are the vertical poster frames from `media/`, cropped to fit and
-  lazy-loaded; Landscape Transformers has none yet and shows the plain ground.
-  When landscape stills exist, swap the `src` in `index.html`. Keep them still
-  images, not video. Nothing on the home page plays by itself, so a first load fetches no clips. (The hero's pointer
+- **The home page's case studies** are a grid of cards, two to a row, the same
+  as `/work`: a picture, then the client's name and trade under it, linking to
+  that client's case study. The pictures are the vertical poster frames from
+  `media/`, cropped to 16:9 and lazy-loaded; Landscape Transformers has none yet
+  and shows the plain ground. When landscape stills exist, swap the `src` in
+  `index.html` and the `image` in `js/cases.js`. Keep them still images, not
+  video. Nothing on the home page plays by itself, so a first load fetches no clips. (The hero's pointer
   trail is the one exception, and it only starts once the mouse enters the hero.)
   Putting `autoplay` on a `<video>` makes the browser fetch it on load whatever
   `preload` says, so don't.
