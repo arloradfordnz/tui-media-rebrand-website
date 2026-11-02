@@ -246,9 +246,13 @@
 
     /* one value drives the gap above the nav and both side gutters */
     --frame: clamp(0.75rem, 1.4vw, 1.25rem);
-    /* content stops here so columns aren't stretched edge to edge.
-       The nav pill uses the same value, so everything shares one edge. */
-    --content: 1120px;
+    /* Full width: content runs to the page edge, inside the --frame
+       gutter, rather than stopping at a centred column. Reading text keeps
+       its own measure (.lede, .measure, the FAQ, the process timeline), so
+       only the grids and panels stretch. The nav pill uses the same value,
+       so everything still shares one edge. Set back to 1120px for the
+       centred column. */
+    --content: 100vw;
 
     --logo-bird: url("/img/tui-bird.webp");
 
@@ -431,7 +435,9 @@
 
   /* ---------- primitives ---------- */
 
-  .shell { width: 100%; max-width: var(--content); margin-inline: auto; padding-inline: var(--frame); }
+  /* the gutter grows with the screen now the content runs full width, so
+     the edges of the cards and headings don't sit tight to the glass */
+  .shell { width: 100%; max-width: var(--content); margin-inline: auto; padding-inline: clamp(var(--frame), 3.2vw, 3.5rem); }
   section { padding-block: var(--s-7); }
 
   h1, h2, h3 {
@@ -552,7 +558,7 @@
   }
   .nav {
     position: relative;
-    max-width: calc(var(--content) - 2 * var(--frame));
+    max-width: calc(var(--content) - 2 * clamp(var(--frame), 3.2vw, 3.5rem));
     margin-inline: auto;
     height: 60px;
     padding: 6px 6px 6px var(--s-4);
@@ -951,6 +957,9 @@
   /* the clip fills the card's width, cropped a little shorter than 9:16 so
      a row of three doesn't run two screens tall */
   .study .case { width: auto; aspect-ratio: 4 / 5; }
+  /* full width on a big screen makes each card wide, so the clip goes
+     square there rather than running most of a screen tall */
+  @media (min-width: 1600px) { .study .case { aspect-ratio: 1 / 1; } }
   .study-body { display: flex; flex-direction: column; gap: var(--s-2); padding: 0 var(--s-2) var(--s-2); }
   .study-body .way-tag { align-self: flex-start; }
   .study-body h3 {
