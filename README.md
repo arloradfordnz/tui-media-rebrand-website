@@ -54,13 +54,9 @@ deployed on Vercel.
     pages at `/video-ads` and `/monthly-content`, linked from the cards in
     "Two ways to work together" and from the menu. Their book buttons go to `/?interest=ad#book`
     or `/?interest=monthly#book`, which opens the form with that option picked.
-  - `/monthly-content` is built around its headline, one good day becoming a
-    month of posts: a month board (week by week, for whichever package is
-    picked), the packages led by their video and photo counts, real client
-    clips, and who's filming. The board's weekly split lives in `MONTH` in
-    the page script; if a package's numbers change, change it there and in
-    the static Core markup. Keep the page's wording and order our own: it
-    was reworked in Nov 2026 because it had drifted too close to another
+  - `/monthly-content` runs: the packages, real client clips, who's filming,
+    then the questions. Keep the page's wording and order our own: it was
+    reworked in Nov 2026 because it had drifted too close to another
     studio's retainer page.
   - Every page but the home page opens on the hero's pill naming the page
     (About, Monthly content, Video ads, Case studies) above its own headline.
@@ -207,10 +203,6 @@ ffmpeg -i master.mp4 -c:v libx264 -preset slow -crf 22 -profile:v high -level 4.
   -c:a aac -b:a 160k -ac 2 -ar 48000 \
   -movflags +faststart media/work/out.mp4
 ```
-
-`media/month/` holds the small tiles on the monthly page's month board: the
-clip covers at 216x384, WebP q82 (~15KB each), made from the full covers in
-`media/work/` since they only ever show at 84px wide.
 
 The hero's cursor trail gets a third, tiny cut in `media/trail/`: 264px wide
 (sharp at 2x on the largest 132px tile), four seconds from 1s in so nothing opens

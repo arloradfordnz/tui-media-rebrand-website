@@ -30,96 +30,9 @@
 <link rel="stylesheet" href="/css/loader.css">
 <style>
   /* ---------- this page only ----------
-     The page is built around its headline: one planned shoot, then a
-     month of posts. The month board shows that month for whichever
-     package is picked, the packages lead with how many videos and photos
-     you get, then real client clips and who's behind the camera. */
+     After the packages: real client clips and who's behind the camera. */
 
   .page-head .btn-row .btn.outline { min-width: 0; }
-
-  /* ---- the month board ---- */
-  .month-switch { margin-top: var(--s-4); }
-  .month-board {
-    background: var(--surface);
-    border-radius: var(--radius);
-    padding: clamp(1.25rem, 2.6vw, 2.5rem);
-    display: grid;
-    grid-template-columns: minmax(200px, 0.9fr) minmax(0, 3fr);
-    gap: var(--s-4) clamp(1.25rem, 3vw, 2.5rem);
-  }
-  .month-shoot { display: flex; flex-direction: column; gap: var(--s-2); align-self: start; }
-  .month-shoot h3 { font-size: clamp(1.5rem, 2.4vw, 2rem); letter-spacing: -0.03em; }
-  .month-shoot p { font-size: 0.9375rem; line-height: 1.6; color: var(--muted); }
-  .month-weeks {
-    list-style: none; margin: 0; padding: 0;
-    display: grid; grid-template-columns: repeat(4, minmax(0, 1fr));
-    border-left: 1px solid var(--rule);
-  }
-  .week {
-    display: flex; flex-direction: column; gap: 12px;
-    padding: 0 clamp(0.75rem, 1.4vw, 1.25rem);
-    border-right: 1px solid var(--rule);
-  }
-  .week:last-child { border-right: 0; }
-  .week-n {
-    font-size: var(--t-micro); font-weight: 700;
-    letter-spacing: 0.11em; text-transform: uppercase;
-    color: var(--accent);
-  }
-  /* one row: tiles share the column rather than wrapping under each other */
-  .week-posts { display: flex; gap: 8px; align-items: flex-start; flex: 1; }
-  /* one video in a week fills up to 84px; two share the column */
-  .tile {
-    flex: 0 1 84px; min-width: 0; aspect-ratio: 9 / 16;
-    border-radius: 12px;
-    background: var(--slot-1) center / cover no-repeat;
-    position: relative; overflow: hidden;
-  }
-  /* a video: its cover, with a small play mark in the corner */
-  .tile.vid::after {
-    content: ""; position: absolute; left: 7px; bottom: 7px;
-    width: 16px; height: 16px; border-radius: 50%;
-    background: rgba(6, 13, 26, 0.55)
-      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23fff'%3E%3Cpath d='M9 6.5v11l9-5.5z'/%3E%3C/svg%3E") center / 10px no-repeat;
-  }
-  .week-photos {
-    font-size: var(--t-small); color: var(--muted);
-    display: inline-flex; align-items: center; gap: 7px;
-  }
-  /* a small picture mark: a frame with a hill and a sun */
-  .week-photos::before {
-    content: ""; width: 16px; height: 14px; flex: none;
-    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 21' fill='none' stroke='%238996B2' stroke-width='2' stroke-linejoin='round'%3E%3Crect x='1.5' y='1.5' width='21' height='18' rx='4'/%3E%3Cpath d='M2 16l6-6 5 5 3-3 6 6'/%3E%3Ccircle cx='16.5' cy='7' r='1.8'/%3E%3C/svg%3E") center / contain no-repeat;
-  }
-  /* Full's designed posts: a line of their own under the photos */
-  .week-extra { font-size: var(--t-small); color: var(--accent); font-weight: 600; margin-top: -6px; }
-  .month-end {
-    grid-column: 1 / -1;
-    display: flex; align-items: center; gap: var(--s-2) var(--s-3); flex-wrap: wrap;
-    padding-top: var(--s-3);
-    border-top: 1px solid var(--rule);
-  }
-  .month-end .way-tag { flex: none; }
-  .month-end p { font-size: 0.9375rem; color: var(--ink); line-height: 1.5; }
-  .month-total { margin-top: var(--s-3); text-align: center; color: var(--muted); font-size: 0.9375rem; }
-  .month-total b { color: var(--ink); font-weight: 600; }
-  .month-note { margin-top: 4px; text-align: center; color: var(--muted); font-size: var(--t-small); }
-  /* tiles pop in, one after another, when the package changes */
-  .tile.pop { animation: tilePop 420ms var(--ease-out) both; animation-delay: var(--d, 0ms); }
-  @keyframes tilePop { from { opacity: 0; transform: translateY(8px) scale(0.9); } }
-  [data-month-end], [data-month-total] { transition: opacity 160ms ease; }
-  .is-swapping[data-month-end], .is-swapping[data-month-total] { opacity: 0; }
-
-  /* ---- packages: the counts are the headline ---- */
-  .billing-note { margin-top: var(--s-2); font-size: var(--t-small); color: var(--muted); }
-  .pack-count { display: flex; gap: var(--s-4); }
-  .pack-count p { display: grid; gap: 2px; }
-  .pack-count b {
-    font-size: clamp(2.75rem, 4.6vw, 3.75rem); font-weight: 500;
-    letter-spacing: -0.045em; line-height: 0.95; color: var(--ink);
-  }
-  .pack-count span { font-size: 0.875rem; color: var(--muted); }
-  .way-card .pack-price { font-size: clamp(1.25rem, 1.8vw, 1.5rem); font-weight: 500; letter-spacing: -0.02em; color: var(--ink); line-height: 1.2; }
 
   /* ---- real clips: the case study page's cards, with the client under each ---- */
   .clips {
@@ -197,26 +110,11 @@
   .team-facts b { color: var(--ink); font-weight: 600; }
 
   @media (max-width: 900px) {
-    .month-board { grid-template-columns: 1fr; }
-    .month-weeks { grid-template-columns: 1fr; border-left: 0; border-top: 1px solid var(--rule); }
-    .week {
-      display: grid; grid-template-columns: 64px minmax(0, 1fr) auto; align-items: center;
-      gap: 12px; min-height: 0;
-      padding: 14px 0; border-right: 0; border-bottom: 1px solid var(--rule);
-    }
-    .week:last-child { border-bottom: 0; }
-    .tile { flex: 0 0 44px; border-radius: 9px; }
-    .tile.vid::after { left: 5px; bottom: 5px; width: 13px; height: 13px; background-size: 8px; }
-    /* Full's designed posts: a line of their own under the photos */
-    .week-extra { grid-column: 2 / -1; margin-top: -4px; }
-    .month-end { padding-top: var(--s-2); }
   }
   @media (max-width: 700px) {
     .clips { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--s-3) var(--s-2); }
     .clip-state { left: 10px; bottom: 10px; }
-    .pack-count { gap: var(--s-3); }
   }
-  @media (prefers-reduced-motion: reduce) { .tile.pop { animation: none; } }
 </style>
 <script type="application/ld+json">
 {
@@ -394,163 +292,109 @@
   </div>
 </div>
 
-<section id="month">
-  <div class="wrap">
-    <div class="section-head center">
-      <h2>One day on site. A month of posts.</h2>
-      <p class="lede">Everything gets filmed in one go, then comes back edited and ready to post. This is how that month could go out.</p>
-      <div class="billing month-switch" role="group" aria-label="Show a month on" data-month-switch hidden>
-        <span class="billing-thumb" aria-hidden="true"></span>
-        <button type="button" aria-pressed="false" data-month-to="Lite">Lite</button>
-        <button type="button" aria-pressed="true" data-month-to="Core">Core</button>
-        <button type="button" aria-pressed="false" data-month-to="Full">Full</button>
-      </div>
-    </div>
-    <div class="month-board">
-      <div class="month-shoot">
-        <span class="way-tag">The shoot</span>
-        <h3>One good day</h3>
-        <p>Planned with you first, so we turn up with a shot list built from what your customers actually ask. Filmed on site with our own gear, vertical and wide.</p>
-      </div>
-      <ol class="month-weeks" data-weeks aria-label="The month, week by week">
-        <li class="week">
-          <span class="week-n">Week 1<span class="vh">: 1 video, 4 photos</span></span>
-          <div class="week-posts" aria-hidden="true"><span class="tile vid" style="background-image:url(/media/month/johnson-residential-4.webp)"></span></div>
-          <span class="week-photos" aria-hidden="true">4 photos</span>
-        </li>
-        <li class="week">
-          <span class="week-n">Week 2<span class="vh">: 1 video, 4 photos</span></span>
-          <div class="week-posts" aria-hidden="true"><span class="tile vid" style="background-image:url(/media/month/atk-detailing-3.webp)"></span></div>
-          <span class="week-photos" aria-hidden="true">4 photos</span>
-        </li>
-        <li class="week">
-          <span class="week-n">Week 3<span class="vh">: 1 video, 4 photos</span></span>
-          <div class="week-posts" aria-hidden="true"><span class="tile vid" style="background-image:url(/media/month/sky-automotive-3.webp)"></span></div>
-          <span class="week-photos" aria-hidden="true">4 photos</span>
-        </li>
-        <li class="week">
-          <span class="week-n">Week 4<span class="vh">: 1 video, 3 photos</span></span>
-          <div class="week-posts" aria-hidden="true"><span class="tile vid" style="background-image:url(/media/month/landscape-transformers-1.webp)"></span></div>
-          <span class="week-photos" aria-hidden="true">3 photos</span>
-        </li>
-      </ol>
-      <div class="month-end">
-        <span class="way-tag">End of the month</span>
-        <p data-month-end>We talk through what worked, and next month is planned from that.</p>
-      </div>
-    </div>
-    <p class="month-total" data-month-total aria-live="polite"><b>4 videos</b> and <b>15 photos</b> from one shoot, with a caption and cover for every post.</p>
-    <p class="month-note">On a quarterly plan, one bigger shoot covers three of these months.</p>
-  </div>
-</section>
 
 <section id="packages">
   <div class="wrap">
     <div class="section-head center">
-      <h2>Pick how much you want</h2>
-      <p class="lede">You'll know exactly what lands each month. Pay monthly, or pay a quarter upfront and it costs less.</p>
+      <h2>Pick a package</h2>
+      <p class="lede">Pay monthly, or pay for a quarter upfront and it works out cheaper.</p>
       <div class="billing" role="group" aria-label="Show prices" data-billing hidden>
         <span class="billing-thumb" aria-hidden="true"></span>
         <button type="button" aria-pressed="true" data-billing-to="monthly">Monthly</button>
         <button type="button" aria-pressed="false" data-billing-to="quarterly">Quarterly</button>
       </div>
-      <p class="billing-note" data-monthly="A 2-month start, then month to month with 30 days' notice." data-quarterly="One bigger shoot covers all three months, paid upfront.">A 2-month start, then month to month with 30 days' notice.</p>
     </div>
     <div class="three-up" role="radiogroup" aria-label="Packages" data-packs>
-      <article class="way-card pack" role="radio" aria-checked="false" tabindex="0" aria-label="Lite, 2 videos and 10 photos, $500 a month" data-pack="Lite" data-monthly-price="$500 a month" data-quarterly-price="$1,350 a quarter">
+      <article class="way-card pack" role="radio" aria-checked="false" tabindex="0" aria-label="Lite, $500 a month" data-pack="Lite" data-monthly-price="$500 a month" data-quarterly-price="$1,350 a quarter">
         <div class="pack-head">
           <h3>Lite</h3>
-        </div>
-        <div class="pack-count" aria-hidden="true">
-          <p><b>2</b><span>videos</span></p>
-          <p><b>10</b><span>photos</span></p>
+          
         </div>
         <div>
           <div class="was-wrap" data-was aria-hidden="true"><div><s class="was"><span class="vh">Paying monthly, </span>$1,500</s></div></div>
-          <p class="pack-price" data-monthly="$500 a month" data-quarterly="$1,350 a quarter">$500 a month</p>
+          <p class="way-price big" data-monthly="$500 a month" data-quarterly="$1,350 a quarter">$500 a month</p>
           <p class="pack-who">For getting into a steady rhythm on social.</p>
         </div>
         <div class="way-body">
           <ul class="ticks">
+            <li><span class="fit-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5 9.5 18 20 6.5"/></svg></span>2 videos a month</li>
+            <li><span class="fit-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5 9.5 18 20 6.5"/></svg></span>10 photos a month</li>
             <li><span class="fit-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5 9.5 18 20 6.5"/></svg></span><span data-monthly="One planned shoot a month" data-quarterly="One bigger shoot a quarter">One planned shoot a month</span></li>
-            <li><span class="fit-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5 9.5 18 20 6.5"/></svg></span>A plan for the month, worked out with you</li>
-            <li><span class="fit-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5 9.5 18 20 6.5"/></svg></span>A caption and cover for every post</li>
-            <li class="no"><span class="fit-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M7 7l10 10M17 7 7 17"/></svg></span><span class="vh">Not included: </span>A chat each month about what worked</li>
-            <li class="no"><span class="fit-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M7 7l10 10M17 7 7 17"/></svg></span><span class="vh">Not included: </span>2 designed posts, like carousels or graphics</li>
-            <li class="no"><span class="fit-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M7 7l10 10M17 7 7 17"/></svg></span><span class="vh">Not included: </span>We post and schedule it for you</li>
-            <li class="no"><span class="fit-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M7 7l10 10M17 7 7 17"/></svg></span><span class="vh">Not included: </span>Ad-ready cuts in every size</li>
+            <li><span class="fit-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5 9.5 18 20 6.5"/></svg></span>A content plan every month</li>
+            <li><span class="fit-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5 9.5 18 20 6.5"/></svg></span>Captions and cover images</li>
+            <li class="no"><span class="fit-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M7 7l10 10M17 7 7 17"/></svg></span><span class="vh">Not included: </span>Monthly check-in on what worked</li>
+            <li class="no"><span class="fit-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M7 7l10 10M17 7 7 17"/></svg></span><span class="vh">Not included: </span>2 designed posts (carousels or graphics)</li>
+            <li class="no"><span class="fit-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M7 7l10 10M17 7 7 17"/></svg></span><span class="vh">Not included: </span>Posting and scheduling done for you</li>
+            <li class="no"><span class="fit-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M7 7l10 10M17 7 7 17"/></svg></span><span class="vh">Not included: </span>Ad-ready cuts in every format</li>
           </ul>
         </div>
         <div class="way-foot">
           <div class="btn-row">
             <a class="btn outline" href="/?interest=monthly&package=lite&billing=monthly#book">
-        <span class="btn-label"><span>Talk about Lite</span><span aria-hidden="true">Talk about Lite</span></span>
-      </a>
+              <span class="btn-label"><span>Talk about Lite</span><span aria-hidden="true">Talk about Lite</span></span>
+            </a>
           </div>
         </div>
       </article>
-      <article class="way-card pack is-pick" role="radio" aria-checked="true" tabindex="0" aria-label="Core, 4 videos and 15 photos, $850 a month" data-pack="Core" data-monthly-price="$850 a month" data-quarterly-price="$2,300 a quarter">
+      <article class="way-card pack is-pick" role="radio" aria-checked="true" tabindex="0" aria-label="Core, $850 a month" data-pack="Core" data-monthly-price="$850 a month" data-quarterly-price="$2,300 a quarter">
         <div class="pack-head">
           <h3>Core</h3>
           <span class="way-tag">Most popular</span>
         </div>
-        <div class="pack-count" aria-hidden="true">
-          <p><b>4</b><span>videos</span></p>
-          <p><b>15</b><span>photos</span></p>
-        </div>
         <div>
           <div class="was-wrap" data-was aria-hidden="true"><div><s class="was"><span class="vh">Paying monthly, </span>$2,550</s></div></div>
-          <p class="pack-price" data-monthly="$850 a month" data-quarterly="$2,300 a quarter">$850 a month</p>
+          <p class="way-price big" data-monthly="$850 a month" data-quarterly="$2,300 a quarter">$850 a month</p>
           <p class="pack-who">A video a week, and a monthly chat about what's working.</p>
         </div>
         <div class="way-body">
           <ul class="ticks">
+            <li><span class="fit-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5 9.5 18 20 6.5"/></svg></span>4 videos a month</li>
+            <li><span class="fit-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5 9.5 18 20 6.5"/></svg></span>15 photos a month</li>
             <li><span class="fit-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5 9.5 18 20 6.5"/></svg></span><span data-monthly="One planned shoot a month" data-quarterly="One bigger shoot a quarter">One planned shoot a month</span></li>
-            <li><span class="fit-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5 9.5 18 20 6.5"/></svg></span>A plan for the month, worked out with you</li>
-            <li><span class="fit-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5 9.5 18 20 6.5"/></svg></span>A caption and cover for every post</li>
-            <li><span class="fit-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5 9.5 18 20 6.5"/></svg></span>A chat each month about what worked</li>
-            <li class="no"><span class="fit-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M7 7l10 10M17 7 7 17"/></svg></span><span class="vh">Not included: </span>2 designed posts, like carousels or graphics</li>
-            <li class="no"><span class="fit-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M7 7l10 10M17 7 7 17"/></svg></span><span class="vh">Not included: </span>We post and schedule it for you</li>
-            <li class="no"><span class="fit-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M7 7l10 10M17 7 7 17"/></svg></span><span class="vh">Not included: </span>Ad-ready cuts in every size</li>
+            <li><span class="fit-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5 9.5 18 20 6.5"/></svg></span>A content plan every month</li>
+            <li><span class="fit-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5 9.5 18 20 6.5"/></svg></span>Captions and cover images</li>
+            <li><span class="fit-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5 9.5 18 20 6.5"/></svg></span>Monthly check-in on what worked</li>
+            <li class="no"><span class="fit-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M7 7l10 10M17 7 7 17"/></svg></span><span class="vh">Not included: </span>2 designed posts (carousels or graphics)</li>
+            <li class="no"><span class="fit-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M7 7l10 10M17 7 7 17"/></svg></span><span class="vh">Not included: </span>Posting and scheduling done for you</li>
+            <li class="no"><span class="fit-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M7 7l10 10M17 7 7 17"/></svg></span><span class="vh">Not included: </span>Ad-ready cuts in every format</li>
           </ul>
         </div>
         <div class="way-foot">
           <div class="btn-row">
             <a class="btn" href="/?interest=monthly&package=core&billing=monthly#book">
-        <span class="btn-label"><span>Talk about Core</span><span aria-hidden="true">Talk about Core</span></span>
-      </a>
+              <span class="btn-label"><span>Talk about Core</span><span aria-hidden="true">Talk about Core</span></span>
+            </a>
           </div>
         </div>
       </article>
-      <article class="way-card pack" role="radio" aria-checked="false" tabindex="0" aria-label="Full, 6 videos and 25 photos, $1,500 a month" data-pack="Full" data-monthly-price="$1,500 a month" data-quarterly-price="$4,000 a quarter">
+      <article class="way-card pack" role="radio" aria-checked="false" tabindex="0" aria-label="Full, $1,500 a month" data-pack="Full" data-monthly-price="$1,500 a month" data-quarterly-price="$4,000 a quarter">
         <div class="pack-head">
           <h3>Full</h3>
-        </div>
-        <div class="pack-count" aria-hidden="true">
-          <p><b>6</b><span>videos</span></p>
-          <p><b>25</b><span>photos</span></p>
+          
         </div>
         <div>
           <div class="was-wrap" data-was aria-hidden="true"><div><s class="was"><span class="vh">Paying monthly, </span>$4,500</s></div></div>
-          <p class="pack-price" data-monthly="$1,500 a month" data-quarterly="$4,000 a quarter">$1,500 a month</p>
+          <p class="way-price big" data-monthly="$1,500 a month" data-quarterly="$4,000 a quarter">$1,500 a month</p>
           <p class="pack-who">Everything handled, from the shoot to hitting post.</p>
         </div>
         <div class="way-body">
           <ul class="ticks">
+            <li><span class="fit-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5 9.5 18 20 6.5"/></svg></span>6 videos a month</li>
+            <li><span class="fit-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5 9.5 18 20 6.5"/></svg></span>25 photos a month</li>
             <li><span class="fit-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5 9.5 18 20 6.5"/></svg></span><span data-monthly="One planned shoot a month" data-quarterly="One bigger shoot a quarter">One planned shoot a month</span></li>
-            <li><span class="fit-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5 9.5 18 20 6.5"/></svg></span>A plan for the month, worked out with you</li>
-            <li><span class="fit-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5 9.5 18 20 6.5"/></svg></span>A caption and cover for every post</li>
-            <li><span class="fit-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5 9.5 18 20 6.5"/></svg></span>A chat each month about what worked</li>
-            <li><span class="fit-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5 9.5 18 20 6.5"/></svg></span>2 designed posts, like carousels or graphics</li>
-            <li><span class="fit-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5 9.5 18 20 6.5"/></svg></span>We post and schedule it for you</li>
-            <li><span class="fit-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5 9.5 18 20 6.5"/></svg></span>Ad-ready cuts in every size</li>
+            <li><span class="fit-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5 9.5 18 20 6.5"/></svg></span>A content plan every month</li>
+            <li><span class="fit-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5 9.5 18 20 6.5"/></svg></span>Captions and cover images</li>
+            <li><span class="fit-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5 9.5 18 20 6.5"/></svg></span>Monthly check-in on what worked</li>
+            <li><span class="fit-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5 9.5 18 20 6.5"/></svg></span>2 designed posts (carousels or graphics)</li>
+            <li><span class="fit-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5 9.5 18 20 6.5"/></svg></span>Posting and scheduling done for you</li>
+            <li><span class="fit-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5 9.5 18 20 6.5"/></svg></span>Ad-ready cuts in every format</li>
           </ul>
         </div>
         <div class="way-foot">
           <div class="btn-row">
             <a class="btn outline" href="/?interest=monthly&package=full&billing=monthly#book">
-        <span class="btn-label"><span>Talk about Full</span><span aria-hidden="true">Talk about Full</span></span>
-      </a>
+              <span class="btn-label"><span>Talk about Full</span><span aria-hidden="true">Talk about Full</span></span>
+            </a>
           </div>
         </div>
       </article>
@@ -758,8 +602,7 @@
     });
   });
 
-  /* A pill switch with a sliding thumb under the pressed button (the
-     billing switch and the month board's package switch). */
+  /* The billing switch: a pill with a sliding thumb under the pressed button. */
   function placeThumb(sw) {
     var on = sw.querySelector('[aria-pressed="true"]');
     var thumb = sw.querySelector('.billing-thumb');
@@ -824,58 +667,8 @@
     });
   }
 
-  /* ---- the month board ----
-     How one month could go out on each package, week by week. The page
-     ships with Core written in; picking another package (on the board's
-     switch or by picking a card below) redraws it. Keep in step with the
-     packages: videos, designed posts and photos per week. */
-  var MONTH = {"Lite": {"v": [1, 0, 1, 0], "p": [3, 2, 3, 2], "d": [0, 0, 0, 0], "end": "You post it when it suits you, and we plan next month's shoot."}, "Core": {"v": [1, 1, 1, 1], "p": [4, 4, 4, 3], "d": [0, 0, 0, 0], "end": "We talk through what worked, and next month is planned from that."}, "Full": {"v": [2, 1, 2, 1], "p": [7, 6, 6, 6], "d": [1, 0, 1, 0], "end": "It's all posted and scheduled for you, and we talk through what worked before planning next month."}};
-  var TOTALS = {"Lite": "<b>2 videos</b> and <b>10 photos</b> from one shoot, with a caption and cover for every post.", "Core": "<b>4 videos</b> and <b>15 photos</b> from one shoot, with a caption and cover for every post.", "Full": "<b>6 videos</b>, <b>2 designed posts</b> and <b>25 photos</b> from one shoot, with a caption and cover for every post."};
-  var COVERS = ["johnson-residential-4", "atk-detailing-3", "sky-automotive-3", "landscape-transformers-1", "johnson-residential-3", "sky-automotive-1"];
-  var monthNow = 'Core';
-  var weeksEl = document.querySelector('[data-weeks]');
-  var endEl = document.querySelector('[data-month-end]');
-  var totalEl = document.querySelector('[data-month-total]');
-  var monthSw = document.querySelector('[data-month-switch]');
-  function n(k, w) { return k + ' ' + w + (k === 1 ? '' : 's'); }
-  function drawMonth(name) {
-    var m = MONTH[name], vi = 0, d = 0;
-    weeksEl.innerHTML = [0, 1, 2, 3].map(function (w) {
-      var tiles = '', said = [];
-      for (var i = 0; i < m.v[w]; i++) {
-        tiles += '<span class="tile vid pop" style="--d:' + (d++ * 45) + 'ms;background-image:url(/media/month/' + COVERS[vi++ % COVERS.length] + '.webp)"></span>';
-      }
-      if (m.v[w]) said.push(n(m.v[w], 'video'));
-      if (m.d[w]) said.push(n(m.d[w], 'designed post'));
-      said.push(n(m.p[w], 'photo'));
-      return '<li class="week"><span class="week-n">Week ' + (w + 1) + '<span class="vh">: ' + said.join(', ') + '</span></span>'
-        + '<div class="week-posts" aria-hidden="true">' + tiles + '</div>'
-        + '<span class="week-photos" aria-hidden="true">' + n(m.p[w], 'photo') + '</span>'
-        + (m.d[w] ? '<span class="week-extra" aria-hidden="true">+ ' + n(m.d[w], 'designed post') + '</span>' : '') + '</li>';
-    }).join('');
-    [endEl, totalEl].forEach(function (el) { el.classList.add('is-swapping'); });
-    setTimeout(function () {
-      endEl.textContent = m.end;
-      totalEl.innerHTML = TOTALS[name];
-      [endEl, totalEl].forEach(function (el) { el.classList.remove('is-swapping'); });
-    }, 160);
-  }
-  function setMonth(name) {
-    if (!weeksEl || name === monthNow || !MONTH[name]) return;
-    monthNow = name;
-    if (monthSw) {
-      [].slice.call(monthSw.querySelectorAll('[data-month-to]')).forEach(function (b) {
-        b.setAttribute('aria-pressed', b.getAttribute('data-month-to') === name ? 'true' : 'false');
-      });
-      placeThumb(monthSw);
-    }
-    drawMonth(name);
-  }
-
   /* Clicking a package (anywhere but its button) moves the outline to it,
-     and its button becomes the solid one. Enter or Space does the same.
-     The month board follows whichever package is picked, and the other
-     way round. */
+     and its button becomes the solid one. Enter or Space does the same. */
   var packs = [].slice.call(document.querySelectorAll('[data-packs] .pack'));
   function pick(card) {
     packs.forEach(function (c) {
@@ -886,16 +679,6 @@
       if (btn) btn.classList.toggle('outline', !on);
     });
     syncSticky();
-  }
-  if (monthSw) {
-    readySwitch(monthSw);
-    [].slice.call(monthSw.querySelectorAll('[data-month-to]')).forEach(function (b) {
-      b.addEventListener('click', function () {
-        var name = b.getAttribute('data-month-to');
-        setMonth(name);
-        packs.forEach(function (c) { if (c.getAttribute('data-pack') === name) pick(c); });
-      });
-    });
   }
 
   /* The phone bar: up once the page head has gone, down again at the
@@ -918,11 +701,10 @@
     card.addEventListener('click', function (e) {
       if (e.target.closest('a')) return;
       pick(card);
-      setMonth(card.getAttribute('data-pack'));
     });
     card.addEventListener('keydown', function (e) {
       if (e.target !== card) return;
-      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); pick(card); setMonth(card.getAttribute('data-pack')); }
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); pick(card); }
     });
   });
 
