@@ -917,7 +917,8 @@
     list-style: none; margin: 0; padding: 0;
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: var(--s-5) clamp(1rem, 2.4vw, 2rem);
+    --wk-gap: clamp(1rem, 2.4vw, 2rem);
+    gap: var(--s-5) var(--wk-gap);
   }
   .wk { display: block; color: inherit; text-decoration: none; }
   .wk-img {
@@ -949,6 +950,11 @@
      puts it back to two by two on its own */
   @media (min-width: 641px) {
     .wk-grid:has(> li:nth-child(3):last-child) { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  }
+  @media (min-width: 641px) {
+    .wk-grid:not(:has(> li:nth-child(3):last-child)) > li:last-child:nth-child(odd) {
+      grid-column: 1 / -1; justify-self: center; width: calc(50% - var(--wk-gap) / 2);
+    }
   }
   @media (max-width: 640px) {
     .wk-grid { grid-template-columns: minmax(0, 1fr); gap: var(--s-4); }
@@ -2418,15 +2424,12 @@
           <span class="wk-text"><span class="wk-name">ATK Detailing</span><span class="wk-trade">Car detailing</span></span>
         </a>
       </li>
-      <!-- Landscape Transformers is off until there's footage to show (an
-           empty card read as broken). Put it back here, with its poster in
-           the wk-img, and take hidden: true off it in js/cases.js:
       <li>
         <a class="wk" href="/work/case/?client=landscape-transformers">
-          <span class="wk-img"><img src="..." alt="" width="608" height="1080" loading="lazy" decoding="async"></span>
+          <span class="wk-img"><img src="/media/landscape-transformers-1-card.webp" alt="" width="800" height="450" loading="lazy" decoding="async"></span>
           <span class="wk-text"><span class="wk-name">Landscape Transformers</span><span class="wk-trade">Landscaping</span></span>
         </a>
-      </li> -->
+      </li>
       <li>
         <a class="wk" href="/work/case/?client=sky-automotive">
           <span class="wk-img"><img src="/media/sky-automotive-1-poster.webp" alt="" width="608" height="1080" loading="lazy" decoding="async"></span>

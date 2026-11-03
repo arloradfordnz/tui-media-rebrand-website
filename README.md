@@ -12,10 +12,10 @@ deployed on Vercel.
   - `index.html` — the whole site: markup, styles and script in one file.
   - `work/index.html` — every case study at `/work`, linked from the menu, the
     footer and the home page's case studies: Johnson Residential, ATK Detailing
-    and Sky Automotive, from `js/cases.js`. (Landscape Transformers is in there
-    too, marked `hidden: true` until it has footage.)
-    Laid out as a grid, two to a row (one on a phone), or three across when
-    there are exactly three, so nothing sits on its own: each client's picture
+    Sky Automotive, Landscape Transformers and Brook Waimārama Sanctuary, from
+    `js/cases.js`. (A client can be marked `hidden: true` until it has footage.)
+    Laid out as a grid, two to a row (one on a phone), three across when there are
+    exactly three, and an odd last card centred, so nothing sits on its own: each client's picture
     with their name and trade under it on the left, linking to their case
     study. `/work#client-name` lands on that client's card. The home page has
     the same grid.
@@ -30,8 +30,8 @@ deployed on Vercel.
   - `js/cases.js` — the case studies themselves, read by `/work` and
     `/work/case/`, including each client's `clips` (names in `media/work/`). The
     home page's cards are written into `index.html` by hand, so a new client goes
-    in both. To bring Landscape Transformers back: put its clips in `media/work/`,
-    list them, take `hidden: true` off, and uncomment its card in `index.html`.
+    in both. A client who isn't ready yet gets `hidden: true`; to bring them back,
+    take it off and add their card to `index.html`.
     A client with stills rather than vertical clips (Brook Waimārama Sanctuary) lists
     `stills` instead: landscape 16:9 pictures, `media/<name>.webp` at 1600 wide plus a
     `-card.webp` at 800 for the card. The first fills the page width, the rest sit
