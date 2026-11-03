@@ -34,7 +34,7 @@ deployed on Vercel.
     take it off and add their card to `index.html`.
     A client with stills rather than vertical clips (Brook Waimārama Sanctuary) lists
     `stills` instead: landscape 16:9 pictures, `media/<name>.webp` at 1600 wide plus a
-    `-card.webp` at 800 for the card. The first fills the page width, the rest sit
+    `-thumb.webp` at 1200 for the card. The first fills the page width, the rest sit
     two across (one on a phone).
   - The home page shows at most four case studies (Johnson Residential, ATK
     Detailing, Landscape Transformers, Brook Waimārama Sanctuary); `/work` shows
@@ -152,6 +152,17 @@ That rests on a few decisions worth not undoing:
   stale-while-revalidate, so a replaced clip under an existing filename takes up to
   a month to propagate. Rename the file if it needs to be immediate.
 
+**Replacing a file under the same name doesn't reach people who've already seen
+it.** `img/` and `media/` are cached for 30 days, so a changed picture needs a new
+filename (that's why the case study covers are `-cover.webp` and the cards
+`-thumb.webp`: the old `-poster`/`-card` files were replaced, and browsers held on to
+the soft versions). Scripts in `js/` are revalidated on every load
+(`max-age=0, must-revalidate`); they used to be cached for a day, which is how a
+browser could keep an old `js/cases.js` with no stills in it while the page around it
+had moved on. The pages load `js/cases.js?v=2` and `js/nav.js?v=2` to push past the
+copies cached under the old rule; bumping the number is only needed if that ever
+happens again.
+
 Video masters are re-encoded twice, because the two surfaces want different
 things. The home-page marquee is silent wallpaper — small, muted, many at once
 — at 608x1080, CRF 28, 25fps, no audio, `+faststart`:
@@ -163,7 +174,7 @@ ffmpeg -i in.mp4 -an -c:v libx264 -preset slow -crf 28 -profile:v high -level 4.
 ```
 
 `media/work/` holds the vertical cuts with sound that the case study pages play,
-at 720x1280, CRF 24, 30fps, AAC 128k, each with a `-poster.webp`. The poster is a
+at 720x1280, CRF 24, 30fps, AAC 128k, each with a `-cover.webp`. The cover is a
 frame at 1s kept at the clip's full 720x1280 (WebP q76): the cards show it up to
 250px wide, which is 500+ real pixels on a phone, and the old half-size 360x640
 posters looked soft there. Don't shrink them. This is how the clips were made:

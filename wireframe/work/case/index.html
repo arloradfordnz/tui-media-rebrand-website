@@ -214,7 +214,7 @@
   </div>
 </div>
 
-<script src="/js/cases.js"></script>
+<script src="/js/cases.js?v=2"></script>
 <script>
 (function () {
   'use strict';
@@ -248,8 +248,8 @@
   function clipCard(name, n) {
     var base = '/media/work/' + encodeURIComponent(name);
     return '<li><button class="clip" type="button" data-src="' + base + '.mp4"'
-         + ' style="background-image:url(' + base + '-poster.webp)" aria-label="' + esc(label(n, 'Play')) + '">'
-         + '<video playsinline preload="none" poster="' + base + '-poster.webp"></video>'
+         + ' style="background-image:url(' + base + '-cover.webp)" aria-label="' + esc(label(n, 'Play')) + '">'
+         + '<video playsinline preload="none" poster="' + base + '-cover.webp"></video>'
          + '<span class="clip-state">' + PLAY + PAUSE + '</span>'
          + '</button></li>';
   }
@@ -354,7 +354,7 @@
 <script defer src="/js/lenis.min.js"></script>
 <script defer src="/js/smooth-scroll.js"></script>
 <script defer src="/js/page-transition.js"></script>
-<script defer src="/js/nav.js"></script>
+<script defer src="/js/nav.js?v=2"></script>
 <script defer src="/_vercel/insights/script.js"></script>
 </body>
 </html>
