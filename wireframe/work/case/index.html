@@ -90,7 +90,9 @@
     display: block; width: 100%; height: auto; aspect-ratio: 16 / 9; object-fit: cover;
     border-radius: var(--radius-sm); background: var(--slot-1);
   }
-  .case-stills + .case-clips, .case-clips + .case-stills { margin-top: var(--s-3); }
+  .case-stills + .case-clips, .case-clips + .case-stills, .case-clips + .case-clips { margin-top: var(--s-3); }
+  /* vertical stills sit in the same grid as the video cards */
+  .case-tall img { display: block; width: 100%; height: auto; aspect-ratio: 9 / 16; object-fit: cover; border-radius: var(--radius-sm); background: var(--slot-1); }
   .case-hint {
     margin-top: var(--s-2);
     text-align: center;
@@ -252,6 +254,11 @@
          + '</button></li>';
   }
 
+  var tall = c.stillsTall || [];
+  function tallFig(name, n) {
+    var alt = (c.altTall && c.altTall[n]) || (c.name + ', photo ' + (n + 1));
+    return '<li><img src="/media/' + encodeURIComponent(name) + '.webp" alt="' + esc(alt) + '" width="720" height="1280" loading="lazy" decoding="async"></li>';
+  }
   var stills = c.stills || [];
   function stillFig(name, n) {
     var alt = (c.alt && c.alt[n]) || (c.name + ', photo ' + (n + 1));
@@ -261,6 +268,7 @@
 
   document.querySelector('[data-case]').innerHTML =
       (stills.length ? '<div class="case-stills">' + stills.map(stillFig).join('') + '</div>' : '')
+    + (tall.length ? '<ul class="case-clips case-tall" aria-label="' + esc(c.name) + ' stills">' + tall.map(tallFig).join('') + '</ul>' : '')
     + (clips.length
         ? '<ul class="case-clips" aria-label="' + esc(c.name) + ' videos">' + clips.map(clipCard).join('') + '</ul>'
           + '<p class="case-hint">Press play to watch with sound.</p>'

@@ -36,6 +36,12 @@ deployed on Vercel.
     `stills` instead: landscape 16:9 pictures, `media/<name>.webp` at 1600 wide plus a
     `-card.webp` at 800 for the card. The first fills the page width, the rest sit
     two across (one on a phone).
+  - The home page shows at most four case studies (Johnson Residential, ATK
+    Detailing, Landscape Transformers, Brook Waimārama Sanctuary); `/work` shows
+    every one in `js/cases.js`. Every case study has stills: landscape `stills`
+    (16:9, the first as the hero) or, where the footage is vertical, `stillsTall`
+    (720x1280 grabs, caption-free frames from the clips, four across like the
+    video cards), then the client's videos if they have any.
   - `js/nav.js` — the menu on phones and tablets, loaded by every page. Above
     960px the page links sit in the nav pill; below it they used to be hidden
     with nothing in their place. Now a round menu button opens the same links as a

@@ -16,6 +16,8 @@
    stills   landscape (16:9) pictures shown big at the top of the client's page
             (a client can have stills, clips or both; the first still is the hero): media/<name>.webp (1600 wide) with a smaller
             media/<name>-card.webp for the card. Shown big on their page.
+   stillsTall  vertical 9:16 grabs (media/<name>.webp, 720x1280) for a client
+            whose footage is vertical; shown four across like the video cards
    hidden   true keeps a client off /work, out of "Next case study" and
             sends their page back to /work, until there's footage to show
             (nobody is hidden right now). To bring one back, take it off
@@ -30,6 +32,8 @@ window.TUI_CASES = [
   { slug: 'atk-detailing', image: '/media/atk-detailing-card.webp', name: 'ATK Detailing', trade: 'Car detailing',
     summary: "ATK Detailing's owner on camera, talking through the work and the protection they offer, with the detailing shown up close.",
     made: 'Short vertical videos built around the owner talking to camera, cut with close-ups of the work.',
+    stillsTall: ['atk-detailing-still-1', 'atk-detailing-still-2', 'atk-detailing-still-3', 'atk-detailing-still-4'],
+    altTall: ["ATK Detailing's owner in the branded tee in front of a car", 'Washing the side of a car by hand', 'Working on a car door up close', 'Detailing the inside of a car'],
     clips: ['atk-detailing-3', 'atk-detailing'] },
   { slug: 'landscape-transformers', image: '/media/landscape-transformers-1-card.webp', name: 'Landscape Transformers', trade: 'Landscaping',
     summary: 'Landscape Transformers at work on a new build, with the team on camera, close-ups of the crew and drone shots of the site.',
@@ -39,6 +43,8 @@ window.TUI_CASES = [
   { slug: 'sky-automotive', image: '/media/sky-automotive-card.webp', name: 'Sky Automotive', trade: 'Automotive servicing',
     summary: "Sky Automotive's workshop on camera, from detail work on the cars to the opening of their new Nelson location.",
     made: 'Short vertical videos shot in the workshop, including one for the launch of the new location.',
+    stillsTall: ['sky-automotive-still-1', 'sky-automotive-still-2', 'sky-automotive-still-3', 'sky-automotive-still-4'],
+    altTall: ['A red classic Porsche under the lights in the Sky Automotive workshop', 'Polishing the bonnet of the Porsche', 'A Porsche headlight and gleaming red paint up close', 'The Porsche badge on freshly polished red paint'],
     clips: ['sky-automotive-3', 'sky-automotive-1'] },
   { slug: 'brook-sanctuary', image: '/media/brook-sanctuary-1-card.webp', name: 'Brook Waimārama Sanctuary', trade: 'Wildlife sanctuary',
     summary: "Interview-style videos with the people from the Brook Waimārama Sanctuary, filmed on site at the sanctuary's entrance.",
