@@ -77,6 +77,15 @@
   .clip.is-playing .clip-state .play { display: none; }
   .clip.is-playing .clip-state .pause { display: block; }
   .clip:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; }
+  /* landscape stills: the first fills the width, the rest sit two across */
+  .case-stills { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--s-3); }
+  .case-stills figure { margin: 0; grid-column: span 1; }
+  .case-stills figure:first-child { grid-column: 1 / -1; }
+  .case-stills img {
+    display: block; width: 100%; height: auto; aspect-ratio: 16 / 9; object-fit: cover;
+    border-radius: var(--radius-sm); background: var(--slot-1);
+  }
+  .case-stills + .case-clips, .case-clips + .case-stills { margin-top: var(--s-3); }
   .case-hint {
     margin-top: var(--s-2);
     text-align: center;
@@ -128,6 +137,7 @@
     /* two across on a phone: big enough to see, small enough that a
        client's whole set is on one or two screens */
     .case-clips { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--s-2); }
+    .case-stills { grid-template-columns: minmax(0, 1fr); gap: var(--s-2); }
     .clip-state { left: 10px; bottom: 10px; }
     .case-nav { flex-direction: column-reverse; align-items: flex-start; }
     .case-next { text-align: left; }
@@ -237,8 +247,16 @@
          + '</button></li>';
   }
 
+  var stills = c.stills || [];
+  function stillFig(name, n) {
+    var alt = (c.alt && c.alt[n]) || (c.name + ', photo ' + (n + 1));
+    return '<figure><img src="/media/' + encodeURIComponent(name) + '.webp" alt="' + esc(alt) + '" width="1600" height="900"'
+         + (n === 0 ? ' fetchpriority="high"' : ' loading="lazy"') + ' decoding="async"></figure>';
+  }
+
   document.querySelector('[data-case]').innerHTML =
-      (clips.length
+      (stills.length ? '<div class="case-stills">' + stills.map(stillFig).join('') + '</div>' : '')
+    + (clips.length
         ? '<ul class="case-clips" aria-label="' + esc(c.name) + ' videos">' + clips.map(clipCard).join('') + '</ul>'
           + '<p class="case-hint">Press play to watch with sound.</p>'
         : '')

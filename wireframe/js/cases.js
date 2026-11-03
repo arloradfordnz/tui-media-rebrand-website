@@ -13,6 +13,9 @@
             Each name is a pair in media/work/: <name>.mp4 (720x1280 with
             sound) and <name>-poster.webp. Nothing downloads until a
             visitor taps one.
+   stills   landscape (16:9) pictures for a client who has stills rather than
+            vertical clips: media/<name>.webp (1600 wide) with a smaller
+            media/<name>-card.webp for the card. Shown big on their page.
    hidden   true keeps a client off /work, out of "Next case study" and
             sends their page back to /work, until there's footage to show.
             Take it off (and put their card back on the home page) once
@@ -34,5 +37,10 @@ window.TUI_CASES = [
   { slug: 'sky-automotive', image: '/media/sky-automotive-1-poster.webp', name: 'Sky Automotive', trade: 'Automotive servicing',
     summary: "Sky Automotive's workshop on camera, from detail work on the cars to the opening of their new Nelson location.",
     made: 'Short vertical videos shot in the workshop, including one for the launch of the new location.',
-    clips: ['sky-automotive-3', 'sky-automotive-1'] }
+    clips: ['sky-automotive-3', 'sky-automotive-1'] },
+  { slug: 'brook-sanctuary', image: '/media/brook-sanctuary-1-card.webp', name: 'Brook Waimārama Sanctuary', trade: 'Wildlife sanctuary',
+    summary: "Interview-style videos with the people from the Brook Waimārama Sanctuary, filmed on site at the sanctuary's entrance.",
+    made: 'Interview videos filmed on site at the sanctuary, with the team talking to camera.',
+    stills: ['brook-sanctuary-1', 'brook-sanctuary-2', 'brook-sanctuary-3'],
+    alt: ["A man laughing in front of the sanctuary's bird sign", "A man in a cap and overalls smiling in front of the sanctuary's bird sign", "A man in a hi-vis vest and glasses laughing in front of the sanctuary's bird sign"] }
 ];

@@ -32,6 +32,10 @@ deployed on Vercel.
     home page's cards are written into `index.html` by hand, so a new client goes
     in both. To bring Landscape Transformers back: put its clips in `media/work/`,
     list them, take `hidden: true` off, and uncomment its card in `index.html`.
+    A client with stills rather than vertical clips (Brook Waimārama Sanctuary) lists
+    `stills` instead: landscape 16:9 pictures, `media/<name>.webp` at 1600 wide plus a
+    `-card.webp` at 800 for the card. The first fills the page width, the rest sit
+    two across (one on a phone).
   - `js/nav.js` — the menu on phones and tablets, loaded by every page. Above
     960px the page links sit in the nav pill; below it they used to be hidden
     with nothing in their place. Now a round menu button opens the same links as a
