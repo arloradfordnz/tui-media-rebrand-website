@@ -10,9 +10,68 @@ deployed on Vercel.
   The folder name is historical; renaming it means changing the Root Directory
   setting in the Vercel project at the same time.
   - `index.html` — the whole site: markup, styles and script in one file.
-  - `work/index.html` — the full examples page at `/work`, linked from the
-    "See all our work" button under Recent work. Its clips are the only ones on
-    the site that carry audio, and they live in `media/work/`.
+  - `work/index.html` — every case study at `/work`, linked from the menu, the
+    footer and the home page's case studies: Johnson Residential, ATK Detailing
+    Sky Automotive, Landscape Transformers and Brook Waimārama Sanctuary, from
+    `js/cases.js`. (A client can be marked `hidden: true` until it has footage.)
+    Laid out as a grid, two to a row (one on a phone), three across when there are
+    exactly three, and an odd last card centred, so nothing sits on its own: each client's picture
+    with their name and trade under it on the left, linking to their case
+    study. `/work#client-name` lands on that client's card. The home page has
+    the same grid.
+  - `work/case/index.html` — one case study at a time, at
+    `/work/case/?client=atk-detailing`. Clicking a card on the home page or `/work`
+    opens it. The client's name and summary, then their videos as vertical cards
+    (four across on a desktop, two on a phone): tap one and it plays with sound,
+    tap again to pause, one at a time, and nothing downloads until a card is
+    tapped. Then a row of facts (client, industry, what we made), and a link back
+    to the list and on to the next client. An unknown or hidden client goes back
+    to `/work`.
+  - `js/cases.js` — the case studies themselves, read by `/work` and
+    `/work/case/`, including each client's `clips` (names in `media/work/`). The
+    home page's cards are written into `index.html` by hand, so a new client goes
+    in both. A client who isn't ready yet gets `hidden: true`; to bring them back,
+    take it off and add their card to `index.html`.
+    A client with stills rather than vertical clips (Brook Waimārama Sanctuary) lists
+    `stills` instead: landscape 16:9 pictures, `media/<name>.webp` at 1600 wide plus a
+    `-thumb.webp` at 1200 for the card. The first fills the page width, the rest sit
+    two across (one on a phone).
+  - The home page shows at most four case studies (Johnson Residential, ATK
+    Detailing, Landscape Transformers, Brook Waimārama Sanctuary); `/work` shows
+    every one in `js/cases.js`. Every case study has stills: landscape `stills`
+    (16:9, the first as the hero) or, where the footage is vertical, `stillsTall`
+    (720x1280 grabs, caption-free frames from the clips, four across like the
+    video cards), then the client's videos if they have any.
+  - `js/nav.js` — the menu on phones and tablets, loaded by every page. Above
+    960px the page links sit in the nav pill; below it they used to be hidden
+    with nothing in their place. Now a round menu button opens the same links as a
+    panel, and "Book a free call" moves out of the bar into the bottom of that
+    panel (the same element, moved, so the home page can still turn it into "Back
+    to site" on the form). On a wide screen it goes back to the end of the bar. The
+    script adds the button and its styles, so a page with script off keeps the
+    plain bar with the booking button in it.
+  - `video-ads/index.html` and `monthly-content/index.html` — the two service
+    pages at `/video-ads` and `/monthly-content`, linked from the cards in
+    "Two ways to work together" and from the menu. Their book buttons go to `/?interest=ad#book`
+    or `/?interest=monthly#book`, which opens the form with that option picked.
+  - Every page but the home page opens on the hero's pill naming the page
+    (About, Monthly content, Video ads, Case studies) above its own headline.
+  - Buttons, on every page: the label and nothing else, no arrow or icon. A
+    solid button inverts to its outline on hover; an outline button fills.
+    Only the colours change, nothing moves.
+  - `js/` — `lenis.min.js` (Lenis 1.1.20, MIT, self-hosted) and `smooth-scroll.js`,
+    the small script every page loads to give the mouse wheel and trackpad
+    inertial scrolling. Touch and reduced-motion visitors keep native scrolling.
+    Remove the two `<script>` tags to switch it off. Pages jump through
+    `window.__lenis.scrollTo` rather than `window.scrollTo`, so the two don't fight.
+  - `about/index.html` — the About page at `/about`, generated from the same
+    template as the two service pages.
+  - `css/loader.css` and `js/page-transition.js` — the page curtain on every page
+    but the home page (which has its own inline). Clicking through to another
+    page on the site drops the curtain, then navigates; the next page lifts it.
+  - `css/service.css` — shared by the two service pages: the site's tokens, nav,
+    buttons and closing panel, plus the offer card, timeline and FAQ from
+    `index.html`, copied rather than shared, so a change there needs making here too.
   - `img/` — logos, marks and the founder portrait, all WebP.
   - `media/` — case-study clips and their poster frames.
   - `fonts/` — the self-hosted Bricolage Grotesque subsets.
@@ -35,7 +94,11 @@ Absolute paths (`/img/…`, `/fonts/…`) mean it has to be served, not opened a
 ## The two views
 
 `index.html` holds both `#home` and `#book` and swaps between them with a
-click-driven router, with the hash kept in sync so browser back still works. The
+click-driven router. Moving between the page and the form adds a history entry
+(`pushState`), so the browser's Back button closes the form and lands the visitor
+where they were on the page, as does "Back to site"; the logo goes to the top.
+Don't switch it back to `replaceState`: that made Back skip the home page and take
+the visitor off the site, back to the ad or search result they came from. The
 curtain that plays on first paint is the same element that plays between routes,
 driven by one state machine with a timer backing up every `animationend`, so a
 swallowed event can't leave the site looking dead.
@@ -48,6 +111,14 @@ form and the function) when the enquiry is for an ad project or both. Spam is
 caught by an off-screen honeypot field and a minimum time on the page; both are
 answered with a quiet 200 and nothing is sent. It needs `RESEND_API_KEY` in the Vercel project's environment variables.
 
+While it sends, the button reads "Sending…" (the function waits on the email and the
+CRM, which can take a few seconds). If the send fails, the error offers a `mailto:`
+link with every answer already in the email body, so the lead isn't lost.
+
+Two custom events go to Vercel Web Analytics: `Form opened` (once per visit) and
+`Enquiry sent` (with the interest picked), for a click → form → sent funnel. Custom
+events only appear on a Vercel Pro plan; on Hobby they're quietly dropped.
+
 ## Performance
 
 The page carries no media on first load. Concretely: ~144KB of HTML and ~215KB of
@@ -57,28 +128,40 @@ That rests on a few decisions worth not undoing:
 
 - **Nothing is embedded as a data URI.** Images live in `img/` as WebP so they are
   cached across visits instead of being re-downloaded inside the HTML every time.
-- **Case-study videos are `preload="none"` with no `autoplay`,** and their posters
-  are held on `data-poster` rather than `poster`. One IntersectionObserver on the
-  *strip* decides when the section is worth any work, a screen out; that arms every
-  poster (on the video and painted behind it on the card), and a 4fps poll then
-  matches playback to the cards actually inside the frame. It is a poll and not an
-  observer per video on purpose — see the long comment above `caseTick` in
-  `index.html`, which is the bug that made the strip sit static. The poll also
-  reloads any clip in the frame that has errored or stalled, with a short backoff:
-  without that, one dropped connection froze a card for the rest of the visit.
-  Putting `autoplay` back makes the browser fetch every clip on load regardless of
-  what `preload` says.
-- **`/work` loads its posters and nothing else.** The clips sit on `data-src`, so
-  the first request for an mp4 there is the first time someone plays one.
+- **The home page's case studies** are a grid of cards, two to a row, the same
+  as `/work`: a picture, then the client's name and trade under it, linking to
+  that client's case study. The pictures are the vertical poster frames from
+  `media/`, cropped to 16:9 and lazy-loaded. When landscape stills exist, swap the `src` in
+  `index.html` and the `image` in `js/cases.js`. Keep them still images, not
+  video. Nothing on the home page plays by itself, so a first load fetches no clips. (The hero's pointer
+  trail is the one exception, and it only starts once the mouse enters the hero.)
+  Putting `autoplay` on a `<video>` makes the browser fetch it on load whatever
+  `preload` says, so don't.
 - **Every `<img>` carries `width` and `height`,** so nothing shifts as the
   logos and the portrait decode.
 - **The font is self-hosted** and the latin subset is preloaded. Google Fonts cost
-  two extra connections and a chained request on the critical path.
+  two extra connections and a chained request on the critical path. At 77KB it's
+  the slowest part of first paint on a phone, and it was looked at: it carries
+  two variable axes (optical size, used by the headings, and weight). Trimming
+  the weights to the 400–700 the site uses saves 5%, dropping unused OpenType
+  features 8%, both together about 10KB. Not worth a font that renders
+  differently, so it ships as it came.
 - **`vercel.json` sets the cache headers.** Vercel's default for static files is
   `max-age=0, must-revalidate` — every asset revalidated on every visit. Fonts are
   immutable for a year; `img/` and `media/` are cached 30 days with
   stale-while-revalidate, so a replaced clip under an existing filename takes up to
   a month to propagate. Rename the file if it needs to be immediate.
+
+**Replacing a file under the same name doesn't reach people who've already seen
+it.** `img/` and `media/` are cached for 30 days, so a changed picture needs a new
+filename (that's why the case study covers are `-cover.webp` and the cards
+`-thumb.webp`: the old `-poster`/`-card` files were replaced, and browsers held on to
+the soft versions). Scripts in `js/` are revalidated on every load
+(`max-age=0, must-revalidate`); they used to be cached for a day, which is how a
+browser could keep an old `js/cases.js` with no stills in it while the page around it
+had moved on. The pages load `js/cases.js?v=2` and `js/nav.js?v=2` to push past the
+copies cached under the old rule; bumping the number is only needed if that ever
+happens again.
 
 Video masters are re-encoded twice, because the two surfaces want different
 things. The home-page marquee is silent wallpaper — small, muted, many at once
@@ -90,8 +173,11 @@ ffmpeg -i in.mp4 -an -c:v libx264 -preset slow -crf 28 -profile:v high -level 4.
   -movflags +faststart out.mp4
 ```
 
-`/work` is the opposite: one clip at a time, watched deliberately, with sound.
-Those go to `media/work/` at 720x1280, CRF 24, 30fps, AAC 128k:
+`media/work/` holds the vertical cuts with sound that the case study pages play,
+at 720x1280, CRF 24, 30fps, AAC 128k, each with a `-cover.webp`. The cover is a
+frame at 1s kept at the clip's full 720x1280 (WebP q76): the cards show it up to
+250px wide, which is 500+ real pixels on a phone, and the old half-size 360x640
+posters looked soft there. Don't shrink them. This is how the clips were made:
 
 ```bash
 ffmpeg -i in.mp4 -c:v libx264 -preset slow -crf 24 -profile:v high -level 4.1 \
@@ -103,9 +189,9 @@ ffmpeg -i in.mp4 -c:v libx264 -preset slow -crf 24 -profile:v high -level 4.1 \
 The hero's cursor trail gets a third, tiny cut in `media/trail/`: 264px wide
 (sharp at 2x on the largest 132px tile), four seconds from 1s in so nothing opens
 on a fade, 24fps, silent, ~100KB each and ~1MB for the set. It is only fetched
-once a mouse first enters the hero, and never on touch or reduced motion. A clip
-added to Recent work joins the trail as soon as its cut exists here, under the
-same name:
+once a mouse first enters the hero, and never on touch or reduced motion. The
+trail plays the `clips` list in `index.html`, which only names clients that have a
+case study; a new clip needs its cut here, under the same name:
 
 ```bash
 ffmpeg -ss 1 -t 4 -i media/in.mp4 -an -c:v libx264 -preset slow -crf 30 \
@@ -148,19 +234,21 @@ One easing token, `--ease-out: cubic-bezier(0.23, 1, 0.32, 1)`. No libraries.
 
 ## Conventions
 
+- Copy follows the voice rules in `Tui_Media_Rebrand_Master_Reference.md`: plain,
+  casual, no em dashes. Reviews are quoted exactly as written.
 - Type and spacing run off tokens at the top of the stylesheet (`--t-*` for type,
   `--s-*` for space, `--frame` for the page edge, `--content` for where content
   stops). Change those, not the individual rules.
 - Breakpoints at 1024px (pad spacing), 900px (process, team, intro and
   what-you-keep stack), 700px (fit and two-ways cards stack) and 620px (tighter
   nav, smaller cases).
-- **Button labels appear twice.** The hover slide keeps a duplicate label
-  underneath, both inside `.btn-label`, so changing button text means changing it
-  in both spans.
+- **Button labels appear twice.** Each button's `.btn-label` holds the label in
+  two spans (the second is hidden, left from the old hover slide), so changing
+  button text means changing it in both.
 
 ## SEO
 
-- `/work` is linked from the home page but absent from the sitemap and the nav, and carries both a
+- `/work` is in the menu and footer but absent from the sitemap, and carries both a
   `noindex` meta and an `X-Robots-Tag` from `vercel.json`. None of that is a lock —
   anyone with the URL can open it. It is unlisted, not private.
 - Canonical, `og:url`, the sitemap and every `@id` in the JSON-LD point at
@@ -169,5 +257,5 @@ One easing token, `--ease-out: cubic-bezier(0.23, 1, 0.32, 1)`. No libraries.
 - The JSON-LD graph is ProfessionalService, Person, WebSite, WebPage and FAQPage.
   The FAQ answers there are duplicated in the markup and have to stay in step.
 - There is deliberately no `aggregateRating`. Google does not allow a business to
-  mark up reviews of itself on its own site, and the "5.0 from 12 Google reviews"
+  mark up reviews of itself on its own site, and the "5.0 from 14 Google reviews"
   line stays as plain text for that reason.

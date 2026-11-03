@@ -1,0 +1,125 @@
+/* The page curtain, shared by every page except the home page (which
+   has the same rules inline). Lifted from index.html; if it changes there,
+   it changes here. Without script the curtain never shows, so a page can't
+   be left covered. */
+html:not(.js) .page-loader { display: none; }
+
+/* ---------- page loader / curtain --------------------------------------
+   The leading edge is a curve, not a straight line - the square-edged wipe
+   read as a block sliding past. Technique measured off double.io/contact:
+   a very large ellipse (125% wide, 500% tall) sits in an overflow-hidden
+   strip glued to the panel edge, so only a shallow dome of it shows and
+   the panel appears to have a curved edge. One strip per edge: the top
+   dome leads on the way in, the bottom dome trails on the way out. Their
+   motion, not their palette - the ground here is the Tui navy.
+
+   Timing is measured off the same page: ~900ms on an expo in-out, which
+   sits almost still for the first third, crosses fast, then settles on a
+   long tail. */
+:root {
+  /* Scaled off width, not height. The dome is 125% of viewport WIDTH, so
+     sizing its height in vh made it a shallow sweep on a wide desktop and
+     a tall half-circle on a narrow phone - same rule, different shape. In
+     vw the arc keeps its proportions across breakpoints; the clamp stops
+     it collapsing on small phones or ballooning on ultrawide. */
+  --curtain-arc: clamp(56px, 16vw, 200px);          /* dome height */
+  --curtain-ease: cubic-bezier(0.85, 0, 0.15, 1);   /* expo in-out */
+}
+@keyframes loader-curtain-up {
+  0%   { transform: translateY(0); }
+  100% { transform: translateY(calc(-100% - var(--curtain-arc))); }
+}
+@keyframes loader-curtain-down {
+  0%   { transform: translateY(calc(100% + var(--curtain-arc))); }
+  100% { transform: translateY(0); }
+}
+.page-loader {
+  position: fixed; inset: 0; z-index: 999;
+  background: var(--loader-navy, #0B1E3F);
+  display: flex; align-items: center; justify-content: center;
+  pointer-events: none;
+  /* own compositor layer for the whole subtree, kept alive for the
+     animation's duration - without this WebKit can leave a stale tile
+     of the progress bar's last-painted pixels behind in the corner
+     once the curtain has animated away and the layer is torn down. */
+  will-change: transform;
+}
+/* thin bar along the very top of the tab while the curtain is up. Width
+   is driven from JS against the same load signal that dismisses the
+   curtain, not a canned animation, so it always reaches the far edge
+   exactly as the reveal fires - never stalls short, never finishes and
+   sits waiting.
+
+   Positioned absolute (against .page-loader, itself positioned) rather
+   than fixed - fixed descendants inside a transform-animated ancestor
+   are supposed to travel with it, but that combination is exactly what
+   produced the stale corner tile above; absolute against a positioned
+   parent is the unambiguous, no-special-case way to move as one paint
+   unit with the curtain.
+
+   Hidden by default and only ever switched on by JS for the one first-
+   paint load it times - the curtain is reused for in-page nav (Home <->
+   Book) with no real asset load behind it, and toggling this off the
+   idle/enter/exit classes those transitions share left a stale width
+   from the last real load flashing in, static, top-left, every time
+   that curtain came back up. */
+.page-loader__progress {
+  display: none;
+  position: absolute; top: 0; left: 0; width: 100%; height: 3px;
+  z-index: 1000;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.12);
+}
+.page-loader__progress i {
+  display: block; height: 100%; width: 0%;
+  background: var(--accent);
+}
+/* the domes have to paint in the panel's own colour, and they sit outside
+   its box, so they cannot be clipped by it - hence a strip each side */
+.page-loader__arc {
+  position: absolute; left: 0;
+  width: 100%; height: var(--curtain-arc);
+  overflow: hidden;
+}
+.page-loader__arc i {
+  position: absolute; left: 50%;
+  width: 125%; height: 500%;
+  border-radius: 50%;
+  background: var(--loader-navy, #0B1E3F);
+  transform: translateX(-50%);
+}
+/* each strip laps 1px into the panel rather than butting against it. Two
+   separately-painted shapes sharing an edge leave an antialiased hairline,
+   and at the fractional offsets the animation runs through, that hairline
+   read as a line sweeping across the curtain. The overlap hides the join;
+   the extra 1px of height keeps the outer edge of the dome where it was. */
+.page-loader__arc--top     { bottom: calc(100% - 1px); height: calc(var(--curtain-arc) + 1px); }
+.page-loader__arc--top i   { top: 0; }      /* bulges up, leads the rise */
+.page-loader__arc--bot     { top: calc(100% - 1px); height: calc(var(--curtain-arc) + 1px); }
+.page-loader__arc--bot i   { bottom: 0; }   /* bulges down, trails the exit */
+
+.page-loader--exit  { animation: loader-curtain-up 900ms var(--curtain-ease) forwards; }
+.page-loader--enter { animation: loader-curtain-down 700ms var(--curtain-ease) both; }
+/* parked below the fold between navigations, dome included; visibility
+   keeps it off the a11y tree and out of paint rather than just transparent */
+.page-loader--idle {
+  transform: translateY(calc(100% + var(--curtain-arc)));
+  visibility: hidden;
+}
+.page-loader__icon {
+  position: relative;
+  width: 64px;
+  height: 107px;
+  /* same mark as the navbar wordmark, full colour, no tint */
+  background: var(--logo-bird) no-repeat center / contain;
+}
+@keyframes loader-fade-out { to { opacity: 0; visibility: hidden; } }
+@keyframes loader-fade-in  { from { opacity: 0; } to { opacity: 1; } }
+@media (prefers-reduced-motion: reduce) {
+  /* a cross-fade rather than a 1ms flash - no travel, but the page still
+     arrives instead of snapping into place. animationend fires either way,
+     which the curtain's state machine depends on. */
+  .page-loader--exit  { animation: loader-fade-out 420ms ease forwards; }
+  .page-loader--enter { animation: loader-fade-in 320ms ease both; }
+}
+

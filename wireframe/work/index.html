@@ -12,27 +12,29 @@
      lock: the URL is public to anyone who has it. -->
 <meta name="robots" content="noindex, nofollow, noarchive">
 
-<title>Work | Tui Media</title>
-<meta name="description" content="Video ads and social content Tui Media has made for New Zealand businesses.">
+<title>Case studies | Tui Media</title>
+<meta name="description" content="Case studies of the video content and ads Tui Media has made for Nelson businesses.">
 <!-- Link preview. This page is made to be pasted into a message, and without
      these a pasted link showed as a bare URL. -->
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Tui Media">
 <meta property="og:url" content="https://www.tuimedia.nz/work">
-<meta property="og:title" content="Featured work | Tui Media">
-<meta property="og:description" content="Ad campaigns and social content Tui Media has made for Nelson businesses. Click one and put the sound on.">
+<meta property="og:title" content="Case studies | Tui Media">
+<meta property="og:description" content="Case studies of the video content and ads Tui Media has made for Nelson businesses.">
 <meta property="og:locale" content="en_NZ">
 <meta property="og:image" content="https://www.tuimedia.nz/og.jpg">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta property="og:image:alt" content="The Tui Media logo, white on navy.">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Featured work | Tui Media">
-<meta name="twitter:description" content="Ad campaigns and social content Tui Media has made for Nelson businesses. Click one and put the sound on.">
+<meta name="twitter:title" content="Case studies | Tui Media">
+<meta name="twitter:description" content="Case studies of the video content and ads Tui Media has made for Nelson businesses.">
 <meta name="twitter:image" content="https://www.tuimedia.nz/og.jpg">
 <meta name="theme-color" content="#060D1A">
 <link rel="icon" href="/favicon-32.png" sizes="32x32">
 <link rel="icon" href="/favicon-512.png" sizes="512x512">
+<script>document.documentElement.classList.add('js');</script>
+<link rel="stylesheet" href="/css/loader.css">
 <link rel="preload" href="/fonts/bricolage-grotesque-latin.woff2" as="font" type="font/woff2" crossorigin>
 
 <style>
@@ -161,6 +163,7 @@
     font-weight: 500;
   }
   .nav-links a { color: var(--muted); text-decoration: none; white-space: nowrap; }
+  .nav-links a[aria-current="page"] { color: var(--ink); }
   .nav-links .nav-label { display: inline-grid; overflow: hidden; line-height: 1.3; }
   .nav-links .nav-label > span {
     grid-area: 1 / 1;
@@ -172,57 +175,41 @@
     .nav-links a:hover .nav-label > span:nth-child(2) { transform: translateY(0); color: var(--ink); }
   }
 
+  /* ---------- buttons ----------
+     Plain pills with the label and nothing else. A solid button is filled
+     with the accent; on hover it inverts to the outline. An outline button
+     does the opposite and fills on hover. Only the colours change: nothing
+     slides, moves or scales. */
   .btn {
     display: inline-flex;
+    font-family: inherit;   /* a <button class="btn"> (the form's submit) otherwise falls back to the browser's own font */
     align-items: center;
-    gap: 0.7em;
+    justify-content: center;
     height: 44px;
-    padding: 6px 6px 6px 1.15rem;
+    padding: 0 1.3rem;
     border-radius: var(--radius-pill);
+    border: 2px solid var(--accent);   /* 2px, so outline buttons read clearly; on every button so hover changes colour only, never size */
     background: var(--accent);
     color: var(--accent-ink);
     font-size: 0.9375rem;
     font-weight: 600;
     letter-spacing: -0.01em;
     text-decoration: none;
-    border: 1px solid transparent;
     white-space: nowrap;
     cursor: pointer;
-    transition: transform 140ms var(--ease-out);
+    transition: background-color 160ms ease, color 160ms ease, border-color 160ms ease;
   }
-  .btn:active { transform: scale(0.975); }
+  .btn-label { display: grid; line-height: 1.25; }
+  .btn-label > span:nth-child(2) { display: none; }
   .nav .btn { margin-left: auto; }
-  .btn-label { display: grid; overflow: hidden; line-height: 1.25; }
-  .btn-label > span {
-    grid-area: 1 / 1;
-    transition: transform 460ms cubic-bezier(.19, 1, .22, 1);
-  }
-  .btn-label > span:nth-child(2) { transform: translateY(115%); }
+  .btn.outline { background: transparent; border-color: var(--hairline); color: var(--ink); }
+
+  .btn.light { background: var(--ink); border-color: var(--ink); color: var(--paper); }
+
   @media (hover: hover) and (pointer: fine) {
-    .btn:hover .btn-label > span:nth-child(1) { transform: translateY(-115%); }
-    .btn:hover .btn-label > span:nth-child(2) { transform: translateY(0); }
-  }
-  .btn .arrow {
-    width: 30px; height: 30px;
-    flex: none;
-    border-radius: 50%;
-    display: grid;
-    place-items: center;
-    background: var(--accent-ink);
-    color: var(--accent);
-    overflow: hidden;
-    position: relative;
-  }
-  .btn .arrow svg {
-    grid-area: 1 / 1;
-    width: 12px; height: 12px;
-    display: block;
-    transition: transform 420ms cubic-bezier(.19, 1, .22, 1);
-  }
-  .btn .arrow svg:nth-child(2) { transform: translateX(-160%); }
-  @media (hover: hover) and (pointer: fine) {
-    .btn:hover .arrow svg:nth-child(1) { transform: translateX(160%); }
-    .btn:hover .arrow svg:nth-child(2) { transform: translateX(0); }
+    .btn:hover { background: transparent; color: var(--ink); }
+    .btn.outline:hover { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+    .btn.light:hover { background: transparent; border-color: var(--ink); color: var(--ink); }
   }
 
   /* ---------- page head ----------
@@ -232,9 +219,9 @@
      next; this one gets the same shape with its own thing to say. */
   .page-head {
     text-align: center;
-    max-width: 640px;
+    max-width: 720px;
     margin: 0 auto;
-    padding-top: var(--s-5);
+    padding-top: clamp(3.5rem, 9vw, 7.5rem);
   }
   /* h1, h2, h3 on the main site share one rule (weight 500, -0.035em
      tracking, 0.98 line-height); h2 there carries the clamp this heading
@@ -250,148 +237,96 @@
     margin: var(--s-3) auto 0;
   }
 
-  /* ---------- grid ---------- */
-
-  .grid {
+  /* ---------- case studies: the grid ----------
+     Two to a row (one on a phone). Each is a picture, then the client's
+     name with their trade as a small subheading under it, on the left.
+     The whole card links to that client's case study. A card with no
+     picture yet shows the plain --slot-1 ground. The same block is in
+     index.html and work/index.html. */
+  .wk-grid {
+    list-style: none; margin: 0; padding: 0;
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(215px, 1fr));
-    gap: var(--s-3);
-    padding-block: var(--s-4) var(--s-6);
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    --wk-gap: clamp(1rem, 2.4vw, 2rem);
+    gap: var(--s-5) var(--wk-gap);
   }
-
-  /* A card is a button, not a div with a click handler: this page is sent to
-     people who may well open it on a phone or drive it from the keyboard, and
-     play/pause is exactly what a button is for. */
-  .card {
-    appearance: none;
-    -webkit-appearance: none;
-    margin: 0;
-    padding: 0;
-    font: inherit;
-    color: inherit;
-    text-align: left;
-    cursor: pointer;
-
-    position: relative;
-    display: block;
-    width: 100%;
-    aspect-ratio: 9 / 16;
-    /* No resting border. A hairline of rgba(255,255,255,.13) reads as a pale
-       edge on every card, and worst on the corners where the radius stretches
-       it along the curve. The clip should meet the page directly. */
-    border: 0;
+  .wk { display: block; color: inherit; text-decoration: none; }
+  .wk-img {
+    position: relative; display: block;
+    aspect-ratio: 16 / 9;
     border-radius: var(--radius-sm);
-    background: var(--slot-1) center / cover no-repeat;
+    background: var(--slot-1);
     overflow: hidden;
-    isolation: isolate;   /* same reason as the home page: Safari will paint a
-                             <video> over its siblings unless the card owns its
-                             own stacking context */
-    transition: box-shadow 260ms var(--ease-out);
   }
-  /* The one card playing out loud, and only on click. A ring rather than a
-     border: box-shadow paints outside the box, so nothing about the card's
-     size or the video inside it changes when it turns on. */
-  .card.is-sound { box-shadow: 0 0 0 2px var(--accent); }
-
-  .card video {
-    position: absolute;
-    inset: 0;
-    z-index: 0;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
+  .wk-img img {
+    position: absolute; inset: 0;
+    width: 100%; height: 100%; object-fit: cover; object-position: 50% 40%;
     display: block;
-    /* Transparent, not var(--slot-1): the card's own background-image (the
-       same poster the video carries) is what shows through here before a
-       frame has decoded. Painting a solid colour on the video itself was
-       the flash on hover — the poster attribute stops covering the element
-       the moment play() is called, and playback has no frame ready yet, so
-       the video's own background showed through for a beat. */
-    background: transparent;
-    /* Hidden until it is genuinely playing, so what you see at rest is
-       always the chosen poster. Warming the clips in advance means the
-       element holds a decoded frame long before anyone asks to watch it,
-       and a browser paints that frame over the poster as soon as it has
-       one — frame zero of a clip that opens on a fade is black, and the
-       card would sit there looking broken. */
-    opacity: 0;
-    transition: opacity 200ms var(--ease-out);
+    transition: transform 700ms var(--ease-out);
   }
-  .card.is-live video { opacity: 1; }
+  .wk-text { display: block; margin-top: var(--s-2); text-align: left; }
+  .wk-name { display: block; margin: 0; font-size: clamp(1.125rem, 1.45vw, 1.375rem); font-weight: 500; letter-spacing: -0.02em; line-height: 1.2; }
+  .wk-trade {
+    display: block; margin-top: 4px;
+    font-size: var(--t-micro); font-weight: 600;
+    letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted);
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .wk:hover .wk-img img { transform: scale(1.03); }
+  }
+  .wk:focus-visible { outline: none; }
+  .wk:focus-visible .wk-img { outline: 2px solid var(--accent); outline-offset: 4px; }
+  /* three clients sit three across rather than two and an orphan; a fourth
+     puts it back to two by two on its own */
+  @media (min-width: 641px) {
+    .wk-grid:has(> li:nth-child(3):last-child) { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  }
+  @media (min-width: 641px) {
+    .wk-grid:not(:has(> li:nth-child(3):last-child)) > li:last-child:nth-child(odd) {
+      grid-column: 1 / -1; justify-self: center; width: calc(50% - var(--wk-gap) / 2);
+    }
+  }
+  @media (max-width: 640px) {
+    .wk-grid { grid-template-columns: minmax(0, 1fr); gap: var(--s-4); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .wk-img img { transition: none; }
+  }
 
-  /* name and trade, over a scrim so they stay legible whatever the clip does */
-  .meta {
-    position: absolute;
-    left: 0; right: 0; top: 0;
-    z-index: 2;
-    transform: translateZ(0);
-    padding: var(--s-2) var(--s-3) var(--s-4);
-    display: grid;
-    gap: 2px;
-    background: linear-gradient(to bottom, rgba(0, 0, 0, 0.62), transparent);
-    pointer-events: none;
-  }
-  .meta .name {
-    display: flex; align-items: center; gap: 6px;
-    font-size: 0.9375rem; font-weight: 500; letter-spacing: -0.02em; color: #fff;
-  }
-  .meta .tick { width: 13px; height: 13px; flex: none; }
-  .meta .trade { font-size: var(--t-small); color: rgba(255, 255, 255, 0.72); }
+  .wk-grid { padding-block: var(--s-5) var(--s-6); }
 
-  /* ---------- the play / sound affordance ----------
-     One control in the bottom-left that says what the card is doing: a play
-     triangle at rest, bars while it is playing with sound. It is the only
-     thing on the card that changes on click, so it carries the state.
-     Same material as the nav pill — blur plus saturation, not a flat tint —
-     so the control reads as glass sitting on the clip rather than a sticker
-     laid over it. */
-  .state {
-    position: absolute;
-    left: var(--s-2); bottom: var(--s-2);
-    z-index: 2;
-    transform: translateZ(0);
-    display: inline-flex; align-items: center;
-    width: 30px; height: 30px;
-    justify-content: center;
-    border-radius: 50%;
-    background: var(--nav-bg);
-    -webkit-backdrop-filter: blur(20px) saturate(190%);
-    box-shadow: 0 6px 20px -8px rgba(0, 0, 0, 0.6);
-    color: #fff;
-    pointer-events: none;
-    transition: background 220ms var(--ease-out), box-shadow 220ms var(--ease-out);
-  }
-  /* Lightning CSS folds two backdrop-filter declarations in one rule into
-     one — the standard property gets its own rule for that reason. */
-  .state { backdrop-filter: blur(20px) saturate(190%); }
-  .card.is-sound .state {
-    background: var(--accent);
-    color: var(--accent-ink);
-  }
-  .state svg { width: 13px; height: 13px; flex: none; display: block; }
-  .state .off { margin-left: 1px; }  /* the triangle's own weight sits left of centre; nudge it back */
-  .state .on  { display: none; }
-  .card.is-sound .state .off { display: none; }
-  .card.is-sound .state .on  { display: block; }
-
-  /* Muted hover preview gets its own quiet marker in the opposite corner, so
-     "moving but silent" never reads as "playing". */
-  .silent {
-    position: absolute;
-    right: var(--s-2); bottom: var(--s-2);
-    z-index: 2;
-    transform: translateZ(0);
-    padding: 5px 10px;
+  /* ---------- page pill ----------
+     The home hero's availability pill, naming the page instead. */
+  .avail {
+    display: inline-flex; align-items: center; gap: 9px;
+    padding: 7px 15px 7px 12px;
+    border: 1px solid var(--rule);
     border-radius: var(--radius-pill);
-    background: rgba(6, 13, 26, 0.72);
-    color: rgba(255, 255, 255, 0.8);
-    font-size: var(--t-micro);
-    pointer-events: none;
-    opacity: 0;
-    transition: opacity 200ms var(--ease-out);
+    font-size: var(--t-micro); font-weight: 600;
+    letter-spacing: 0.06em; text-transform: uppercase;
+    color: var(--muted);
+    margin: 0 0 var(--s-4);
   }
-  .card.is-preview .silent { opacity: 1; }
-  .card.is-sound .silent { opacity: 0 !important; }
+  .avail i {
+    position: relative;
+    width: 7px; height: 7px; border-radius: 50%;
+    background: var(--accent); flex: none;
+  }
+  .avail i::after {
+    content: "";
+    position: absolute; inset: 0;
+    border-radius: 50%;
+    background: var(--accent);
+    opacity: 0.5;
+    animation: availPing 2.4s cubic-bezier(0.16, 1, 0.3, 1) infinite;
+  }
+  @keyframes availPing {
+    0%   { transform: scale(1); opacity: 0.5; }
+    100% { transform: scale(3.2); opacity: 0; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .avail i::after { animation: none; opacity: 0; }
+  }
 
   /* ---------- closing panel (CTA + footer) ----------
      The home page's closing panel, copied rather than approximated: full
@@ -435,6 +370,9 @@
   .cta-part + .cta-part { margin-left: var(--s-3); }
   .rating-link {
     color: inherit;
+    /* a 44px-plus tap target on a phone without moving anything: the padding
+       grows the hit area, the negative margin gives the space back */
+    padding-block: 12px; margin-block: -12px;
     text-decoration: underline;
     text-decoration-color: var(--rule-2);
     text-underline-offset: 3px;
@@ -460,7 +398,7 @@
   .closing-foot .foot-copy { color: var(--muted); }
   .closing-foot a {
     color: inherit; text-decoration: none; transition: color 200ms ease;
-    display: inline-flex; align-items: center; min-height: 44px;
+    display: inline-flex; align-items: center; min-height: 44px; min-width: 44px; justify-content: center;
   }
   @media (hover: hover) and (pointer: fine) {
     .closing-foot a:hover { color: var(--ink); }
@@ -487,16 +425,29 @@
     .cta-note .cta-part + .cta-part { margin: 2px 0 0; }
     .closing-foot .foot-logo img { height: 27px; }
     .closing-foot { flex-direction: column; text-align: center; gap: var(--s-3); }
-    .closing-foot .foot-right { flex-direction: column; gap: var(--s-2); justify-content: center; }
+    .closing-foot .foot-right { flex-direction: column; gap: 0;   /* the links are already 44px tall; a gap on top made the footer a screen and a half */ justify-content: center; }
+    .closing-foot .foot-right > span { display: block; line-height: 44px; }   /* same rhythm as the links (not flex: that would eat the spaces in "© 2026 Tui Media") */
   }
 
-  @media (max-width: 520px) {
-    .grid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: var(--s-2); }
+  /* The menu is five links now and is centred in the pill, so below ~960px
+     it runs into the button. Hide it there; js/nav.js turns it into a menu
+     button beside "Book a free call" instead. */
+  @media (max-width: 960px) {
+    .nav-links { display: none; }
   }
+
 
   @media (prefers-reduced-motion: reduce) {
     * { animation: none !important; transition: none !important; }
   }
+
+  /* Lenis (js/smooth-scroll.js) drives the scrolling, so the browser's own
+     smooth scroll has to stand down or the two fight each other. */
+  html.lenis, html.lenis body { height: auto; }
+  .lenis.lenis-smooth { scroll-behavior: auto !important; }
+  .lenis.lenis-stopped { overflow: clip; }
+  .lenis.lenis-smooth iframe { pointer-events: none; }
+
 
   /* ---------- cursor ----------
      The home page's dot, so the pointer does not change on the way over
@@ -504,73 +455,70 @@
      button where an accent dot would vanish. Real pointers only. Same
      data URIs as index.html; if the dot changes there, it changes here. */
   @media (hover: hover) and (pointer: fine) {
-    html, a, button, .btn, .card, .wordmark {
+    html, a, button, .btn, .wordmark {
       cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'%3E%3Ccircle cx='8' cy='8' r='8' fill='%236E9BF7'/%3E%3C/svg%3E") 8 8, auto;
     }
-    .btn {
+    .btn.outline {
       cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'%3E%3Ccircle cx='8' cy='8' r='8' fill='%230A1428'/%3E%3C/svg%3E") 8 8, auto;
-    }
-    .btn .arrow {
-      cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'%3E%3Ccircle cx='8' cy='8' r='8' fill='%236E9BF7'/%3E%3C/svg%3E") 8 8, auto;
     }
   }
 </style>
 </head>
 <body>
 
-<!-- The Meta verified tick, defined once and referenced by every card. -->
-<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
-  <symbol id="tick" viewBox="0 0 84 84">
-    <path fill="#0064E0" fill-rule="evenodd" d="m50.4.47c1.79-.97,4.02-.37,5.08,1.36l4.99,8.17,9.57.24c2.03.05,3.67,1.69,3.72,3.72l.24,9.57,8.17,4.99c1.74,1.06,2.34,3.3,1.36,5.08l-4.58,8.4,4.58,8.4c.97,1.79.37,4.02-1.36,5.08l-8.17,4.99-.24,9.57c-.05,2.03-1.69,3.67-3.72,3.72l-9.57.24-4.99,8.17c-1.06,1.74-3.3,2.34-5.08,1.36l-8.4-4.58-8.4,4.58c-1.79.97-4.02.37-5.08-1.36l-4.99-8.17-9.57-.24c-2.03-.05-3.67-1.69-3.72-3.72l-.24-9.57-8.17-4.99c-1.74-1.06-2.34-3.3-1.36-5.08l4.58-8.4L.47,33.6c-.97-1.79-.37-4.02,1.36-5.08l8.17-4.99.24-9.57c.05-2.03,1.69-3.67,3.72-3.72l9.57-.24L28.51,1.83c1.06-1.74,3.3-2.34,5.08-1.36l8.4,4.58L50.4.47Zm9.31,34.92c1.62-1.35,1.84-3.76.49-5.38-1.35-1.62-3.76-1.84-5.38-.49l-.26.21c-6.64,5.54-12.84,11.59-18.52,18.1l-6.62-6.62c-1.49-1.49-3.91-1.49-5.4,0-1.49,1.49-1.49,3.91,0,5.4l9.55,9.55c.76.76,1.8,1.16,2.87,1.11,1.07-.05,2.07-.55,2.76-1.37l.21-.26c6.06-7.27,12.77-13.98,20.04-20.04l.26-.21Z"/>
-  </symbol>
-</svg>
+<div class="page-loader" data-page-loader data-first-paint aria-hidden="true">
+  <span class="page-loader__arc page-loader__arc--top"><i></i></span>
+  <span class="page-loader__arc page-loader__arc--bot"><i></i></span>
+  <i class="page-loader__icon"></i>
+</div>
 
 <div class="nav-wrap">
   <div class="nav">
     <a class="wordmark" href="/" aria-label="Tui Media, home"><i></i></a>
     <nav class="nav-links">
-      <a href="/#services"><span class="nav-label"><span>Services</span><span aria-hidden="true">Services</span></span></a>
-      <a href="/#fit"><span class="nav-label"><span>Fit</span><span aria-hidden="true">Fit</span></span></a>
-      <a href="/#process"><span class="nav-label"><span>Process</span><span aria-hidden="true">Process</span></span></a>
-      <a href="/#work"><span class="nav-label"><span>Work</span><span aria-hidden="true">Work</span></span></a>
-      <a href="/#about"><span class="nav-label"><span>About</span><span aria-hidden="true">About</span></span></a>
-      <a href="/#faq"><span class="nav-label"><span>Questions</span><span aria-hidden="true">Questions</span></span></a>
+      <a href="/monthly-content"><span class="nav-label"><span>Monthly content</span><span aria-hidden="true">Monthly content</span></span></a>
+      <a href="/video-ads"><span class="nav-label"><span>Video ads</span><span aria-hidden="true">Video ads</span></span></a>
+      <a href="/work" aria-current="page"><span class="nav-label"><span>Case studies</span><span aria-hidden="true">Case studies</span></span></a>
+      <a href="/about"><span class="nav-label"><span>About</span><span aria-hidden="true">About</span></span></a>
     </nav>
     <a class="btn" href="/#book">
       <span class="btn-label"><span>Book a free call</span><span aria-hidden="true">Book a free call</span></span>
-      <span class="arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h13M12 6l6 6-6 6"/></svg><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h13M12 6l6 6-6 6"/></svg></span>
     </a>
   </div>
 </div>
 
 <div class="wrap">
   <div class="page-head">
-    <h1>Featured work</h1>
-    <p class="lede">Ad campaigns and social content we've made for Nelson businesses. Real clips, not a reel, so click one and put the sound on.</p>
+    <p class="avail"><i></i><span>Case studies</span></p>
+    <h1>The work</h1>
+    <p class="lede">Builders, detailers, landscapers and a wildlife sanctuary. Pick one to see what we made.</p>
   </div>
 
-  <!-- Cards carry their clip on data-src rather than src: with no src there is
-       no request at all until the first play, so opening the page costs the
-       posters and nothing else. -->
-  <div class="grid" id="grid"></div>
+
+  <!-- One card per client, two to a row. Filled from CASES in the
+       script below. -->
+  <ul class="wk-grid" id="grid" aria-label="Case studies"></ul>
 </div>
 
 <div class="closing center" id="contact">
   <h2>Start with a 20&#8209;minute call.</h2>
-  <p class="lede">Free, and no pressure. We'll tell you straight whether we can help before you spend anything.</p>
+  <p class="lede">It's free. If we're not the right fit, we'll tell you on the call, before you've spent a cent.</p>
 
   <div class="btn-row">
     <a class="btn" href="/#book">
       <span class="btn-label"><span>Book my free call</span><span aria-hidden="true">Book my free call</span></span>
-      <span class="arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h13M12 6l6 6-6 6"/></svg><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h13M12 6l6 6-6 6"/></svg></span>
     </a>
   </div>
-  <p class="cta-note"><span class="cta-part"><span class="rating-stars" aria-hidden="true">&#9733;&#9733;&#9733;&#9733;&#9733;</span><a class="rating-link" href="https://share.google/I0Nl8jbacTLDWQb2e" target="_blank" rel="noopener noreferrer">5.0 from 12 Google reviews</a></span><span class="cta-part">Reply within one working day</span></p>
+  <p class="cta-note"><span class="cta-part"><span class="rating-stars" aria-hidden="true">&#9733;&#9733;&#9733;&#9733;&#9733;</span><a class="rating-link" href="https://share.google/I0Nl8jbacTLDWQb2e" target="_blank" rel="noopener noreferrer">5.0 from 14 Google reviews</a></span><span class="cta-part">Reply within one working day</span></p>
 
   <div class="closing-foot">
     <span class="foot-logo"><img src="/img/tui-wordmark.webp" alt="Tui Media" width="639" height="130" loading="lazy" decoding="async"></span>
     <div class="foot-right">
       <a href="/">Back to site</a>
+      <a href="/monthly-content">Monthly content</a>
+      <a href="/video-ads">Video ads</a>
+      <a href="/work">Case studies</a>
+      <a href="/about">About</a>
       <span>Nelson, New Zealand</span>
       <a href="mailto:hello@tuimedia.nz">hello@tuimedia.nz</a>
       <span class="foot-copy">&copy; <span data-year>2026</span> Tui Media</span>
@@ -578,33 +526,13 @@
   </div>
 </div>
 
+<script src="/js/cases.js?v=2"></script>
 <script>
 (function () {
   'use strict';
 
-  /* Newest first, then spread so the same business never sits in two cards
-     running next to each other. Two ATK Detailing clips, two Sky Automotive
-     clips and four Johnson Residential clips is most of the grid, and grouped they read as
-     "here is one client's reel" rather than "here is the work". Johnson
-     Residential, with the most clips, takes every third slot and the rest
-     fill in between, which keeps the newest clip in the lead slot and still
-     lands with no two neighbours the same. */
-  var WORK = [
-    { slug: 'johnson-residential-4', name: 'Johnson Residential',    trade: 'Residential building' },
-    { slug: 'sky-automotive-3',      name: 'Sky Automotive',         trade: 'New location' },
-    { slug: 'washrite',              name: 'Washrite',               trade: 'Exterior cleaning' },
-    { slug: 'johnson-residential-3', name: 'Johnson Residential',    trade: 'Residential building' },
-    { slug: 'nelson-english-center', name: 'Nelson English Center',  trade: 'English language school' },
-    { slug: 'atk-detailing-3',       name: 'ATK Detailing',          trade: 'Car detailing' },
-    { slug: 'johnson-residential-1', name: 'Johnson Residential',    trade: 'Residential building' },
-    { slug: 'sky-automotive-1',      name: 'Sky Automotive',         trade: 'Automotive servicing' },
-    { slug: 'nelson-city-framers-2', name: 'Nelson City Framers',    trade: 'Framing and construction' },
-    { slug: 'johnson-residential-2', name: 'Johnson Residential',    trade: 'Residential building' },
-    { slug: 'atk-detailing',         name: 'ATK Detailing',          trade: 'Car detailing' }
-  ];
-
-  var PLAY_ICON = '<svg class="off" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5.5v13l11-6.5z"/></svg>'
-                + '<svg class="on" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="5.5" y="4.5" width="4" height="15" rx="1.4"/><rect x="14.5" y="4.5" width="4" height="15" rx="1.4"/></svg>';
+  /* The case studies live in /js/cases.js, shared with /work/case/. */
+  var CASES = window.TUI_CASES || [];
 
   function esc(t) {
     return String(t).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
@@ -614,224 +542,38 @@
   if (yearEl) yearEl.textContent = new Date().getFullYear();
 
   var grid = document.getElementById('grid');
-  var html = WORK.map(function (w) {
-    return '<button class="card" type="button" data-slug="' + esc(w.slug) + '"'
-         + ' style="background-image:url(/media/work/' + esc(w.slug) + '-poster.webp)"'
-         + ' aria-label="Play ' + esc(w.name) + ', ' + esc(w.trade) + ', with sound">'
-         + '<video playsinline loop preload="none" muted'
-         + ' poster="/media/work/' + esc(w.slug) + '-poster.webp"'
-         + ' data-src="/media/work/' + esc(w.slug) + '.mp4"></video>'
-         + '<span class="meta">'
-         +   '<span class="name">' + esc(w.name) + '<svg class="tick" aria-label="Meta verified"><use href="#tick"></use></svg></span>'
-         +   '<span class="trade">' + esc(w.trade) + '</span>'
-         + '</span>'
-         + '<span class="state">' + PLAY_ICON + '</span>'
-         + '<span class="silent">Muted preview</span>'
-         + '</button>';
+  grid.innerHTML = CASES.filter(function (c) { return !c.hidden; }).map(function (c) {
+    var img = c.image
+      ? '<img src="' + esc(c.image) + '" alt="" width="608" height="1080" loading="lazy" decoding="async">'
+      : '';
+    return '<li id="' + c.slug + '"><a class="wk" href="/work/case/?client=' + c.slug + '">'
+         + '<span class="wk-img">' + img + '</span>'
+         + '<span class="wk-text"><span class="wk-name">' + esc(c.name) + '</span>'
+         + '<span class="wk-trade">' + esc(c.trade) + '</span></span>'
+         + '</a></li>';
   }).join('');
-  grid.innerHTML = html;
 
-  var cards = [].slice.call(grid.querySelectorAll('.card'));
-  /* The one card playing out loud. Only ever one — a grid of eleven clips all
-     talking over each other is the failure mode this page exists to avoid. */
-  var sound = null;
-
-  function video(card) { return card.querySelector('video'); }
-
-  /* ---- three levels of readiness -------------------------------------
-     The two failure modes here pull in opposite directions, and each fix
-     on its own causes the other.
-
-     Arming everything for playback at once was the first one: eleven clips
-     streaming against one connection, ~16MB pulled from a single sweep of
-     the pointer, and the clip you actually wanted queued behind ten you
-     did not. Arming nothing until the click was the second: the click then
-     paid for a connection, the container header and enough frames to
-     start, measured cold at 117ms to 862ms on a fast line and 1.6s to
-     reach metadata on a slow sample. That is the delay between pressing a
-     card and seeing it move.
-
-     So there are three states rather than two. Every card keeps its header
-     warm; only the card in use streams; a card just used stays warm a few
-     seconds in case it is used again. `preload="metadata"` turns out to
-     fetch about a second of video and then stop on its own, which is both
-     cheap (~250KB a clip) and, measured, enough to put time-from-click to
-     ready at zero. */
-
-  /* Header and a moment of video, then the browser stops by itself. */
-  function arm(v) {
-    if (v.src) return;
-    v.preload = 'metadata';
-    v.src = v.getAttribute('data-src');
-  }
-
-  /* Everything it needs to keep playing. */
-  function stream(v) {
-    v.preload = 'auto';
-    if (!v.src) v.src = v.getAttribute('data-src');
-  }
-
-  /* Drop the buffer and the connection, then re-arm: pausing a video does
-     not stop it downloading, and only clearing the source does. */
-  function cool(v) {
-    v.pause();
-    if (v.src) {
-      v.removeAttribute('src');
-      try { v.load(); } catch (err) {}
+  /* /work#johnson-residential: land on that client's card once the page is
+     laid out, just under the nav */
+  if (location.hash.length > 1) {
+    var target = document.getElementById(decodeURIComponent(location.hash.slice(1)));
+    if (target && grid.contains(target)) {
+      var land = function () {
+        var y = Math.max(0, target.getBoundingClientRect().top + window.pageYOffset - 100);
+        if (window.__lenis) window.__lenis.scrollTo(y, { immediate: true, force: true });
+        else window.scrollTo(0, y);
+      };
+      if (document.readyState === 'complete') land();
+      else window.addEventListener('load', land);
     }
-    arm(v);
   }
-
-  /* Warm the headers one at a time once the page is up. Sequentially, on
-     purpose: it is the concurrency that hurt, not the bytes, and a queue
-     of eleven small requests costs nothing anyone can feel. It waits for
-     the posters to land first, so the grid is never held up by the very
-     thing meant to make it feel quick. */
-  function warm(i) {
-    if (i >= cards.length) return;
-    var v = video(cards[i]);
-    if (v.src) return warm(i + 1);
-    var moved = false;
-    var next = function () { if (!moved) { moved = true; warm(i + 1); } };
-    v.addEventListener('loadedmetadata', next, { once: true });
-    v.addEventListener('error', next, { once: true });
-    setTimeout(next, 2000);   /* one slow file must not stall the queue */
-    arm(v);
-  }
-  if (document.readyState === 'complete') setTimeout(function () { warm(0); }, 300);
-  else window.addEventListener('load', function () { setTimeout(function () { warm(0); }, 300); });
-
-  function stop(card) {
-    if (!card) return;
-    var v = video(card);
-    cool(v);
-    v.muted = true;
-    card.classList.remove('is-sound', 'is-preview');
-  }
-
-  function preview(card) {
-    /* Silent, so it needs no gesture and cannot interrupt the card that is
-       actually playing out loud. */
-    if (sound) return;
-    var v = video(card);
-    clearTimeout(card.coolTimer);
-    stream(v);
-    v.muted = true;
-    card.classList.add('is-preview');
-    var p = v.play();
-    if (p) p.catch(function () { card.classList.remove('is-preview'); });
-  }
-
-  function endPreview(card) {
-    if (card === sound) return;
-    var v = video(card);
-    v.pause();
-    card.classList.remove('is-preview');
-    /* Hold what it buffered for a few seconds. Hovering a card and then
-       clicking it is the ordinary way to use this page, and that click
-       should not pay for the same bytes twice. After that it is dead
-       weight and goes back to being just a warm header. */
-    clearTimeout(card.coolTimer);
-    card.coolTimer = setTimeout(function () {
-      if (card !== sound) cool(v);
-    }, 5000);
-  }
-
-  function withSound(card) {
-    if (sound && sound !== card) stop(sound);
-    var v = video(card);
-    clearTimeout(card.coolTimer);
-    stream(v);
-    card.classList.remove('is-preview');
-    card.classList.add('is-sound');
-    sound = card;
-    /* Unmuting inside the click handler is what makes this allowed: the
-       gesture is still on the stack, so the autoplay policy lets the sound
-       through. Unmuting later — on canplay, say — does not get that. */
-    v.muted = false;
-    v.volume = 1;
-    var p = v.play();
-    if (p) p.catch(function () {
-      /* Blocked anyway (an iOS silent switch, a policy this page cannot see).
-         Fall back to a silent play rather than a dead card. */
-      v.muted = true;
-      card.classList.remove('is-sound');
-      card.classList.add('is-preview');
-      if (sound === card) sound = null;
-      v.play().catch(function () {});
-    });
-  }
-
-  cards.forEach(function (card) {
-    var v = video(card);
-
-    /* The video uncovers the poster only once frames are actually moving,
-       and covers it again the moment they stop. Driven by the element's own
-       events rather than by the click, so a clip that is still catching up
-       never shows a blank frame in place of the poster. */
-    v.addEventListener('playing', function () { card.classList.add('is-live'); });
-    /* Deliberately not 'waiting': a clip that stalls for a moment mid-play
-       should hold its last frame, not snap back to the poster and out
-       again. */
-    ['pause', 'emptied', 'ended'].forEach(function (ev) {
-      v.addEventListener(ev, function () { card.classList.remove('is-live'); });
-    });
-
-    /* Start pulling bytes on the press rather than the release. It is only
-       the length of a click, but it is free, and it costs nothing if the
-       press turns out to be the start of a scroll: this escalates what the
-       element is loading and never starts playback, which stays on click. */
-    card.addEventListener('pointerdown', function () {
-      if (card === sound) return;
-      clearTimeout(card.coolTimer);
-      stream(v);
-    });
-
-    card.addEventListener('click', function () {
-      if (card === sound) { stop(card); sound = null; return; }
-      withSound(card);
-    });
-
-    /* Hover previews are gated on a real pointer, so a tap on a phone does
-       not fire one on the way to the click. The delay is hover intent: moving
-       the pointer to the far side of the grid crosses three or four cards on
-       the way, and without it each of those crossings starts a download for
-       a clip nobody asked to see. */
-    if (window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
-      var dwell = null;
-      card.addEventListener('mouseenter', function () {
-        clearTimeout(dwell);
-        dwell = setTimeout(function () { preview(card); }, 160);
-      });
-      card.addEventListener('mouseleave', function () {
-        clearTimeout(dwell);
-        endPreview(card);
-      });
-    }
-
-    /* Keyboard focus is the other way to arrive at a card, and it should
-       behave like hover does: a look, not a commitment. */
-    card.addEventListener('focus', function () { preview(card); });
-    card.addEventListener('blur', function () { endPreview(card); });
-  });
-
-  /* Leaving the tab kills the sound; nobody wants a page they switched away
-     from still talking. */
-  document.addEventListener('visibilitychange', function () {
-    if (!document.hidden) return;
-    cards.forEach(function (c) { if (c !== sound) endPreview(c); });
-    if (sound) { video(sound).pause(); }
-  });
-
-  /* Escape stops whatever is playing out loud. */
-  document.addEventListener('keydown', function (e) {
-    if (e.key !== 'Escape' || !sound) return;
-    stop(sound);
-    sound = null;
-  });
 })();
 </script>
 
+<script defer src="/js/lenis.min.js"></script>
+<script defer src="/js/smooth-scroll.js"></script>
+<script defer src="/js/page-transition.js"></script>
+<script defer src="/js/nav.js?v=2"></script>
 <script defer src="/_vercel/insights/script.js"></script>
 
 </body>
