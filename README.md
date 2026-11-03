@@ -33,14 +33,14 @@ deployed on Vercel.
     in both. A client who isn't ready yet gets `hidden: true`; to bring them back,
     take it off and add their card to `index.html`.
     A client with stills rather than vertical clips (Brook Waimārama Sanctuary) lists
-    `stills` instead: landscape 16:9 pictures, `media/<name>.webp` at 1600 wide plus a
-    `-thumb.webp` at 1200 for the card. The first fills the page width, the rest sit
+    `stills` instead: landscape 16:9 pictures, `media/<name>.webp` at 2400 wide plus a
+    `-thumb.webp` at 1600 for the card. The first fills the page width, the rest sit
     two across (one on a phone).
   - The home page shows at most four case studies (Johnson Residential, ATK
     Detailing, Landscape Transformers, Brook Waimārama Sanctuary); `/work` shows
     every one in `js/cases.js`. Every case study has stills: landscape `stills`
     (16:9, the first as the hero) or, where the footage is vertical, `stillsTall`
-    (720x1280 grabs, caption-free frames from the clips, four across like the
+    (720x1280 grabs from the 4K masters, caption-free frames, four across like the
     video cards), then the client's videos if they have any.
   - `js/nav.js` — the menu on phones and tablets, loaded by every page. Above
     960px the page links sit in the nav pill; below it they used to be hidden
@@ -156,10 +156,14 @@ That rests on a few decisions worth not undoing:
 it.** `img/` and `media/` are cached for 30 days, so a changed picture needs a new
 filename (that's why the case study covers are `-cover.webp` and the cards
 `-thumb.webp`: the old `-poster`/`-card` files were replaced, and browsers held on to
-the soft versions). Scripts in `js/` are revalidated on every load
+the soft versions). The other way, used since the Nov 2026 quality pass, is a
+`?v=` on the URL: every still, card, cover, case clip, trail cut and the portrait
+is requested with `?v=3` (`?v=2` for `img/arlo-radford.webp`), set in `index.html`,
+`about/index.html`, `js/cases.js` and the `V` constant in `work/case/index.html`.
+Re-export under the same names and bump the number in those places. Scripts in `js/` are revalidated on every load
 (`max-age=0, must-revalidate`); they used to be cached for a day, which is how a
 browser could keep an old `js/cases.js` with no stills in it while the page around it
-had moved on. The pages load `js/cases.js?v=2` and `js/nav.js?v=2` to push past the
+had moved on. The pages load `js/cases.js?v=3` and `js/nav.js?v=2` to push past the
 copies cached under the old rule; bumping the number is only needed if that ever
 happens again.
 
@@ -173,16 +177,26 @@ ffmpeg -i in.mp4 -an -c:v libx264 -preset slow -crf 28 -profile:v high -level 4.
   -movflags +faststart out.mp4
 ```
 
-`media/work/` holds the vertical cuts with sound that the case study pages play,
-at 720x1280, CRF 24, 30fps, AAC 128k, each with a `-cover.webp`. The cover is a
-frame at 1s kept at the clip's full 720x1280 (WebP q76): the cards show it up to
-250px wide, which is 500+ real pixels on a phone, and the old half-size 360x640
-posters looked soft there. Don't shrink them. This is how the clips were made:
+**Where every picture comes from.** Never make a web file from another web file
+or from `videos-compressed/`: each extra generation of compression is what made
+the site look soft. The landscape stills are Arlo's 4K Resolve stills (3840x2160
+JPG), downscaled once: `media/<name>.webp` at 2400x1350 q88 and the card at
+1600x900 q88. The vertical stills, the ATK and Sky cards and the clip covers are
+frames from the 4K masters on the Extreme Pro (`<client>/…/04 Export` or
+`04 Final Renders`), not from the web clips. The founder portrait is
+`assets/about-arlo.jpg` at 1800 wide, q90.
+
+`media/work/` holds the cuts with sound that the case study pages play: vertical
+at 720x1280, CRF 22, 30fps, AAC 160k, encoded straight from the master, each with
+a `-cover.webp`. The cover is a frame at 1s at the clip's full 720x1280 (WebP
+q90): the cards show it up to 250px wide, which is 500+ real pixels on a phone.
+Don't shrink them. A 5:4 landscape cut (listed under `clipsWide`) is 1080x864,
+CRF 23, and sits two across under the vertical ones. This is how the clips are made:
 
 ```bash
-ffmpeg -i in.mp4 -c:v libx264 -preset slow -crf 24 -profile:v high -level 4.1 \
+ffmpeg -i master.mp4 -c:v libx264 -preset slow -crf 22 -profile:v high -level 4.1 \
   -pix_fmt yuv420p -vf "scale=720:1280:flags=lanczos" -r 30 -g 60 \
-  -c:a aac -b:a 128k -ac 2 -ar 48000 \
+  -c:a aac -b:a 160k -ac 2 -ar 48000 \
   -movflags +faststart media/work/out.mp4
 ```
 
@@ -194,15 +208,15 @@ trail plays the `clips` list in `index.html`, which only names clients that have
 case study; a new clip needs its cut here, under the same name:
 
 ```bash
-ffmpeg -ss 1 -t 4 -i media/in.mp4 -an -c:v libx264 -preset slow -crf 30 \
+ffmpeg -ss 1 -t 4 -i master.mp4 -an -c:v libx264 -preset slow -crf 26 \
   -profile:v high -level 3.1 -pix_fmt yuv420p \
   -vf "scale=264:-2:flags=lanczos,fps=24" -g 48 -movflags +faststart \
   media/trail/in.mp4
 ```
 
-Each trail cut also has a first-frame poster, `media/trail/in.webp`, at q70.
+Each trail cut also has a first-frame poster, `media/trail/in.webp`, at q85.
 
-Posters are a frame at 1s, half size, WebP q72. This ffmpeg has no webp
+Never export a poster or cover at half size. This ffmpeg has no webp
 encoder and `sips` only reads the format, so the frame comes out as PNG and
 Pillow converts it.
 

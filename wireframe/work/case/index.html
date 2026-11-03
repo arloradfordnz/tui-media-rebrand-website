@@ -30,6 +30,10 @@
     justify-content: center;
     gap: var(--s-3);
   }
+  /* 5:4 landscape cuts: up to two across, centred like the vertical row, never
+     cropped to the vertical card */
+  .case-clips.case-wide { grid-template-columns: repeat(auto-fit, minmax(260px, 480px)); }
+  .case-wide .clip { aspect-ratio: 5 / 4; }
   .clip {
     appearance: none; -webkit-appearance: none;
     margin: 0; padding: 0; border: 0;
@@ -144,6 +148,7 @@
     /* two across on a phone: big enough to see, small enough that a
        client's whole set is on one or two screens */
     .case-clips { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--s-2); }
+    .case-clips.case-wide { grid-template-columns: minmax(0, 1fr); }
     .case-stills { grid-template-columns: minmax(0, 1fr); gap: var(--s-2); }
     .clip-state { left: 10px; bottom: 10px; }
     .case-nav { flex-direction: column-reverse; align-items: flex-start; }
@@ -214,7 +219,7 @@
   </div>
 </div>
 
-<script src="/js/cases.js?v=2"></script>
+<script src="/js/cases.js?v=3"></script>
 <script>
 (function () {
   'use strict';
@@ -239,7 +244,12 @@
   document.querySelector('[data-case-name]').textContent = c.name;
   document.querySelector('[data-case-summary]').textContent = c.summary;
 
-  var clips = c.clips || [];
+  /* bumped whenever media is re-exported under the same names: media/ is
+     cached for 30 days, so a new ?v= is what makes browsers fetch it again */
+  var V = '?v=3';
+  var tallClips = c.clips || [];
+  var wideClips = c.clipsWide || [];
+  var clips = tallClips.concat(wideClips);
   var PLAY = '<svg class="play" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5.5v13l11-6.5z"/></svg>';
   var PAUSE = '<svg class="pause" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="6" y="5" width="4" height="14" rx="1.4"/><rect x="14" y="5" width="4" height="14" rx="1.4"/></svg>';
   function label(n, verb) {
@@ -247,9 +257,9 @@
   }
   function clipCard(name, n) {
     var base = '/media/work/' + encodeURIComponent(name);
-    return '<li><button class="clip" type="button" data-src="' + base + '.mp4"'
-         + ' style="background-image:url(' + base + '-cover.webp)" aria-label="' + esc(label(n, 'Play')) + '">'
-         + '<video playsinline preload="none" poster="' + base + '-cover.webp"></video>'
+    return '<li><button class="clip" type="button" data-src="' + base + '.mp4' + V + '"'
+         + ' style="background-image:url(' + base + '-cover.webp' + V + ')" aria-label="' + esc(label(n, 'Play')) + '">'
+         + '<video playsinline preload="none" poster="' + base + '-cover.webp' + V + '"></video>'
          + '<span class="clip-state">' + PLAY + PAUSE + '</span>'
          + '</button></li>';
   }
@@ -257,12 +267,12 @@
   var tall = c.stillsTall || [];
   function tallFig(name, n) {
     var alt = (c.altTall && c.altTall[n]) || (c.name + ', photo ' + (n + 1));
-    return '<li><img src="/media/' + encodeURIComponent(name) + '.webp" alt="' + esc(alt) + '" width="720" height="1280" loading="lazy" decoding="async"></li>';
+    return '<li><img src="/media/' + encodeURIComponent(name) + '.webp' + V + '" alt="' + esc(alt) + '" width="720" height="1280" loading="lazy" decoding="async"></li>';
   }
   var stills = c.stills || [];
   function stillFig(name, n) {
     var alt = (c.alt && c.alt[n]) || (c.name + ', photo ' + (n + 1));
-    return '<figure><img src="/media/' + encodeURIComponent(name) + '.webp" alt="' + esc(alt) + '" width="1600" height="900"'
+    return '<figure><img src="/media/' + encodeURIComponent(name) + '.webp' + V + '" alt="' + esc(alt) + '" width="2400" height="1350"'
          + (n === 0 ? ' fetchpriority="high"' : ' loading="lazy"') + ' decoding="async"></figure>';
   }
 
@@ -270,7 +280,9 @@
       (stills.length ? '<div class="case-stills">' + stills.map(stillFig).join('') + '</div>' : '')
     + (tall.length ? '<ul class="case-clips case-tall" aria-label="' + esc(c.name) + ' stills">' + tall.map(tallFig).join('') + '</ul>' : '')
     + (clips.length
-        ? '<ul class="case-clips" aria-label="' + esc(c.name) + ' videos">' + clips.map(clipCard).join('') + '</ul>'
+        ? (tallClips.length ? '<ul class="case-clips" aria-label="' + esc(c.name) + ' videos">' + tallClips.map(clipCard).join('') + '</ul>' : '')
+          + (wideClips.length ? '<ul class="case-clips case-wide" aria-label="' + esc(c.name) + ' landscape videos">'
+              + wideClips.map(function (name, n) { return clipCard(name, tallClips.length + n); }).join('') + '</ul>' : '')
           + '<p class="case-hint">Press play to watch with sound.</p>'
         : '')
     + '<dl class="case-facts">'
