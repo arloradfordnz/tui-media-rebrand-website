@@ -54,6 +54,10 @@ deployed on Vercel.
     pages at `/video-ads` and `/monthly-content`, linked from the cards in
     "Two ways to work together" and from the menu. Their book buttons go to `/?interest=ad#book`
     or `/?interest=monthly#book`, which opens the form with that option picked.
+  - `/monthly-content` runs: the packages, real client clips, who's filming,
+    then the questions. Keep the page's wording and order our own: it was
+    reworked in Nov 2026 because it had drifted too close to another
+    studio's retainer page.
   - Every page but the home page opens on the hero's pill naming the page
     (About, Monthly content, Video ads, Case studies) above its own headline.
   - Buttons, on every page: the label and nothing else, no arrow or icon. A
