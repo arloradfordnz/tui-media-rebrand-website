@@ -13,17 +13,19 @@
             Each name is a pair in media/work/: <name>.mp4 (720x1280 with
             sound) and <name>-poster.webp. Nothing downloads until a
             visitor taps one.
-   stills   landscape (16:9) pictures for a client who has stills rather than
-            vertical clips: media/<name>.webp (1600 wide) with a smaller
+   stills   landscape (16:9) pictures shown big at the top of the client's page
+            (a client can have stills, clips or both; the first still is the hero): media/<name>.webp (1600 wide) with a smaller
             media/<name>-card.webp for the card. Shown big on their page.
    hidden   true keeps a client off /work, out of "Next case study" and
             sends their page back to /work, until there's footage to show
             (nobody is hidden right now). To bring one back, take it off
             and put their card on the home page. */
 window.TUI_CASES = [
-  { slug: 'johnson-residential', image: '/media/johnson-residential-1-poster.webp', name: 'Johnson Residential', trade: 'Residential building',
+  { slug: 'johnson-residential', image: '/media/johnson-residential-still-1-card.webp', name: 'Johnson Residential', trade: 'Residential building',
     summary: "Videos from Johnson Residential's building sites, with the team on camera talking through their homes, from the concrete pour to the finished build.",
     made: 'Short vertical videos filmed on site, with the builders on camera and drone shots of the finished homes.',
+    stills: ['johnson-residential-still-1', 'johnson-residential-still-2', 'johnson-residential-still-3'],
+    alt: ['A Johnson Residential builder in a hi-vis vest and sunglasses talking to camera on a building site', 'A drone view of a timber-framed Johnson Residential build site in Nelson', 'A Johnson Residential builder standing in front of the site hoarding and scaffolding'],
     clips: ['johnson-residential-4', 'johnson-residential-3', 'johnson-residential-1', 'johnson-residential-2'] },
   { slug: 'atk-detailing', image: '/media/atk-detailing-poster.webp', name: 'ATK Detailing', trade: 'Car detailing',
     summary: "ATK Detailing's owner on camera, talking through the work and the protection they offer, with the detailing shown up close.",
