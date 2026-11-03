@@ -157,8 +157,10 @@ ffmpeg -i in.mp4 -an -c:v libx264 -preset slow -crf 28 -profile:v high -level 4.
 ```
 
 `media/work/` holds the vertical cuts with sound that the case study pages play,
-at 720x1280, CRF 24, 30fps, AAC 128k, each with a `-poster.webp`. This is how
-they were made:
+at 720x1280, CRF 24, 30fps, AAC 128k, each with a `-poster.webp`. The poster is a
+frame at 1s kept at the clip's full 720x1280 (WebP q76): the cards show it up to
+250px wide, which is 500+ real pixels on a phone, and the old half-size 360x640
+posters looked soft there. Don't shrink them. This is how the clips were made:
 
 ```bash
 ffmpeg -i in.mp4 -c:v libx264 -preset slow -crf 24 -profile:v high -level 4.1 \

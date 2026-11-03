@@ -76,11 +76,16 @@
   .clip.is-playing .clip-state { background: var(--accent); color: var(--accent-ink); }
   .clip.is-playing .clip-state .play { display: none; }
   .clip.is-playing .clip-state .pause { display: block; }
+  /* the video you pressed gets an accent edge for as long as it's the one playing */
+  .clip { box-shadow: 0 0 0 0 transparent; transition: box-shadow 220ms var(--ease-out); }
+  .clip.is-playing { box-shadow: 0 0 0 3px var(--accent); }
   .clip:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; }
+  .clip.is-playing:focus-visible { outline-offset: 7px; }   /* clear of the ring */
   /* landscape stills: the first fills the width, the rest sit two across */
   .case-stills { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--s-3); }
   .case-stills figure { margin: 0; grid-column: span 1; }
   .case-stills figure:first-child { grid-column: 1 / -1; }
+  @media (prefers-reduced-motion: reduce) { .clip { transition: none; } }
   .case-stills img {
     display: block; width: 100%; height: auto; aspect-ratio: 16 / 9; object-fit: cover;
     border-radius: var(--radius-sm); background: var(--slot-1);
