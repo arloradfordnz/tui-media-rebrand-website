@@ -15,23 +15,73 @@
 <link rel="stylesheet" href="/css/loader.css">
 <style>
   /* ---------- one case study ----------
-     The page head names the client, then one big 16:9 frame, the facts in
-     a row, the rest of the shots two to a row, and the next client. Every
-     frame is a placeholder until the landscape cuts exist: put an <img> or
-     a <video> inside a .case-shot and it fills the frame. */
-  .case-shot {
-    position: relative;
-    display: grid; place-items: center;
-    aspect-ratio: 16 / 9;
-    border-radius: var(--radius-sm);
-    background: var(--surface);
-    overflow: hidden;
-    color: var(--muted);
-    font-size: var(--t-micro); font-weight: 600;
-    letter-spacing: 0.08em; text-transform: uppercase;
+     The page head names the client, then their videos as a row of vertical
+     cards, the facts in a row, and the next client. The clips are the real
+     vertical cuts from media/work/ (720x1280, with sound), listed per
+     client in js/cases.js.
+
+     A card is a button: tap it and the clip plays with sound, tap again to
+     pause. One plays at a time, and nothing downloads until a card is
+     pressed, so the page costs the posters and nothing else. */
+  .case-clips {
+    list-style: none; margin: 0; padding: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 250px));
+    justify-content: center;
+    gap: var(--s-3);
   }
-  .case-shot img, .case-shot video {
-    position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block;
+  .clip {
+    appearance: none; -webkit-appearance: none;
+    margin: 0; padding: 0; border: 0;
+    font: inherit; color: inherit;
+    cursor: pointer;
+    position: relative; display: block; width: 100%;
+    aspect-ratio: 9 / 16;
+    border-radius: var(--radius-sm);
+    background: var(--slot-1) center / cover no-repeat;
+    overflow: hidden;
+    isolation: isolate;   /* Safari paints a <video> over its siblings unless
+                             the card owns its own stacking context */
+    -webkit-tap-highlight-color: transparent;
+  }
+  /* hidden until frames are actually moving, so the poster (painted on the
+     card behind it) is what shows at rest and while a clip loads, never a
+     black first frame */
+  .clip video {
+    position: absolute; inset: 0; z-index: 0;
+    width: 100%; height: 100%; object-fit: cover; display: block;
+    background: transparent;
+    opacity: 0;
+    transition: opacity 200ms var(--ease-out);
+  }
+  .clip.is-live video { opacity: 1; }
+  /* the one control, in the nav pill's glass: play at rest, pause while it
+     plays. 44px so it's a real thumb-sized target on its own. */
+  .clip-state {
+    position: absolute; left: 12px; bottom: 12px; z-index: 2;
+    transform: translateZ(0);
+    width: 44px; height: 44px; border-radius: 50%;
+    display: grid; place-items: center;
+    background: var(--nav-bg);
+    -webkit-backdrop-filter: blur(20px) saturate(190%);
+    box-shadow: 0 6px 20px -8px rgba(0, 0, 0, 0.6);
+    color: #fff;
+    pointer-events: none;
+    transition: background-color 200ms ease, color 200ms ease;
+  }
+  .clip-state { backdrop-filter: blur(20px) saturate(190%); }
+  .clip-state svg { width: 15px; height: 15px; display: block; }
+  .clip-state .play { margin-left: 2px; }   /* the triangle's weight sits left of centre */
+  .clip-state .pause { display: none; }
+  .clip.is-playing .clip-state { background: var(--accent); color: var(--accent-ink); }
+  .clip.is-playing .clip-state .play { display: none; }
+  .clip.is-playing .clip-state .pause { display: block; }
+  .clip:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; }
+  .case-hint {
+    margin-top: var(--s-2);
+    text-align: center;
+    font-size: var(--t-small);
+    color: var(--muted);
   }
   .case-facts {
     display: grid; grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -46,11 +96,6 @@
     color: var(--accent);
   }
   .case-facts dd { margin: var(--s-1) 0 0; font-size: 0.9375rem; line-height: 1.6; }
-  .case-gallery {
-    display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: var(--frame);
-    margin-top: var(--s-5);
-  }
   .case-nav {
     display: flex; justify-content: space-between; align-items: center; gap: var(--s-3);
     flex-wrap: wrap;
@@ -58,7 +103,10 @@
     padding-top: var(--s-4);
     border-top: 1px solid var(--rule);
   }
-  .case-back { color: var(--muted); text-decoration: none; font-size: 0.9375rem; }
+  .case-back {
+    color: var(--muted); text-decoration: none; font-size: 0.9375rem;
+    display: inline-flex; align-items: center; min-height: 44px;   /* thumb-sized on a phone */
+  }
   .case-next { text-align: right; text-decoration: none; color: var(--ink); }
   .case-next span {
     display: block;
@@ -77,7 +125,10 @@
   }
   @media (max-width: 700px) {
     .case-facts { grid-template-columns: 1fr; gap: var(--s-3); }
-    .case-gallery { grid-template-columns: 1fr; }
+    /* two across on a phone: big enough to see, small enough that a
+       client's whole set is on one or two screens */
+    .case-clips { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--s-2); }
+    .clip-state { left: 10px; bottom: 10px; }
     .case-nav { flex-direction: column-reverse; align-items: flex-start; }
     .case-next { text-align: left; }
   }
@@ -160,38 +211,119 @@
   var slug = new URLSearchParams(location.search).get('client');
   var i = -1;
   CASES.forEach(function (c, n) { if (c.slug === slug) i = n; });
-  /* an unknown or missing client goes back to the list rather than
-     showing an empty page */
-  if (i < 0) { location.replace('/work'); return; }
+  /* an unknown or missing client, or one held back until their footage
+     exists, goes back to the list rather than showing an empty page */
+  if (i < 0 || CASES[i].hidden) { location.replace('/work'); return; }
 
   var c = CASES[i];
-  var next = CASES[(i + 1) % CASES.length];
+  var shown = CASES.filter(function (x) { return !x.hidden; });
+  var next = shown[(shown.indexOf(c) + 1) % shown.length];
   document.title = c.name + ' | Tui Media';
   document.querySelector('[data-case-name]').textContent = c.name;
   document.querySelector('[data-case-summary]').textContent = c.summary;
 
-  function shot(n) { return '<div class="case-shot">' + esc(c.name) + ' &middot; 0' + n + '</div>'; }
-  var gallery = '';
-  for (var n = 2; n <= Math.max(c.shots, 1); n++) gallery += shot(n);
+  var clips = c.clips || [];
+  var PLAY = '<svg class="play" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5.5v13l11-6.5z"/></svg>';
+  var PAUSE = '<svg class="pause" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="6" y="5" width="4" height="14" rx="1.4"/><rect x="14" y="5" width="4" height="14" rx="1.4"/></svg>';
+  function label(n, verb) {
+    return verb + ' video ' + (n + 1) + ' of ' + clips.length + (verb === 'Play' ? ', with sound' : '');
+  }
+  function clipCard(name, n) {
+    var base = '/media/work/' + encodeURIComponent(name);
+    return '<li><button class="clip" type="button" data-src="' + base + '.mp4"'
+         + ' style="background-image:url(' + base + '-poster.webp)" aria-label="' + esc(label(n, 'Play')) + '">'
+         + '<video playsinline preload="none" poster="' + base + '-poster.webp"></video>'
+         + '<span class="clip-state">' + PLAY + PAUSE + '</span>'
+         + '</button></li>';
+  }
 
   document.querySelector('[data-case]').innerHTML =
-      shot(1)
+      (clips.length
+        ? '<ul class="case-clips" aria-label="' + esc(c.name) + ' videos">' + clips.map(clipCard).join('') + '</ul>'
+          + '<p class="case-hint">Press play to watch with sound.</p>'
+        : '')
     + '<dl class="case-facts">'
     +   '<div><dt>Client</dt><dd>' + esc(c.name) + '</dd></div>'
     +   '<div><dt>Industry</dt><dd>' + esc(c.trade) + '</dd></div>'
     +   (c.made ? '<div><dt>What we made</dt><dd>' + esc(c.made) + '</dd></div>' : '')
     + '</dl>'
-    + (gallery ? '<div class="case-gallery">' + gallery + '</div>' : '')
     + '<nav class="case-nav" aria-label="Case studies">'
     +   '<a class="case-back" href="/work">All case studies</a>'
     +   (next !== c ? '<a class="case-next" href="/work/case/?client=' + next.slug + '"><span>Next case study</span><b>' + esc(next.name) + '</b></a>' : '')
     + '</nav>';
+
+  /* ---- the clips ------------------------------------------------------
+     One plays at a time, with sound. Starting another fully unloads the
+     last one, since a paused video keeps downloading and this page is
+     mostly opened on a phone. Leaving the tab or pressing Escape pauses. */
+  var playing = null;
+
+  function unload(card) {
+    var v = card.querySelector('video');
+    v.pause();
+    if (v.getAttribute('src')) { v.removeAttribute('src'); try { v.load(); } catch (err) {} }
+  }
+
+  [].slice.call(document.querySelectorAll('.clip')).forEach(function (card, n) {
+    var v = card.querySelector('video');
+
+    function load() {
+      if (v.getAttribute('src')) return;
+      v.preload = 'auto';
+      v.src = card.getAttribute('data-src');
+    }
+    function state(on) {
+      card.classList.toggle('is-playing', on);
+      card.setAttribute('aria-label', label(n, on ? 'Pause' : 'Play'));
+      if (on) playing = card;
+      else if (playing === card) playing = null;
+    }
+
+    /* the poster gives way only once frames are moving */
+    v.addEventListener('playing', function () { card.classList.add('is-live'); state(true); });
+    v.addEventListener('pause', function () { state(false); });
+    v.addEventListener('emptied', function () { card.classList.remove('is-live'); state(false); });
+    v.addEventListener('ended', function () { card.classList.remove('is-live'); state(false); v.currentTime = 0; });
+
+    /* start fetching on the press, not the release: free, and it's the
+       difference between a tap that plays and one that seems to hang */
+    card.addEventListener('pointerdown', load);
+
+    card.addEventListener('click', function () {
+      if (!v.paused) { v.pause(); return; }
+      if (playing && playing !== card) unload(playing);
+      load();
+      state(true);   /* show it's started straight away, even while it loads */
+      /* unmuted inside the tap, which is what lets the sound through */
+      v.muted = false;
+      var p = v.play();
+      if (p) p.catch(function (err) {
+        /* blocked from playing out loud (an iPhone on silent can do this):
+           play it muted rather than leave a dead card. A pause that landed
+           while it was still loading is not an error worth retrying. */
+        if (err && err.name === 'NotAllowedError') {
+          v.muted = true;
+          v.play().catch(function () { state(false); });
+        } else if (v.paused) {
+          state(false);
+        }
+      });
+    });
+  });
+
+  document.addEventListener('visibilitychange', function () {
+    if (document.hidden && playing) playing.querySelector('video').pause();
+  });
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape' && playing) playing.querySelector('video').pause();
+  });
 })();
 </script>
 
 <script defer src="/js/lenis.min.js"></script>
 <script defer src="/js/smooth-scroll.js"></script>
 <script defer src="/js/page-transition.js"></script>
+<script defer src="/js/nav.js"></script>
 <script defer src="/_vercel/insights/script.js"></script>
 </body>
 </html>

@@ -11,21 +11,32 @@ deployed on Vercel.
   setting in the Vercel project at the same time.
   - `index.html` — the whole site: markup, styles and script in one file.
   - `work/index.html` — every case study at `/work`, linked from the menu, the
-    footer and the home page's case studies: Johnson Residential, ATK Detailing,
-    Landscape Transformers and Sky Automotive, from `js/cases.js`.
-    Laid out as a grid, two to a row (one on a phone): each client's picture
+    footer and the home page's case studies: Johnson Residential, ATK Detailing
+    and Sky Automotive, from `js/cases.js`. (Landscape Transformers is in there
+    too, marked `hidden: true` until it has footage.)
+    Laid out as a grid, two to a row (one on a phone), or three across when
+    there are exactly three, so nothing sits on its own: each client's picture
     with their name and trade under it on the left, linking to their case
     study. `/work#client-name` lands on that client's card. The home page has
     the same grid.
   - `work/case/index.html` — one case study at a time, at
-    `/work/case/?client=atk-detailing`. Clicking a shot on the home page or `/work`
-    opens it. The client's name and summary, one big 16:9 frame, a row of facts
-    (client, industry, what we made), the rest of the shots two to a row, then a
-    link back to the list and on to the next client. An unknown client goes back
+    `/work/case/?client=atk-detailing`. Clicking a card on the home page or `/work`
+    opens it. The client's name and summary, then their videos as vertical cards
+    (four across on a desktop, two on a phone): tap one and it plays with sound,
+    tap again to pause, one at a time, and nothing downloads until a card is
+    tapped. Then a row of facts (client, industry, what we made), and a link back
+    to the list and on to the next client. An unknown or hidden client goes back
     to `/work`.
   - `js/cases.js` — the case studies themselves, read by `/work` and
-    `/work/case/`. The home page's four are written into `index.html` by hand, so
-    a new client goes in both.
+    `/work/case/`, including each client's `clips` (names in `media/work/`). The
+    home page's cards are written into `index.html` by hand, so a new client goes
+    in both. To bring Landscape Transformers back: put its clips in `media/work/`,
+    list them, take `hidden: true` off, and uncomment its card in `index.html`.
+  - `js/nav.js` — the menu on phones and tablets, loaded by every page. Above
+    960px the page links sit in the nav pill; below it they used to be hidden
+    with nothing in their place. Now a round menu button sits beside "Book a free
+    call" and opens the same links as a panel. The script adds both the button
+    and its styles, so a page with script off keeps the plain bar.
   - `video-ads/index.html` and `monthly-content/index.html` — the two service
     pages at `/video-ads` and `/monthly-content`, linked from the cards in
     "Two ways to work together" and from the menu. Their book buttons go to `/?interest=ad#book`
@@ -107,8 +118,7 @@ That rests on a few decisions worth not undoing:
 - **The home page's case studies** are a grid of cards, two to a row, the same
   as `/work`: a picture, then the client's name and trade under it, linking to
   that client's case study. The pictures are the vertical poster frames from
-  `media/`, cropped to 16:9 and lazy-loaded; Landscape Transformers has none yet
-  and shows the plain ground. When landscape stills exist, swap the `src` in
+  `media/`, cropped to 16:9 and lazy-loaded. When landscape stills exist, swap the `src` in
   `index.html` and the `image` in `js/cases.js`. Keep them still images, not
   video. Nothing on the home page plays by itself, so a first load fetches no clips. (The hero's pointer
   trail is the one exception, and it only starts once the mouse enters the hero.)
@@ -117,7 +127,12 @@ That rests on a few decisions worth not undoing:
 - **Every `<img>` carries `width` and `height`,** so nothing shifts as the
   logos and the portrait decode.
 - **The font is self-hosted** and the latin subset is preloaded. Google Fonts cost
-  two extra connections and a chained request on the critical path.
+  two extra connections and a chained request on the critical path. At 77KB it's
+  the slowest part of first paint on a phone, and it was looked at: it carries
+  two variable axes (optical size, used by the headings, and weight). Trimming
+  the weights to the 400–700 the site uses saves 5%, dropping unused OpenType
+  features 8%, both together about 10KB. Not worth a font that renders
+  differently, so it ships as it came.
 - **`vercel.json` sets the cache headers.** Vercel's default for static files is
   `max-age=0, must-revalidate` — every asset revalidated on every visit. Fonts are
   immutable for a year; `img/` and `media/` are cached 30 days with
@@ -134,9 +149,9 @@ ffmpeg -i in.mp4 -an -c:v libx264 -preset slow -crf 28 -profile:v high -level 4.
   -movflags +faststart out.mp4
 ```
 
-`media/work/` holds the vertical cuts with sound that `/work` used to play, at
-720x1280, CRF 24, 30fps, AAC 128k. Nothing shows them while the case studies are
-landscape placeholders; this is how they were made:
+`media/work/` holds the vertical cuts with sound that the case study pages play,
+at 720x1280, CRF 24, 30fps, AAC 128k, each with a `-poster.webp`. This is how
+they were made:
 
 ```bash
 ffmpeg -i in.mp4 -c:v libx264 -preset slow -crf 24 -profile:v high -level 4.1 \

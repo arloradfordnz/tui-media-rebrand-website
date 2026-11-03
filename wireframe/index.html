@@ -480,12 +480,13 @@
      slides, moves or scales. */
   .btn {
     display: inline-flex;
+    font-family: inherit;   /* a <button class="btn"> (the form's submit) otherwise falls back to the browser's own font */
     align-items: center;
     justify-content: center;
     height: 44px;
     padding: 0 1.3rem;
     border-radius: var(--radius-pill);
-    border: 1px solid var(--accent);
+    border: 2px solid var(--accent);   /* 2px, so outline buttons read clearly; on every button so hover changes colour only, never size */
     background: var(--accent);
     color: var(--accent-ink);
     font-size: 0.9375rem;
@@ -944,6 +945,11 @@
   }
   .wk:focus-visible { outline: none; }
   .wk:focus-visible .wk-img { outline: 2px solid var(--accent); outline-offset: 4px; }
+  /* three clients sit three across rather than two and an orphan; a fourth
+     puts it back to two by two on its own */
+  @media (min-width: 641px) {
+    .wk-grid:has(> li:nth-child(3):last-child) { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  }
   @media (max-width: 640px) {
     .wk-grid { grid-template-columns: minmax(0, 1fr); gap: var(--s-4); }
   }
@@ -1097,7 +1103,7 @@
     color: inherit; text-decoration: none; transition: color 200ms ease;
     /* inline-flex + min-height so the footer links are a thumb-sized
        target on a phone rather than a 20px-tall line of text */
-    display: inline-flex; align-items: center; min-height: 44px;
+    display: inline-flex; align-items: center; min-height: 44px; min-width: 44px; justify-content: center;
   }
   @media (hover: hover) and (pointer: fine) {
     .closing-foot a:hover { color: var(--ink); }
@@ -1911,6 +1917,9 @@
      reference, not compete with the button above it */
   .rating-link {
     color: inherit;
+    /* a 44px-plus tap target on a phone without moving anything: the padding
+       grows the hit area, the negative margin gives the space back */
+    padding-block: 12px; margin-block: -12px;
     text-decoration: underline;
     text-decoration-color: var(--rule-2);
     text-underline-offset: 3px;
@@ -1957,11 +1966,9 @@
     .two-up { grid-template-columns: 1fr; }
   }
 
-  /* No phone menu: on a narrow screen the nav is the mark and the one
-     action worth taking. The six destinations are all reachable by
-     scrolling this single page, and they are listed again in the footer,
-     so a burger was buying navigation nobody needed at the cost of the
-     only tap that matters. */
+  /* Below 960px the page links leave the bar and js/nav.js puts a menu
+     button beside "Book a free call" that opens them as a panel. The
+     booking button stays the biggest thing in the bar. */
 
   @media (max-width: 620px) {
     .avail { letter-spacing: 0.04em; }
@@ -1978,7 +1985,8 @@
     .btn-row { width: 100%; justify-content: center; }
     .logo-item { height: 34px; max-width: 140px; }
     .closing-foot { flex-direction: column; text-align: center; gap: var(--s-3); }
-    .closing-foot .foot-right { flex-direction: column; gap: var(--s-2); justify-content: center; }
+    .closing-foot .foot-right { flex-direction: column; gap: 0;   /* the links are already 44px tall; a gap on top made the footer a screen and a half */ justify-content: center; }
+    .closing-foot .foot-right > span { display: block; line-height: 44px; }   /* same rhythm as the links (not flex: that would eat the spaces in "© 2026 Tui Media") */
     .faq-a { padding-right: 0; }
     .split { grid-template-columns: 1fr; }
     .closing { padding-inline: var(--s-3); }
@@ -2015,7 +2023,8 @@
   }
 
   /* The menu is five links now and is centred in the pill, so below ~960px
-     it runs into the button. Hide it there, the same as on a phone. */
+     it runs into the button. Hide it there; js/nav.js turns it into a menu
+     button beside "Book a free call" instead. */
   @media (max-width: 960px) {
     .nav-links { display: none; }
   }
@@ -2405,12 +2414,15 @@
           <span class="wk-text"><span class="wk-name">ATK Detailing</span><span class="wk-trade">Car detailing</span></span>
         </a>
       </li>
+      <!-- Landscape Transformers is off until there's footage to show (an
+           empty card read as broken). Put it back here, with its poster in
+           the wk-img, and take hidden: true off it in js/cases.js:
       <li>
         <a class="wk" href="/work/case/?client=landscape-transformers">
-          <span class="wk-img"></span>
+          <span class="wk-img"><img src="..." alt="" width="608" height="1080" loading="lazy" decoding="async"></span>
           <span class="wk-text"><span class="wk-name">Landscape Transformers</span><span class="wk-trade">Landscaping</span></span>
         </a>
-      </li>
+      </li> -->
       <li>
         <a class="wk" href="/work/case/?client=sky-automotive">
           <span class="wk-img"><img src="/media/sky-automotive-1-poster.webp" alt="" width="608" height="1080" loading="lazy" decoding="async"></span>
@@ -3874,6 +3886,7 @@
 <script defer src="/js/lenis.min.js"></script>
 <script defer src="/js/smooth-scroll.js"></script>
 <script defer src="/js/page-transition.js"></script>
+<script defer src="/js/nav.js"></script>
 <script defer src="/_vercel/insights/script.js"></script>
 
 </body>
