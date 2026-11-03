@@ -29,7 +29,8 @@
     +   '.nav-menu{display:grid;place-items:center;flex:none;width:44px;height:44px;margin:0 0 0 auto;padding:0;'
     +     'border:2px solid var(--hairline,rgba(239,242,248,.22));border-radius:50%;background:transparent;color:var(--ink);'
     +     'cursor:pointer;-webkit-tap-highlight-color:transparent;transition:border-color 160ms ease,background-color 160ms ease}'
-    +   '.nav-menu~.btn{margin-left:0}'
+    +   '.nav.is-open .nav-links a.btn{justify-content:center;min-height:48px;height:48px;margin:6px 0 0;padding:0 1.3rem;border-radius:999px;background:var(--accent);color:var(--accent-ink);font-size:1rem;font-weight:600}'
+    +   '.nav.is-open .nav-links a.btn:hover{background:transparent;color:var(--ink)}'
     +   '.nav-menu i{position:relative;display:block;width:16px;height:10px}'
     +   '.nav-menu i::before,.nav-menu i::after{content:"";position:absolute;left:0;right:0;height:2px;border-radius:2px;background:currentColor;'
     +     'transition:transform 220ms var(--ease-out,ease),top 220ms var(--ease-out,ease)}'
@@ -82,8 +83,20 @@
   document.addEventListener('pointerdown', function (e) {
     if (nav.classList.contains('is-open') && !nav.contains(e.target)) set(false);
   });
+  /* The booking button leaves the bar on phones and tablets and lives only in
+     the menu panel; the bar is then just the mark and the menu button. It is
+     the same element, moved rather than copied, so the home page's script
+     still turns it into "Back to site" on the form. On a wide screen it goes
+     back to the end of the bar. Without this script it never moves. */
+  var cta = nav.querySelector(':scope > .btn');
+  function placeCta() {
+    if (!cta) return;
+    if (wide.matches) { if (cta.parentNode !== nav) nav.appendChild(cta); }
+    else if (cta.parentNode !== links) links.appendChild(cta);
+  }
   var wide = window.matchMedia('(min-width: 961px)');
-  var onWide = function () { if (wide.matches) set(false); };
+  placeCta();
+  var onWide = function () { placeCta(); if (wide.matches) set(false); };
   if (wide.addEventListener) wide.addEventListener('change', onWide);
   else if (wide.addListener) wide.addListener(onWide);
   /* back from another page through the back/forward cache: closed */

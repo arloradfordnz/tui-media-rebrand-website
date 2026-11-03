@@ -34,9 +34,12 @@ deployed on Vercel.
     list them, take `hidden: true` off, and uncomment its card in `index.html`.
   - `js/nav.js` — the menu on phones and tablets, loaded by every page. Above
     960px the page links sit in the nav pill; below it they used to be hidden
-    with nothing in their place. Now a round menu button sits beside "Book a free
-    call" and opens the same links as a panel. The script adds both the button
-    and its styles, so a page with script off keeps the plain bar.
+    with nothing in their place. Now a round menu button opens the same links as a
+    panel, and "Book a free call" moves out of the bar into the bottom of that
+    panel (the same element, moved, so the home page can still turn it into "Back
+    to site" on the form). On a wide screen it goes back to the end of the bar. The
+    script adds the button and its styles, so a page with script off keeps the
+    plain bar with the booking button in it.
   - `video-ads/index.html` and `monthly-content/index.html` — the two service
     pages at `/video-ads` and `/monthly-content`, linked from the cards in
     "Two ways to work together" and from the menu. Their book buttons go to `/?interest=ad#book`

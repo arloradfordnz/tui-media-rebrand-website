@@ -1983,6 +1983,8 @@
        label pinned left and the arrow pinned right reads like a list row,
        not a button */
     .btn-row { width: 100%; justify-content: center; }
+    /* ...except in the offer cards, where the button sits under left-aligned text */
+    .way-card .btn-row { justify-content: flex-start; }
     .logo-item { height: 34px; max-width: 140px; }
     .closing-foot { flex-direction: column; text-align: center; gap: var(--s-3); }
     .closing-foot .foot-right { flex-direction: column; gap: 0;   /* the links are already 44px tall; a gap on top made the footer a screen and a half */ justify-content: center; }
