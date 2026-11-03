@@ -56,6 +56,7 @@
 
 * { box-sizing: border-box; }
 html { -webkit-text-size-adjust: 100%; }
+html { background: var(--paper); }
 body {
   margin: 0;
   background: var(--paper);
@@ -682,16 +683,27 @@ html.lenis, html.lenis body { height: auto; }
     display: flex; align-items: center; justify-content: space-between; gap: var(--s-2);
     padding: 6px 6px 6px var(--s-3);
     border-radius: var(--radius-pill);
-    /* more solid than the nav's glass: it sits over prices and lists, and
-       those must not read through it */
-    background: rgba(15, 25, 48, 0.88);
-    -webkit-backdrop-filter: blur(30px) saturate(190%);
-    box-shadow: 0 10px 34px -10px rgba(0, 0, 0, 0.6), 0 0 0 1px var(--rule);
     transform: translateY(calc(100% + 2 * var(--frame)));
     transition: transform 320ms var(--ease-out);
   }
-  .sticky-book { backdrop-filter: blur(30px) saturate(190%); }
+  /* Safari on iOS 26 reads the background and backdrop-filter of a fixed
+     element near the bottom edge and paints a solid band behind its own
+     toolbar, so the page stops above it. The bar itself stays transparent:
+     its glass is drawn by this pseudo-element, which Safari doesn't read.
+     More solid than the nav's glass: it sits over prices and lists, and
+     those must not read through it. */
+  .sticky-book::before {
+    content: ""; position: absolute; inset: 0; z-index: -1;
+    border-radius: inherit;
+    background: rgba(15, 25, 48, 0.88);
+    -webkit-backdrop-filter: blur(30px) saturate(190%);
+    backdrop-filter: blur(30px) saturate(190%);
+    box-shadow: 0 10px 34px -10px rgba(0, 0, 0, 0.6), 0 0 0 1px var(--rule);
+  }
   .sticky-book.is-on { transform: none; }
+  /* and while it's down, it's out of the page altogether (the script
+     takes this off a frame before it slides up) */
+  .sticky-book.is-gone { display: none; }
   .sticky-what { display: grid; line-height: 1.25; min-width: 0; }
   .sticky-what b { font-weight: 600; font-size: 0.9375rem; }
   .sticky-what span { font-size: var(--t-small); color: var(--muted); white-space: nowrap; }

@@ -465,7 +465,7 @@
           <li><b>5.0</b> from 14 Google reviews</li>
         </ul>
         <div class="btn-row">
-          <a class="btn outline" href="/about">
+          <a class="btn" href="/about">
             <span class="btn-label"><span>More about me</span><span aria-hidden="true">More about me</span></span>
           </a>
         </div>
@@ -549,7 +549,7 @@
 <!-- phones only: a bar that follows you down the packages with the one
      you've picked and a way to book it. Shown once the page head has
      scrolled away, and out of the way again at the closing panel. -->
-<div class="sticky-book" data-sticky aria-hidden="true">
+<div class="sticky-book is-gone" data-sticky aria-hidden="true">
   <div class="sticky-what"><b data-sticky-name>Core</b><span data-sticky-price>$850 a month</span></div>
   <a class="btn" href="/?interest=monthly&amp;package=core&amp;billing=monthly#book" data-sticky-link tabindex="-1">
     <span class="btn-label"><span>Book a call</span><span aria-hidden="true">Book a call</span></span>
@@ -687,9 +687,22 @@
   if (bar && 'IntersectionObserver' in window) {
     var headGone = false, closingIn = false;
     var link = bar.querySelector('[data-sticky-link]');
+    /* down, it's taken out of the page (display: none) once it has slid
+       away, so Safari on iOS 26 doesn't paint a band behind its toolbar */
+    var goneTimer = 0, wasOn = false;
     var show = function () {
       var on = headGone && !closingIn;
-      bar.classList.toggle('is-on', on);
+      if (on === wasOn) return;
+      wasOn = on;
+      clearTimeout(goneTimer);
+      if (on) {
+        bar.classList.remove('is-gone');
+        void bar.offsetWidth;   /* let it land below the edge before it slides up */
+        bar.classList.add('is-on');
+      } else {
+        bar.classList.remove('is-on');
+        goneTimer = setTimeout(function () { bar.classList.add('is-gone'); }, 340);
+      }
       bar.setAttribute('aria-hidden', on ? 'false' : 'true');
       link.tabIndex = on ? 0 : -1;
     };
