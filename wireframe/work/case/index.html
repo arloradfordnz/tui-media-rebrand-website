@@ -15,25 +15,15 @@
 <link rel="stylesheet" href="/css/loader.css">
 <style>
   /* ---------- one case study ----------
-     The page head names the client, then their videos as a row of vertical
-     cards, the facts in a row, and the next client. The clips are the real
+     The page head names the client, then the hero still, the overview,
+     the results, the videos, the rest of the stills, and the next client
+     (each section only when the client has it). The clips are the real
      vertical cuts from media/work/ (720x1280, with sound), listed per
      client in js/cases.js.
 
      A card is a button: tap it and the clip plays with sound, tap again to
      pause. One plays at a time, and nothing downloads until a card is
      pressed, so the page costs the posters and nothing else. */
-  .case-clips {
-    list-style: none; margin: 0; padding: 0;
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(180px, 250px));
-    justify-content: center;
-    gap: var(--s-3);
-  }
-  /* 5:4 landscape cuts: up to two across, centred like the vertical row, never
-     cropped to the vertical card */
-  .case-clips.case-wide { grid-template-columns: repeat(auto-fit, minmax(260px, 480px)); }
-  .case-wide .clip { aspect-ratio: 5 / 4; }
   .clip {
     appearance: none; -webkit-appearance: none;
     margin: 0; padding: 0; border: 0;
@@ -85,51 +75,79 @@
   .clip.is-playing { box-shadow: 0 0 0 3px var(--accent); }
   .clip:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; }
   .clip.is-playing:focus-visible { outline-offset: 7px; }   /* clear of the ring */
-  /* landscape stills: the first fills the width, the rest sit two across */
-  .case-stills { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--s-3); }
-  .case-stills figure { margin: 0; grid-column: span 1; }
-  .case-stills figure:first-child { grid-column: 1 / -1; }
-  /* after the full-width hero they pair up; an even count leaves the last one alone, so it goes full width too */
-  .case-stills figure:last-child:nth-child(even) { grid-column: 1 / -1; }
-  @media (prefers-reduced-motion: reduce) { .clip { transition: none; } }
-  .case-stills img {
+  /* ---------- the case, top to bottom ----------
+     The hero still, then the brief with the facts under it, the results,
+     the videos and the rest of the stills. One centred column, no rules:
+     the sections are told apart by space alone, the same centre line the
+     page head sets. */
+  .case-hero { margin: 0; }
+  .case-hero img, .case-gallery img {
     display: block; width: 100%; height: auto; aspect-ratio: 16 / 9; object-fit: cover;
     border-radius: var(--radius-sm); background: var(--slot-1);
   }
-  .case-stills + .case-clips, .case-clips + .case-stills, .case-clips + .case-clips { margin-top: var(--s-3); }
-  /* vertical stills sit in the same grid as the video cards */
-  .case-tall img { display: block; width: 100%; height: auto; aspect-ratio: 9 / 16; object-fit: cover; border-radius: var(--radius-sm); background: var(--slot-1); }
-  .case-hint {
-    margin-top: var(--s-2);
-    text-align: center;
-    font-size: var(--t-small);
-    color: var(--muted);
+  /* the site's section rule pads every <section> 4.5rem top and bottom; here the
+     margin alone sets the gap, or it stacks to three times the space */
+  .case-sec { margin-top: var(--s-6); padding-block: 0; text-align: center; }
+  .case-hero + .case-sec, .case-gallery + .case-sec { margin-top: var(--s-5); }
+  .case-hero + .case-gallery { margin-top: var(--s-3); }
+  .case-sec > h2 { font-size: clamp(1.75rem, 3.2vw, 2.5rem); }
+  .case-sec > h2 + * { margin-top: var(--s-3); }
+  .case-sec > .case-hint { margin-top: var(--s-2); }
+  .case-hint + * { margin-top: var(--s-3); }
+
+  /* overview: the brief a size up, the facts in a row beneath it */
+  .case-brief {
+    font-size: clamp(1.1875rem, 1.9vw, 1.5rem); line-height: 1.5; letter-spacing: -0.01em;
+    color: var(--ink); max-width: 36em; margin-inline: auto; text-wrap: balance;
   }
   .case-facts {
-    display: grid; grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: var(--s-4);
-    margin-top: var(--s-5);
-    padding-top: var(--s-4);
-    border-top: 1px solid var(--rule);
+    margin: var(--s-4) auto 0; max-width: 820px;
+    display: grid; grid-template-columns: 1fr 1fr 1.6fr; gap: var(--s-4);
   }
   .case-facts dt {
     font-size: var(--t-micro); font-weight: 700;
     letter-spacing: 0.1em; text-transform: uppercase;
     color: var(--accent);
   }
-  .case-facts dd { margin: var(--s-1) 0 0; font-size: 0.9375rem; line-height: 1.6; }
+  .case-facts dd { margin: var(--s-1) 0 0; font-size: 0.9375rem; line-height: 1.6; color: var(--muted); }
+
+  /* results: the figures side by side, each with the line that explains it */
+  .case-results {
+    list-style: none; padding: 0; margin-inline: auto; max-width: 960px;
+    display: grid; grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr); gap: var(--s-4);
+  }
+  .case-results li { display: grid; gap: var(--s-2); justify-items: center; align-content: start; }
+  .case-results b {
+    font-size: clamp(2.5rem, 4.6vw, 3.75rem); font-weight: 500;
+    letter-spacing: -0.035em; line-height: 1;
+    font-variant-numeric: tabular-nums;
+  }
+  .case-results span { color: var(--muted); line-height: 1.6; max-width: 26ch; }
+
+  .case-hint { font-size: var(--t-small); color: var(--muted); }
+  /* videos and vertical stills: a centred row of cards */
+  .case-clips {
+    list-style: none; margin: 0; padding: 0;
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 250px));
+    justify-content: center; gap: var(--s-3);
+  }
+  .case-clips + .case-clips { margin-top: var(--s-3); }
+  /* 5:4 landscape cuts: up to two across, never cropped to the vertical card */
+  .case-clips.case-wide { grid-template-columns: repeat(auto-fit, minmax(260px, 480px)); }
+  .case-wide .clip { aspect-ratio: 5 / 4; }
+  .case-tall img { display: block; width: 100%; height: auto; aspect-ratio: 9 / 16; object-fit: cover; border-radius: var(--radius-sm); background: var(--slot-1); }
+  /* the rest of the landscape stills: two across; an odd one out at the end goes full width */
+  .case-gallery { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--s-3); }
+  .case-gallery figure { margin: 0; }
+  .case-gallery figure:last-child:nth-child(odd) { grid-column: 1 / -1; }
+  @media (prefers-reduced-motion: reduce) { .clip { transition: none; } }
+
+  /* the next client, centred, with the way back under it */
   .case-nav {
-    display: flex; justify-content: space-between; align-items: center; gap: var(--s-3);
-    flex-wrap: wrap;
-    margin-top: var(--s-6);
-    padding-top: var(--s-4);
-    border-top: 1px solid var(--rule);
+    display: flex; flex-direction: column; align-items: center; gap: var(--s-2);
+    margin-top: var(--s-6); text-align: center;
   }
-  .case-back {
-    color: var(--muted); text-decoration: none; font-size: 0.9375rem;
-    display: inline-flex; align-items: center; min-height: 44px;   /* thumb-sized on a phone */
-  }
-  .case-next { text-align: right; text-decoration: none; color: var(--ink); }
+  .case-next { text-decoration: none; color: var(--ink); }
   .case-next span {
     display: block;
     font-size: var(--t-micro); font-weight: 700;
@@ -137,24 +155,34 @@
     color: var(--muted);
   }
   .case-next b {
-    display: block; margin-top: 4px;
-    font-size: clamp(1.5rem, 3vw, 2.25rem); font-weight: 500;
+    display: block; margin-top: var(--s-1);
+    font-size: clamp(1.75rem, 3.6vw, 2.75rem); font-weight: 500;
     letter-spacing: -0.035em; line-height: 1.1;
+  }
+  .case-back {
+    color: var(--muted); text-decoration: none; font-size: 0.9375rem;
+    display: inline-flex; align-items: center; min-height: 44px;   /* thumb-sized on a phone */
   }
   @media (hover: hover) and (pointer: fine) {
     .case-back:hover { color: var(--ink); }
     .case-next:hover b { color: var(--accent); }
   }
+  @media (max-width: 860px) {
+    .case-sec { margin-top: var(--s-5); }
+    .case-hero + .case-sec, .case-gallery + .case-sec { margin-top: var(--s-4); }
+    .case-hero + .case-gallery { margin-top: var(--s-2); }
+    .case-facts { grid-template-columns: 1fr 1fr; }
+    .case-facts .case-made { grid-column: 1 / -1; }
+    .case-results { grid-auto-flow: row; gap: var(--s-5); }
+  }
   @media (max-width: 700px) {
-    .case-facts { grid-template-columns: 1fr; gap: var(--s-3); }
     /* two across on a phone: big enough to see, small enough that a
        client's whole set is on one or two screens */
     .case-clips { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--s-2); }
     .case-clips.case-wide { grid-template-columns: minmax(0, 1fr); }
-    .case-stills { grid-template-columns: minmax(0, 1fr); gap: var(--s-2); }
+    .case-gallery { grid-template-columns: minmax(0, 1fr); gap: var(--s-2); }
     .clip-state { left: 10px; bottom: 10px; }
-    .case-nav { flex-direction: column-reverse; align-items: flex-start; }
-    .case-next { text-align: left; }
+    .case-nav { margin-top: var(--s-5); }
   }
 </style>
 </head>
@@ -278,23 +306,39 @@
          + (n === 0 ? ' fetchpriority="high"' : ' loading="lazy"') + ' decoding="async"></figure>';
   }
 
+  var hero = stills[0], rest = stills.slice(1);
+  var results = c.results || [];
+  function sec(cls, heading, body) {
+    return '<section class="case-sec' + (cls ? ' ' + cls : '') + '">'
+         + (heading ? '<h2>' + heading + '</h2>' : '') + body + '</section>';
+  }
+  var media = '';
+  if (tallClips.length) media += '<ul class="case-clips" aria-label="' + esc(c.name) + ' videos">' + tallClips.map(clipCard).join('') + '</ul>';
+  if (wideClips.length) media += '<ul class="case-clips case-wide" aria-label="' + esc(c.name) + ' landscape videos">'
+    + wideClips.map(function (name, n) { return clipCard(name, tallClips.length + n); }).join('') + '</ul>';
+  var more = rest.length ? '<div class="case-gallery">' + rest.map(function (name, n) { return stillFig(name, n + 1); }).join('') + '</div>' : '';
+  var shots = '';
+  if (tall.length) shots += '<ul class="case-clips case-tall" aria-label="' + esc(c.name) + ' stills">' + tall.map(tallFig).join('') + '</ul>';
+
   document.querySelector('[data-case]').innerHTML =
-      (stills.length ? '<div class="case-stills">' + stills.map(stillFig).join('') + '</div>' : '')
-    + (tall.length ? '<ul class="case-clips case-tall" aria-label="' + esc(c.name) + ' stills">' + tall.map(tallFig).join('') + '</ul>' : '')
-    + (clips.length
-        ? (tallClips.length ? '<ul class="case-clips" aria-label="' + esc(c.name) + ' videos">' + tallClips.map(clipCard).join('') + '</ul>' : '')
-          + (wideClips.length ? '<ul class="case-clips case-wide" aria-label="' + esc(c.name) + ' landscape videos">'
-              + wideClips.map(function (name, n) { return clipCard(name, tallClips.length + n); }).join('') + '</ul>' : '')
-          + '<p class="case-hint">Press play to watch with sound.</p>'
-        : '')
-    + '<dl class="case-facts">'
-    +   '<div><dt>Client</dt><dd>' + esc(c.name) + '</dd></div>'
-    +   '<div><dt>Industry</dt><dd>' + esc(c.trade) + '</dd></div>'
-    +   (c.made ? '<div><dt>What we made</dt><dd>' + esc(c.made) + '</dd></div>' : '')
-    + '</dl>'
+      (hero ? '<figure class="case-hero">' + stillFig(hero, 0).replace(/^<figure>|<\/figure>$/g, '') + '</figure>' : '')
+    + more
+    + sec('', '',
+          (c.brief ? '<p class="case-brief">' + esc(c.brief) + '</p>' : '')
+        + '<dl class="case-facts">'
+        +   '<div><dt>Industry</dt><dd>' + esc(c.trade) + '</dd></div>'
+        +   (c.service ? '<div><dt>Service</dt><dd>' + esc(c.service) + '</dd></div>' : '')
+        +   (c.made ? '<div class="case-made"><dt>What we made</dt><dd>' + esc(c.made) + '</dd></div>' : '')
+        + '</dl>')
+    + (results.length ? sec('', 'Results',
+          '<ul class="case-results">' + results.map(function (r) {
+            return '<li><b>' + esc(r.n) + '</b><span>' + esc(r.t) + '</span></li>';
+          }).join('') + '</ul>') : '')
+    + (media ? sec('', 'The videos', '<p class="case-hint">Press play to watch with sound.</p><div class="case-full">' + media + '</div>') : '')
+    + (shots ? sec('', 'From the shoot', '<div class="case-full">' + shots + '</div>') : '')
     + '<nav class="case-nav" aria-label="Case studies">'
-    +   '<a class="case-back" href="/work">All case studies</a>'
     +   (next !== c ? '<a class="case-next" href="/work/case/?client=' + next.slug + '"><span>Next case study</span><b>' + esc(next.name) + '</b></a>' : '')
+    +   '<a class="case-back" href="/work">All case studies</a>'
     + '</nav>';
 
   /* ---- the clips ------------------------------------------------------
