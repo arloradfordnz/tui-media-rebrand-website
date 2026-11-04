@@ -89,6 +89,8 @@
   .case-stills { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--s-3); }
   .case-stills figure { margin: 0; grid-column: span 1; }
   .case-stills figure:first-child { grid-column: 1 / -1; }
+  /* after the full-width hero they pair up; an even count leaves the last one alone, so it goes full width too */
+  .case-stills figure:last-child:nth-child(even) { grid-column: 1 / -1; }
   @media (prefers-reduced-motion: reduce) { .clip { transition: none; } }
   .case-stills img {
     display: block; width: 100%; height: auto; aspect-ratio: 16 / 9; object-fit: cover;
