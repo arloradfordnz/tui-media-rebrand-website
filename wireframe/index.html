@@ -3762,8 +3762,8 @@
     if (!window.matchMedia('(hover: hover) and (pointer: fine)').matches) return;
 
     var saveData = !!(navigator.connection && navigator.connection.saveData);
-    var clips = ['johnson-residential-4', 'sky-automotive-3', 'atk-detailing-3', 'johnson-residential-3',
-                 'sky-automotive-1', 'johnson-residential-1', 'atk-detailing', 'sky-automotive-2',
+    var clips = ['johnson-residential-4', 'atk-detailing-3', 'johnson-residential-3',
+                 'johnson-residential-1', 'atk-detailing', 
                  'johnson-residential-2', 'landscape-transformers-1'
                 ].map(function (slug) {
       return { src: '/media/trail/' + slug + '.mp4?v=3', poster: '/media/trail/' + slug + '.webp?v=3' };
