@@ -54,6 +54,11 @@ deployed on Vercel.
     pages at `/video-ads` and `/monthly-content`, linked from the cards in
     "Two ways to work together" and from the menu. Their book buttons go to `/?interest=ad#book`
     or `/?interest=monthly#book`, which opens the form with that option picked.
+  - `summer/index.html` — the seasonal "Summer Sorted" offer at `/summer`
+    ($3,000, one shoot before Christmas plus a January pickup). Linked first in
+    the nav and footer on every page; its buttons go to `/?interest=summer#book`.
+    When the season ends, take the link out of each page's nav and footer, and
+    `/summer` out of sitemap.xml.
   - `/monthly-content` runs: the packages, real client clips, who's filming,
     then the questions. Keep the page's wording and order our own: it was
     reworked in Nov 2026 because it had drifted too close to another
