@@ -2095,7 +2095,6 @@
   <div class="nav">
     <a class="wordmark" href="#home" data-route="home" aria-label="Tui Media, home"><i></i></a>
     <nav class="nav-links">
-      <a href="/summer"><span class="nav-label"><span>Summer offer</span><span aria-hidden="true">Summer offer</span></span></a>
       <a href="/monthly-content"><span class="nav-label"><span>Monthly content</span><span aria-hidden="true">Monthly content</span></span></a>
       <a href="/video-ads"><span class="nav-label"><span>Video ads</span><span aria-hidden="true">Video ads</span></span></a>
       <a href="/work"><span class="nav-label"><span>Case studies</span><span aria-hidden="true">Case studies</span></span></a>
@@ -2600,7 +2599,6 @@
   <div class="closing-foot">
     <span class="foot-logo"><img src="/img/tui-wordmark.webp" alt="Tui Media" width="639" height="130" loading="lazy" decoding="async"></span>
     <div class="foot-right">
-      <a href="/summer">Summer offer</a>
       <a href="/monthly-content">Monthly content</a>
       <a href="/video-ads">Video ads</a>
       <a href="/work">Case studies</a>
@@ -2648,7 +2646,6 @@
           <option>Monthly content</option>
           <option>A video ad project</option>
           <option>Both</option>
-          <option>Summer Sorted</option>
           <option>Not sure yet</option>
         </select>
       </div>
@@ -3324,10 +3321,10 @@
      /?interest=monthly#book, so the form opens with that option picked,
      the same as clicking the offer card buttons used to. */
   (function () {
-    var m = /[?&]interest=(ad|monthly|summer)\b/.exec(location.search);
+    var m = /[?&]interest=(ad|monthly)\b/.exec(location.search);
     var sel = document.getElementById('f-interest');
     if (!m || !sel) return;
-    sel.value = m[1] === 'ad' ? 'A video ad project' : m[1] === 'summer' ? 'Summer Sorted' : 'Monthly content';
+    sel.value = m[1] === 'ad' ? 'A video ad project' : 'Monthly content';
     sel.dispatchEvent(new Event('change', { bubbles: true }));
 
     /* a package button on /monthly-content also says which package and
@@ -3897,7 +3894,6 @@
 <script defer src="/js/smooth-scroll.js"></script>
 <script defer src="/js/page-transition.js"></script>
 <script defer src="/js/nav.js?v=2"></script>
-<script defer src="/js/summer-popup.js?v=1"></script>
 <script defer src="/_vercel/insights/script.js"></script>
 
 </body>
