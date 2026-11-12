@@ -714,12 +714,12 @@ html.lenis, html.lenis body { height: auto; }
 .team-body p { color: var(--ink); line-height: 1.65; max-width: 58ch; }
 .team-body p + p { margin-top: var(--s-3); }
 .team-body .btn-row { margin-top: var(--s-4); justify-content: flex-start; }
-.stats { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--frame); text-align: center; }
+.stats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--frame); text-align: center; }
 .stats > div { background: var(--surface); border-radius: 24px; padding: var(--s-4) var(--s-3); display: grid; gap: 4px; }
 .stats b { font-size: clamp(2.5rem, 5vw, 3.75rem); font-weight: 500; letter-spacing: -0.04em; line-height: 1; }
 .stats span { color: var(--muted); font-size: 0.9375rem; }
 .way-card .btn-row { margin-top: auto; }
 @media (max-width: 900px) {
   .team { grid-template-columns: 1fr; gap: var(--s-4); }
-  .stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .stats { grid-template-columns: 1fr; }
 }
