@@ -119,43 +119,28 @@
       "mainEntity": [
     {
       "@type": "Question",
-      "name": "How long until my first video or ad is live?",
-      "acceptedAnswer": { "@type": "Answer", "text": "Usually two to three weeks. The first week goes on planning and the script, we film in a day, and the edit takes a few days after that." }
-    },
-    {
-      "@type": "Question",
       "name": "How much does it cost?",
-      "acceptedAnswer": { "@type": "Answer", "text": "Monthly content is $500, $850 or $1,500 a month, a bit less if you pay by the quarter. Ad projects are one fee, which we'll quote on the call. Ad spend is separate, goes straight to Meta, and we don't add a markup." }
+      "acceptedAnswer": { "@type": "Answer", "text": "Monthly content is $500, $850 or $1,500 a month, and a bit less if you pay by the quarter. Ad projects are one fee that I'll quote on the call. Ad spend is separate, goes straight to Meta, and I don't add a markup." }
     },
     {
       "@type": "Question",
       "name": "Am I locked in?",
-      "acceptedAnswer": { "@type": "Answer", "text": "Monthly plans start with a two-month opening period, then go month to month with 30 days' notice. Quarterly plans are paid a quarter at a time. Ad projects are a single fee with nothing ongoing." }
+      "acceptedAnswer": { "@type": "Answer", "text": "Nope. Monthly plans start with a two-month opening period, then go month to month with 30 days' notice. Ad projects are a single fee with nothing ongoing." }
     },
     {
       "@type": "Question",
-      "name": "What's the difference between monthly and quarterly?",
-      "acceptedAnswer": { "@type": "Answer", "text": "You get the same content, from one bigger shoot that covers the quarter. You pay upfront, and it works out cheaper than paying monthly." }
-    },
-    {
-      "@type": "Question",
-      "name": "Can you promise results?",
-      "acceptedAnswer": { "@type": "Answer", "text": "No, and be wary of anyone who does. What we can do is look at what's already working in your industry, build around it, and give you a few versions so you're not betting on one." }
-    },
-    {
-      "@type": "Question",
-      "name": "Do you manage the ads after launch?",
-      "acceptedAnswer": { "@type": "Answer", "text": "Not at the moment. We build it, switch it on and hand it over, so you or whoever does your marketing can run it from there. Full plans also come with ad-ready cuts of your monthly content." }
-    },
-    {
-      "@type": "Question",
-      "name": "Do I get to keep the footage and the ad account?",
-      "acceptedAnswer": { "@type": "Answer", "text": "Yes. Once it's paid for, the finished content is yours, and on an ad project the account is in your name from day one." }
+      "name": "How long until my first video is live?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Usually two to three weeks. The first week goes on planning, we film in a day, and the edit takes a few days after that." }
     },
     {
       "@type": "Question",
       "name": "Do I have to be on camera?",
-      "acceptedAnswer": { "@type": "Answer", "text": "No, though it usually helps. If you'd rather stay behind the camera, we can build it around your team, your customers, the work or a voiceover." }
+      "acceptedAnswer": { "@type": "Answer", "text": "No, but it usually helps. If you'd rather stay behind the camera, we can build it around your team, your customers, the work or a voiceover." }
+    },
+    {
+      "@type": "Question",
+      "name": "Can you promise results?",
+      "acceptedAnswer": { "@type": "Answer", "text": "No, and be wary of anyone who does. What I can do is look at what's already working in your industry, build around it, and give you a few versions so you're not betting on one." }
     }
       ]
     }
@@ -535,11 +520,11 @@
 
     /* liquid glass: let the page through, then bend and brighten it. No border
        — the shape is carried by the blur and the drop shadow alone. */
-    background: var(--nav-bg);
-    -webkit-backdrop-filter: blur(30px) saturate(190%);
-            backdrop-filter: blur(30px) saturate(190%);
+    background: none;
+    -webkit-backdrop-filter: none;
+            backdrop-filter: none;
     border: 0;
-    box-shadow: 0 10px 34px -10px rgba(0, 0, 0, 0.6);
+    box-shadow: none;
   }
   /* the mark itself stays 24x40; the link around it is padded out to a
      44px-tall target so it is tappable, with the padding pulled back off
@@ -703,7 +688,7 @@
         linear-gradient(180deg, rgb(8 16 38 / 0.6) 0%, rgb(8 16 38 / 0) calc(var(--nav-space) * 2));
     }
     .hero-left > .shell {
-      justify-content: flex-end;
+      justify-content: center; align-items: center; text-align: center;
       padding-block: calc(var(--nav-space) + var(--s-5)) clamp(2rem, 7vh, 4.5rem);
       padding-inline: clamp(1.5rem, 4vw, 4.5rem);
     }
@@ -716,8 +701,12 @@
     .hero-media { aspect-ratio: 4 / 5; max-height: 78svh; border-radius: calc(var(--hero-radius) - var(--frame)); }
   }
   @media (max-width: 620px) {
-    .hero .btn-row { justify-content: flex-start; }
+    .hero .btn-row { justify-content: center; }
   }
+  .hero { text-align: center; }
+  .hero-left > .shell { align-items: center; text-align: center; }
+  .hero h1 { margin-inline: auto; }
+  .hero .btn-row { justify-content: center; }
 
   /* the nav keeps its glass pill over the hero too (the old flat
      over-hero mode is gone; JS still toggles .over-hero but nothing uses it) */
@@ -1791,17 +1780,16 @@
   <div class="shell">
     <div class="section-head center" data-anim>
       <h2>Two ways in</h2>
-      <p class="lede">Pick the one that fits now. You can always add the other later.</p>
     </div>
 
     <div class="two-up">
       <article class="way-card" data-anim>
         <span class="way-tag">Monthly or quarterly</span>
         <h3>Monthly content</h3>
-        <p class="way-body">One planned shoot, then a month of videos, photos and captions ready to post. No thinking up ideas, no chasing anyone. Three packages, paid monthly or quarterly.</p>
+        <p class="way-body">We create a month's worth of content for your business, which we then turn into reels, photos and carousels. We're only on site once a month for a few hours, so it never gets in the way of running your business.</p>
         <div class="way-best">
           <span class="way-label">Best for</span>
-          <p>Businesses that know they should be posting and never quite get round to it.</p>
+          <p>Businesses that don't have time to create quality content in-house and want an effective way to build their social audience.</p>
         </div>
         <div class="way-foot">
           <p class="way-price">From $500 a month.</p>
@@ -1816,10 +1804,10 @@
       <article class="way-card" data-anim>
         <span class="way-tag">One fee</span>
         <h3>Video ad project</h3>
-        <p class="way-body">We look at what's already working in your industry, write a script around it, film it and cut a few versions. Then we set it up in your own ad account, switch it on and hand you the keys.</p>
+        <p class="way-body">A one-off project that aims to bring your business more leads through targeted video ads. We research your niche to find out what's working, then write a script that reflects your brand's tone, voice and values. We spend a few hours on site shooting enough content to build out multiple ad variations.</p>
         <div class="way-best">
           <span class="way-label">Best for</span>
-          <p>Businesses that want more enquiries and have some money set aside for ads.</p>
+          <p>Businesses that want more leads and have some budget set aside for ads.</p>
         </div>
         <div class="way-foot">
           <p class="way-price">One fee, quoted per project.</p>
@@ -2018,10 +2006,8 @@
     <div class="team">
       <div class="block" data-anim><img src="/img/arlo-radford.webp?v=4" alt="Arlo Radford, founder of Tui Media" width="1800" height="1200" loading="lazy" decoding="async"></div>
       <div class="team-body" data-anim>
-        <p class="measure">Kia ora, I'm Arlo. I started Tui Media, I'm 17, and I'm still at Nelson College. I grew up with a camera in my hands and I've been doing this properly for more than four years.</p>
-        <p class="measure">I make video content and ads for local businesses, and I do every part of it myself, from the first call to the final edit, so nothing gets lost along the way.</p>
-        <p class="measure">Most clients are on a monthly plan, where one shoot becomes a month of reels, photos and posts. Others come to me for a single ad project, set up in their own ad account.</p>
-        <p class="measure">So far that's more than thirty Nelson businesses, plus a project with Nikon New Zealand for the launch of one of their cinema cameras.</p>
+        <p class="measure">Kia ora, I'm Arlo, a 17 year old from Nelson College and the founder and creative director of Tui Media. I grew up with a passion for photography and filmmaking, and I now have over five years of experience in the industry.</p>
+        <p class="measure">I'm a one-man team, so you'll work directly alongside me, from the first call to the final edit.</p>
         <div class="btn-row">
           <a class="btn" href="#book" data-route="book">
             <span class="btn-label"><span>Get in touch</span><span aria-hidden="true">Get in touch</span></span>
@@ -2040,34 +2026,34 @@
     <div class="faq" data-faq>
       <div class="faq-item" data-anim>
         <button class="faq-row" type="button" id="faq-q1" aria-expanded="false" aria-controls="faq-a1">
-          <span class="faq-q">How long until my first video or ad is live?</span>
+          <span class="faq-q">How much does it cost?</span>
           <span class="faq-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></span>
         </button>
-        <div class="faq-panel" id="faq-a1" role="region" aria-labelledby="faq-q1" inert><div><p class="faq-a">Usually two to three weeks. The first week goes on planning and the script, we film in a day, and the edit takes a few days after that.</p></div></div>
+        <div class="faq-panel" id="faq-a1" role="region" aria-labelledby="faq-q1" inert><div><p class="faq-a">Monthly content is $500, $850 or $1,500 a month, and a bit less if you pay by the quarter. Ad projects are one fee that I'll quote on the call. Ad spend is separate, goes straight to Meta, and I don't add a markup.</p></div></div>
       </div>
 
       <div class="faq-item" data-anim>
         <button class="faq-row" type="button" id="faq-q2" aria-expanded="false" aria-controls="faq-a2">
-          <span class="faq-q">How much does it cost?</span>
+          <span class="faq-q">Am I locked in?</span>
           <span class="faq-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></span>
         </button>
-        <div class="faq-panel" id="faq-a2" role="region" aria-labelledby="faq-q2" inert><div><p class="faq-a">Monthly content is $500, $850 or $1,500 a month, a bit less if you pay by the quarter. Ad projects are one fee, which we'll quote on the call. Ad spend is separate, goes straight to Meta, and we don't add a markup.</p></div></div>
+        <div class="faq-panel" id="faq-a2" role="region" aria-labelledby="faq-q2" inert><div><p class="faq-a">Nope. Monthly plans start with a two-month opening period, then go month to month with 30 days' notice. Ad projects are a single fee with nothing ongoing.</p></div></div>
       </div>
 
       <div class="faq-item" data-anim>
         <button class="faq-row" type="button" id="faq-q3" aria-expanded="false" aria-controls="faq-a3">
-          <span class="faq-q">Am I locked in?</span>
+          <span class="faq-q">How long until my first video is live?</span>
           <span class="faq-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></span>
         </button>
-        <div class="faq-panel" id="faq-a3" role="region" aria-labelledby="faq-q3" inert><div><p class="faq-a">Monthly plans start with a two-month opening period, then go month to month with 30 days' notice. Quarterly plans are paid a quarter at a time. Ad projects are a single fee with nothing ongoing.</p></div></div>
+        <div class="faq-panel" id="faq-a3" role="region" aria-labelledby="faq-q3" inert><div><p class="faq-a">Usually two to three weeks. The first week goes on planning, we film in a day, and the edit takes a few days after that.</p></div></div>
       </div>
 
       <div class="faq-item" data-anim>
         <button class="faq-row" type="button" id="faq-q4" aria-expanded="false" aria-controls="faq-a4">
-          <span class="faq-q">What's the difference between monthly and quarterly?</span>
+          <span class="faq-q">Do I have to be on camera?</span>
           <span class="faq-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></span>
         </button>
-        <div class="faq-panel" id="faq-a4" role="region" aria-labelledby="faq-q4" inert><div><p class="faq-a">You get the same content, from one bigger shoot that covers the quarter. You pay upfront, and it works out cheaper than paying monthly.</p></div></div>
+        <div class="faq-panel" id="faq-a4" role="region" aria-labelledby="faq-q4" inert><div><p class="faq-a">No, but it usually helps. If you'd rather stay behind the camera, we can build it around your team, your customers, the work or a voiceover.</p></div></div>
       </div>
 
       <div class="faq-item" data-anim>
@@ -2075,31 +2061,7 @@
           <span class="faq-q">Can you promise results?</span>
           <span class="faq-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></span>
         </button>
-        <div class="faq-panel" id="faq-a5" role="region" aria-labelledby="faq-q5" inert><div><p class="faq-a">No, and be wary of anyone who does. What we can do is look at what's already working in your industry, build around it, and give you a few versions so you're not betting on one.</p></div></div>
-      </div>
-
-      <div class="faq-item" data-anim>
-        <button class="faq-row" type="button" id="faq-q6" aria-expanded="false" aria-controls="faq-a6">
-          <span class="faq-q">Do you manage the ads after launch?</span>
-          <span class="faq-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></span>
-        </button>
-        <div class="faq-panel" id="faq-a6" role="region" aria-labelledby="faq-q6" inert><div><p class="faq-a">Not at the moment. We build it, switch it on and hand it over, so you or whoever does your marketing can run it from there. Full plans also come with ad-ready cuts of your monthly content.</p></div></div>
-      </div>
-
-      <div class="faq-item" data-anim>
-        <button class="faq-row" type="button" id="faq-q7" aria-expanded="false" aria-controls="faq-a7">
-          <span class="faq-q">Do I get to keep the footage and the ad account?</span>
-          <span class="faq-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></span>
-        </button>
-        <div class="faq-panel" id="faq-a7" role="region" aria-labelledby="faq-q7" inert><div><p class="faq-a">Yes. Once it's paid for, the finished content is yours, and on an ad project the account is in your name from day one.</p></div></div>
-      </div>
-
-      <div class="faq-item" data-anim>
-        <button class="faq-row" type="button" id="faq-q8" aria-expanded="false" aria-controls="faq-a8">
-          <span class="faq-q">Do I have to be on camera?</span>
-          <span class="faq-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></span>
-        </button>
-        <div class="faq-panel" id="faq-a8" role="region" aria-labelledby="faq-q8" inert><div><p class="faq-a">No, though it usually helps. If you'd rather stay behind the camera, we can build it around your team, your customers, the work or a voiceover.</p></div></div>
+        <div class="faq-panel" id="faq-a5" role="region" aria-labelledby="faq-q5" inert><div><p class="faq-a">No, and be wary of anyone who does. What I can do is look at what's already working in your industry, build around it, and give you a few versions so you're not betting on one.</p></div></div>
       </div>
 
       <!-- the rule that closes the list. It carries data-anim like the rows
