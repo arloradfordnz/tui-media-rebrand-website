@@ -122,4 +122,3 @@ html:not(.js) .page-loader { display: none; }
   .page-loader--exit  { animation: loader-fade-out 420ms ease forwards; }
   .page-loader--enter { animation: loader-fade-in 320ms ease both; }
 }
-

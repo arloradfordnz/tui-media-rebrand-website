@@ -517,8 +517,7 @@
   /* the pill follows you down the page, and gets out of the way when you are
      reading. Scrolling up brings it straight back. */
   .nav-wrap {
-    position: sticky;
-    top: 0;
+    position: relative;   /* scrolls away with the page; z-index keeps it over the hero */
     z-index: 50;
     padding: var(--frame);
   }
@@ -637,28 +636,108 @@
   .hero .lede { margin-top: var(--s-3); max-width: 54ch; text-wrap: pretty; }
   .hero .btn-row { margin-top: var(--s-4); }
 
-  /* ---------- hero video trail ----------
-     Clips from Recent work follow the cursor around the hero, each one
-     popping in under the pointer and shrinking away as it ages. They sit
-     behind the text so the headline stays readable, and the hero clips them
-     to its rounded panel. The tiles run off media/trail/: 264px wide, four
-     seconds, silent, about 100KB each, so the whole set is ~1MB. */
   .hero { position: relative; overflow: hidden; isolation: isolate; }
-  .hero > .shell { position: relative; z-index: 1; }
-  .hero-trail { position: absolute; inset: 0; z-index: 0; pointer-events: none; contain: strict; }
-  .trail-tile {
-    position: absolute; left: 0; top: 0;
-    width: clamp(96px, 8vw, 132px);
-    aspect-ratio: 9 / 16;
-    border-radius: 14px;
+  .hero-left > .shell { position: relative; z-index: 1; }
+
+  /* ---------- hero split ----------
+     Copy on the left, one vertical clip filling the right half from the top
+     of the page to the bottom of the hero, held in by a thin gutter of the
+     hero's own colour (--hero-gap) rather than a drawn border. The hero
+     already runs up behind the nav, so the clip does too; on desktop the
+     nav goes flat while it sits over the hero (see .nav-wrap.over-hero).
+     The clip covers its panel, so the vertical video is cropped to fit
+     rather than letterboxed. Below 960px (where the nav swaps its links
+     for the menu button) it stacks: copy first, clip under it. */
+  .hero {
+    --hero-gap: clamp(6px, 0.7vw, 10px);
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: var(--hero-gap);
+    padding: var(--hero-gap) var(--hero-gap) var(--hero-gap) 0;   /* inset on the video's sides, none on the left edge */
+    text-align: left;
+  }
+  .hero-left { display: flex; flex-direction: column; min-width: 0; position: relative; z-index: 1; }
+  .hero-left > .shell {
+    flex: 1;
+    display: flex; flex-direction: column; justify-content: center; align-items: flex-start;
+    max-width: none;
+    padding-inline: clamp(1rem, 4vw, 4.5rem);
+    padding-block: calc(var(--nav-space) + var(--s-3)) var(--s-5);
+  }
+  .hero h1 { margin-inline: 0; max-width: 16ch; }
+  .hero .btn-row { justify-content: flex-start; }
+  .hero-media {
+    position: relative;
+    min-height: 0;
+    border-radius: calc(var(--hero-radius) - var(--hero-gap));
     overflow: hidden;
     background: var(--slot-1);
-    box-shadow: 0 16px 34px -10px rgba(0, 0, 0, 0.65);
-    opacity: 0;
-    will-change: transform, opacity;
-    backface-visibility: hidden;
   }
-  .trail-tile video { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .hero-media video,
+  .hero-media img {
+    position: absolute; inset: 0;
+    width: 100%; height: 100%;
+    object-fit: cover; display: block;
+  }
+  /* ---------- hero full frame (desktop) ----------
+     The photo/clip fills the whole hero below the nav strip, rounded on
+     all corners and held in by the thin --hero-gap gutter. The nav keeps
+     its own strip above it, untouched. The copy and logo strip sit over
+     the media, with a dark wash from the left and bottom for legibility. */
+  @media (min-width: 961px) {
+    .hero {
+      grid-template-columns: minmax(0, 1fr);
+      grid-template-rows: minmax(0, 1fr);
+      padding: var(--hero-gap);   /* media runs up behind the nav */
+      background: var(--accent);   /* accent frame around the clip */
+    }
+    .hero-left, .hero-media { grid-area: 1 / 1; }
+    .hero-media {
+      border-radius: var(--hero-radius);   /* same corner radius as the hero section */
+    }
+    .hero-media::after {
+      content: ""; position: absolute; inset: 0; pointer-events: none;
+      background:
+        linear-gradient(90deg, rgb(8 16 38 / 0.82) 0%, rgb(8 16 38 / 0.55) 38%, rgb(8 16 38 / 0) 68%),
+        linear-gradient(0deg, rgb(8 16 38 / 0.85) 0%, rgb(8 16 38 / 0) 32%),
+        linear-gradient(180deg, rgb(8 16 38 / 0.6) 0%, rgb(8 16 38 / 0) calc(var(--nav-space) * 2));
+    }
+    .hero-left > .shell {
+      justify-content: flex-end;
+      padding-block: calc(var(--nav-space) + var(--s-5)) clamp(2rem, 7vh, 4.5rem);
+      padding-inline: clamp(1.5rem, 4vw, 4.5rem);
+    }
+    .hero .hero-ghost { border-color: rgb(255 255 255 / 0.55); color: #fff; }
+    .hero h1 { color: #fff; }
+  }
+  @media (max-width: 960px) {
+    .hero { grid-template-columns: 1fr; padding: var(--nav-space) var(--frame) var(--frame); gap: var(--frame); }
+    .hero-left > .shell { padding-inline: var(--frame); padding-block: var(--s-4) var(--s-2); }
+    .hero-media { aspect-ratio: 4 / 5; max-height: 78svh; border-radius: calc(var(--hero-radius) - var(--frame)); }
+  }
+  @media (max-width: 620px) {
+    .hero .btn-row { justify-content: flex-start; }
+  }
+
+  /* the nav keeps its glass pill over the hero too (the old flat
+     over-hero mode is gone; JS still toggles .over-hero but nothing uses it) */
+  .nav { transition: background-color 300ms ease, box-shadow 300ms ease, -webkit-backdrop-filter 300ms ease, backdrop-filter 300ms ease; }
+
+  /* ---------- hero load-in ----------
+     The hero's pieces rise in one after another as the page curtain lifts.
+     JS adds .hero-pre before first paint (the curtain is still down) and
+     takes it off when the curtain starts to lift, so without JS or with
+     reduced motion nothing is ever hidden. */
+  .hero .shell > * {
+    transition: opacity 800ms var(--ease-out), transform 800ms var(--ease-out);
+    transition-delay: calc(var(--hero-i, 0) * 110ms + 200ms);
+  }
+  .hero .shell > :nth-child(2) { --hero-i: 1; }
+  .hero .shell > :nth-child(3) { --hero-i: 2; }
+  .hero .shell > :nth-child(4) { --hero-i: 3; }
+  .hero.hero-pre .shell > * { opacity: 0; transform: translateY(22px); transition: none; }
+  .hero-media { transition: opacity 1000ms var(--ease-out), transform 1000ms var(--ease-out); transition-delay: 120ms; }
+  .hero.hero-pre .hero-media { opacity: 0; transform: scale(0.97); transition: none; }
 
   /* ---------- logo strip ---------- */
 
@@ -667,7 +746,10 @@
      lands exactly where the copy begins. Each run carries a trailing gap
      the same size as the gaps inside it, so the seam is just another gap
      and the wrap has nothing to jump on. */
-  .logos { padding-block: var(--s-6) 0; }
+  .logos { padding-block: 0; }
+  /* its own strip directly under the hero */
+  .hero + .logos { padding-block: clamp(2.5rem, 6vw, 4.5rem); }
+  @media (min-width: 901px) { .hero + .logos .logo-marquee { width: min(1100px, 72vw); max-width: none; } }
   /* the label and the strip sit together as one centred unit, so the logos
      read as "who I've worked with" rather than floating on their own */
   .logo-row {
@@ -739,24 +821,21 @@
      body size with the numbers under it. Stacks under 900px, headline first. */
   .intro-grid {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-    gap: clamp(2rem, 6vw, 6rem);
-    align-items: start;
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--s-4);
+    justify-items: center;
+    text-align: center;
   }
-  .intro h2 { max-width: 10ch; }
-  /* nudged down so the first line of copy sits level with the headline's
-     cap height rather than its line box */
-  .intro-body { padding-top: 0.5em; }
-  .intro-body > p { color: var(--muted); line-height: 1.6; max-width: 46ch; }
+  .intro h2 { max-width: 14ch; }
+  .intro-body { padding-top: 0; width: 100%; }
+  .intro-body > p { color: var(--muted); line-height: 1.6; max-width: 52ch; margin-inline: auto; }
+  .intro-body > p + p { margin-top: var(--s-3); }
   .intro .stat-row {
     margin-top: var(--s-5);
     padding-top: var(--s-4);
     border-top: 1px solid var(--rule);
-  }
-  @media (max-width: 900px) {
-    .intro-grid { grid-template-columns: 1fr; gap: var(--s-4); }
-    .intro h2 { max-width: 14ch; }
-    .intro-body { padding-top: 0; }
+    max-width: 640px;
+    margin-inline: auto;
   }
 
   /* ---------- two ways to work together ----------
@@ -1356,471 +1435,6 @@
   .done { text-align: center; background: var(--surface); border-radius: var(--radius); padding: var(--s-6) var(--s-4); }
   .done .lede { margin: var(--s-3) auto 0; }
 
-  /* ---------- what you keep ----------
-     Three cards, each led by a small working diagram of the thing it
-     describes, then a title and a sentence. Every stage is the same height
-     so the titles line up across the row. The diagrams loop on their own
-     and idle whenever the grid is off screen: --play inherits, so one class
-     on the grid starts and stops all three. */
-  .keep-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--frame); }
-  .keep-card {
-    background: var(--surface);
-    border-radius: var(--radius);
-    padding: clamp(1.25rem, 2.2vw, 1.75rem);
-    display: flex;
-    flex-direction: column;
-    gap: var(--s-2);
-    min-width: 0;
-  }
-  .keep-card h3 { margin-top: var(--s-1); }
-  .keep-card p { color: var(--muted); font-size: 0.9375rem; line-height: 1.6; }
-  .keep-stage { height: 236px; display: flex; flex-direction: column; }
-  .keep-stage > * { flex: 1; min-height: 0; }
-  @media (max-width: 900px) {
-    .keep-grid { grid-template-columns: 1fr; }
-  }
-
-  /* Diagram corner radii step down from the card's --radius in the same
-     family. */
-  :root {
-    --dg-r-2: 14px;   /* panel inside a card */
-    --dg-r-3: 10px;   /* a row inside that   */
-    --dg-r-4: 7px;    /* a small mark        */
-  }
-  .keep-grid { --play: paused; }
-  .keep-grid.keep-live { --play: running; }
-
-  /* --- the footage: dropped into a folder in your name -----------------
-     A folder is carried in, dropped, and three uploads run in. One 8s loop.
-
-     The pointer and the folder live inside one wrapper and only that wrapper
-     is animated, so they are rigidly attached. Animating the two separately,
-     even on matching keyframes, lets the easing resolve a frame apart and the
-     folder swims against the cursor. */
-  .prtl {
-    display: flex; flex-direction: column;
-    border: 1px solid var(--rule);
-    border-radius: var(--dg-r-2);
-    overflow: hidden;
-    background: var(--paper);
-  }
-  .prtl-bar {
-    position: relative;
-    display: flex; align-items: center;
-    padding: 9px 12px;
-    border-bottom: 1px solid var(--rule);
-    background: var(--surface);
-  }
-  .prtl-lights { display: flex; gap: 6px; flex: none; }
-  .prtl-lights i { width: 9px; height: 9px; border-radius: 50%; background: var(--rule); }
-  .prtl-title {
-    position: absolute; left: 0; right: 0;
-    text-align: center; pointer-events: none;
-    font-size: var(--t-micro); font-weight: 600; color: var(--muted);
-  }
-
-  .prtl-body { position: relative; flex: 1; min-height: 0; padding: 14px; }
-
-  .prtl-zone {
-    position: relative; height: 100%; overflow: hidden;
-    border: 1.5px dashed var(--rule-2);
-    border-radius: var(--dg-r-3);
-    animation: prtlZone 9s var(--ease-out) infinite;
-    animation-play-state: var(--play);
-  }
-  .prtl-hint {
-    position: absolute; inset: 0;
-    display: grid; place-items: center;
-    font-size: 0.8125rem; color: var(--muted);
-    animation: prtlHint 9s var(--ease-out) infinite;
-    animation-play-state: var(--play);
-  }
-
-  .pt-fold { width: 26px; height: 22px; flex: none; display: block; }
-  .fld-back  { fill: var(--accent); opacity: 0.5; }
-  .fld-front { fill: var(--accent); opacity: 0.92; }
-
-  /* the three uploads sit as one block and the block rides up as each new row
-     arrives, so the stack stays optically centred the whole way through */
-  .prtl-stack {
-    position: absolute; left: 12px; right: 12px; top: 12px;
-    display: grid; gap: 8px;
-    animation: prtlStack 9s var(--ease-out) infinite;
-    animation-play-state: var(--play);
-  }
-  .prtl-up {
-    display: grid; gap: 6px;
-    opacity: 0;
-    animation-duration: 9s;
-    animation-timing-function: var(--ease-out);
-    animation-iteration-count: infinite;
-    animation-play-state: var(--play);
-  }
-  .prtl-up-1 { animation-name: prtlRow1; }
-  .prtl-up-2 { animation-name: prtlRow2; }
-  .prtl-up-3 { animation-name: prtlRow3; }
-  .prtl-up-4 { animation-name: prtlRow4; }
-
-  .prtl-up-head { display: flex; align-items: center; gap: 8px; }
-  .prtl-up-head b { font-size: 0.75rem; font-weight: 500; color: var(--ink); }
-  /* a word beats a tick here: "Sent" says the file left your machine and
-     landed, which is the promise the copy is making. Sized off the row's
-     own type so it stays a label, not a badge shouting over the filename. */
-  .prtl-sent {
-    margin-left: auto; flex: none;
-    padding: 2px 7px;
-    border-radius: var(--radius-pill);
-    background: var(--ok-soft);
-    font-size: 0.5625rem; font-weight: 700;
-    letter-spacing: 0.08em; text-transform: uppercase;
-    color: var(--ok);
-    line-height: 1.5;
-    opacity: 0;
-  }
-  .prtl-up-1 .prtl-sent { animation: prtlSent1 9s var(--ease-out) infinite; animation-play-state: var(--play); }
-  .prtl-up-2 .prtl-sent { animation: prtlSent2 9s var(--ease-out) infinite; animation-play-state: var(--play); }
-  .prtl-up-3 .prtl-sent { animation: prtlSent3 9s var(--ease-out) infinite; animation-play-state: var(--play); }
-  .prtl-up-4 .prtl-sent { animation: prtlSent4 9s var(--ease-out) infinite; animation-play-state: var(--play); }
-
-  .prtl-up-bar { position: relative; height: 4px; border-radius: 3px; background: var(--rule); overflow: hidden; }
-  .prtl-up-bar i {
-    position: absolute; inset: 0;
-    background: var(--accent); border-radius: 3px;
-    transform: scaleX(0); transform-origin: left;
-    animation-duration: 9s;
-    animation-timing-function: linear;
-    animation-iteration-count: infinite;
-    animation-play-state: var(--play);
-  }
-  .prtl-up-1 .prtl-up-bar i { animation-name: prtlFill1; }
-  .prtl-up-2 .prtl-up-bar i { animation-name: prtlFill2; }
-  .prtl-up-3 .prtl-up-bar i { animation-name: prtlFill3; }
-  .prtl-up-4 .prtl-up-bar i { animation-name: prtlFill4; }
-
-  /* One moving part carrying both the pointer and what it holds.
-
-     The resting place is set once in left/top (percentages, so it centres
-     at any cell width) and the TRAVEL is a transform. Animating left/top
-     directly, as this used to, relayouts the cell every frame and lands on
-     sub-pixel positions -- that was the stutter near the end of the drag.
-     A transform is composited, so the same path runs clean. */
-  .prtl-hand {
-    position: absolute;
-    left: calc(50% + 30.5px);
-    top: calc(50% + 7.5px);
-    width: 0; height: 0;
-    z-index: 3;
-    /* deliberately NOT --ease-out: that curve dumps nearly all its distance
-       in the first third and crawls the rest, which read as "fast then
-       stuck". This one accelerates once and coasts in. */
-    animation: prtlHand 9s cubic-bezier(0.45, 0.05, 0.25, 1) infinite;
-    animation-play-state: var(--play);
-  }
-  /* anchored by its bottom-right corner to the pointer, so the pointer reads
-     as gripping that corner rather than dangling off the top-left of it */
-  .prtl-drag {
-    position: absolute; right: -7px; bottom: -9px;
-    display: flex; align-items: center; gap: 8px;
-    padding: 7px 12px 7px 9px;
-    border-radius: var(--dg-r-3);
-    background: var(--surface);
-    border: 1px solid var(--rule-2);
-    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.45);
-    white-space: nowrap;
-    animation: prtlHeld 9s var(--ease-out) infinite;
-    animation-play-state: var(--play);
-  }
-  .prtl-drag b { font-size: 0.75rem; font-weight: 500; color: var(--ink); }
-
-  .prtl-cursor {
-    position: absolute; left: 0; top: 0;
-    width: 20px; height: 24px;
-    background-color: var(--accent);
-    /* client-supplied pointer mark, recoloured to brand accent via mask
-       rather than filter -- the source asset is a solid black shape, so a
-       mask lets the fill become any colour without touching the artwork. */
-    -webkit-mask-image: url("/img/pointer.webp");
-            mask-image: url("/img/pointer.webp");
-    -webkit-mask-repeat: no-repeat;
-            mask-repeat: no-repeat;
-    -webkit-mask-size: contain;
-            mask-size: contain;
-    -webkit-mask-position: center;
-            mask-position: center;
-    filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.55));
-    animation: prtlPointer 9s var(--ease-out) infinite;
-    animation-play-state: var(--play);
-  }
-
-  /* Carries in from off the bottom-right, releases over the zone, and is
-     gone. The offset only has to clear the widest the card ever gets, so
-     the chip always starts out of frame. The pointer lets go on the same
-     frame the folder lands and is gone a beat later, rather than hanging
-     around over the drop. */
-  @keyframes prtlHand {
-    0%         { transform: translate(260px, 190px); }
-    24%, 100%  { transform: translate(0, 0); }
-  }
-  @keyframes prtlHeld {
-    0%, 24%   { opacity: 1; transform: scale(1); }
-    28%       { opacity: 0; transform: scale(0.86); }
-    100%      { opacity: 0; transform: scale(0.86); }
-  }
-  @keyframes prtlPointer {
-    0%, 24%   { opacity: 1; }
-    27%, 100% { opacity: 0; }
-  }
-  @keyframes prtlZone {
-    0%, 16%   { border-color: var(--rule-2); background: transparent; }
-    22%, 28%  { border-color: var(--accent); background: var(--accent-soft); }
-    36%, 100% { border-color: var(--rule-2); background: transparent; }
-  }
-  @keyframes prtlHint {
-    0%, 18%   { opacity: 1; }
-    24%, 94%  { opacity: 0; }
-    100%      { opacity: 1; }
-  }
-
-  /* Four uploads run as a relay: each bar finishes exactly where the next
-     row appears, so there is never dead air and never two bars filling at
-     once. Handover points are 40%, 54% and 68%.
-
-     The block rides up 20px (half a row) as each row arrives, so the stack
-     stays centred in the zone instead of growing down off the bottom. Each
-     shift starts just before its row fades in, so the row slides into a
-     space that has already opened rather than shoving the others aside. */
-  @keyframes prtlStack {
-    0%, 38%   { transform: translateY(60px); }
-    43%, 52%  { transform: translateY(40px); }
-    57%, 66%  { transform: translateY(20px); }
-    71%, 95%  { transform: translateY(0); }
-    100%      { transform: translateY(60px); }
-  }
-
-  @keyframes prtlRow1 { 0%, 26% { opacity: 0; } 30%, 94% { opacity: 1; } 97%, 100% { opacity: 0; } }
-  @keyframes prtlRow2 { 0%, 40% { opacity: 0; } 44%, 94% { opacity: 1; } 97%, 100% { opacity: 0; } }
-  @keyframes prtlRow3 { 0%, 54% { opacity: 0; } 58%, 94% { opacity: 1; } 97%, 100% { opacity: 0; } }
-  @keyframes prtlRow4 { 0%, 68% { opacity: 0; } 72%, 94% { opacity: 1; } 97%, 100% { opacity: 0; } }
-
-  /* linear, and each one starts on the frame the previous one ended */
-  @keyframes prtlFill1 { 0%, 30% { transform: scaleX(0); } 40%, 100% { transform: scaleX(1); } }
-  @keyframes prtlFill2 { 0%, 44% { transform: scaleX(0); } 54%, 100% { transform: scaleX(1); } }
-  @keyframes prtlFill3 { 0%, 58% { transform: scaleX(0); } 68%, 100% { transform: scaleX(1); } }
-  @keyframes prtlFill4 { 0%, 72% { transform: scaleX(0); } 82%, 100% { transform: scaleX(1); } }
-
-  @keyframes prtlSent1 { 0%, 40% { opacity: 0; } 43%, 94% { opacity: 1; } 97%, 100% { opacity: 0; } }
-  @keyframes prtlSent2 { 0%, 54% { opacity: 0; } 57%, 94% { opacity: 1; } 97%, 100% { opacity: 0; } }
-  @keyframes prtlSent3 { 0%, 68% { opacity: 0; } 71%, 94% { opacity: 1; } 97%, 100% { opacity: 0; } }
-  @keyframes prtlSent4 { 0%, 82% { opacity: 0; } 85%, 94% { opacity: 1; } 97%, 100% { opacity: 0; } }
-
-  /* --- the final ads: one frame morphing through every placement -------
-     One flat rectangle that changes shape, nothing else. Width and height
-     are animated rather than scaled on purpose: a scale would distort, and
-     "the same thing squashed to fit" is precisely what the copy promises you
-     avoid. Absolutely positioned, so the only layout it invalidates is its
-     own. */
-  .rc {
-    display: grid; align-content: center; gap: 12px;
-    border: 1px solid var(--rule);
-    border-radius: var(--dg-r-2);
-    background: var(--paper);
-  }
-
-  .rc-stage { position: relative; height: 140px; }
-  .rc-frame {
-    position: absolute; left: 50%; top: 50%;
-    transform: translate(-50%, -50%);
-    border-radius: var(--dg-r-4);
-    background: var(--accent-soft);
-    box-shadow: inset 0 0 0 1px var(--accent);
-    /* the morph used to take 0.84s out of a 12s loop and then sit still for
-       two seconds, which read as slow and heavy. Same four stops, a 9s loop,
-       and the change itself happens in 0.45s on a curve that arrives fast
-       and settles, so it snaps between placements instead of grinding. */
-    animation: rcFrame 9s cubic-bezier(0.33, 1, 0.4, 1) infinite;
-    animation-play-state: var(--play);
-  }
-
-  .rc-tags { position: relative; height: 1.05em; }
-  .rc-tags span {
-    position: absolute; inset: 0;
-    display: flex; align-items: center; justify-content: center; gap: 6px;
-    font-size: 0.6875rem; font-weight: 600; color: var(--ink);
-    white-space: nowrap;
-    opacity: 0;
-    animation-duration: 9s;
-    animation-timing-function: var(--ease-out);
-    animation-iteration-count: infinite;
-    animation-play-state: var(--play);
-  }
-  .rc-tags i { font-style: normal; font-weight: 600; color: var(--muted); }
-  .rc-tags span:nth-child(1) { animation-name: rcTag1; }
-  .rc-tags span:nth-child(2) { animation-name: rcTag2; }
-  .rc-tags span:nth-child(3) { animation-name: rcTag3; }
-  .rc-tags span:nth-child(4) { animation-name: rcTag4; }
-
-  /* every size fits inside the stage at the narrowest card width */
-  @keyframes rcFrame {
-    0%,   20% { width: 79px;  height: 140px; }
-    25%,  45% { width: 106px; height: 132px; }
-    50%,  70% { width: 118px; height: 118px; }
-    75%,  95% { width: 168px; height: 95px;  }
-    100%      { width: 79px;  height: 140px; }
-  }
-  /* each label hands over inside its own morph, so the word changes while
-     the shape is moving rather than before or after it */
-  @keyframes rcTag1 { 0%, 20% { opacity: 1; } 23%, 97% { opacity: 0; } 100% { opacity: 1; } }
-  @keyframes rcTag2 { 0%, 22% { opacity: 0; } 25%, 45% { opacity: 1; } 48%, 100% { opacity: 0; } }
-  @keyframes rcTag3 { 0%, 47% { opacity: 0; } 50%, 70% { opacity: 1; } 73%, 100% { opacity: 0; } }
-  @keyframes rcTag4 { 0%, 72% { opacity: 0; } 75%, 95% { opacity: 1; } 97%, 100% { opacity: 0; } }
-
-  /* --- the ad account: the Ads Manager screen, in your name ------------
-     The calm one of the three: nothing travels, the delivery dots just
-     breathe on a stagger the way a live dashboard does. */
-  .acct {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    min-height: 0;
-    border: 1px solid var(--rule);
-    border-radius: var(--dg-r-2);
-    overflow: hidden;
-    background: var(--paper);
-  }
-
-  /* window chrome: the Meta mark, then the screen you would be on */
-  .acct-chrome {
-    display: flex; align-items: center; gap: 8px;
-    padding: 10px 12px;
-    border-bottom: 1px solid var(--rule);
-    background: var(--surface);
-  }
-  .acct-mark { width: 21px; height: 14px; flex: none; display: block; }
-  .acct-crumb {
-    font-size: var(--t-micro); font-weight: 600;
-    letter-spacing: 0.02em; color: var(--muted);
-    white-space: nowrap; flex: none;
-  }
-
-
-  /* Dots and labels share one centre line. Small caps-only labels sit high
-     in their line box (the box keeps room for descenders they don't have),
-     so the text boxes are trimmed to cap height and the flex centring then
-     lines the dot up with the letters, not with the empty space under them. */
-  .acct-status {
-    margin-left: auto; display: flex; align-items: center; gap: 6px; flex: none;
-    font-size: 0.625rem; font-weight: 700; line-height: 1;
-    letter-spacing: 0.1em; text-transform: uppercase; color: var(--ok);
-  }
-  .acct-status span,
-  .acct-row b,
-  .acct-row span { text-box: trim-both cap alphabetic; }
-
-  /* Calm on purpose: the dots never change size or fade. A soft ring
-     leaves the status dot on a steady beat, the same halo as the hero's
-     availability pill, and each row's dot sends one out in turn, so there
-     is only ever one thing moving at a time. */
-  .acct-live,
-  .acct-row i {
-    position: relative;
-    border-radius: 50%;
-    background: var(--ok); flex: none;
-  }
-  .acct-live { width: 6px; height: 6px; }
-  .acct-live::after,
-  .acct-row i::after {
-    content: "";
-    position: absolute; inset: 0;
-    border-radius: 50%;
-    background: var(--ok);
-    opacity: 0;
-    animation: acctPing 2.4s cubic-bezier(0.16, 1, 0.3, 1) infinite;
-    animation-play-state: var(--play);
-  }
-  /* one 4.8s cycle across the three rows, a third each */
-  .acct-row i::after { animation-name: acctRowPing; animation-duration: 4.8s; }
-  .acct-row:nth-child(2) i::after { animation-delay: 1.6s; }
-  .acct-row:nth-child(3) i::after { animation-delay: 3.2s; }
-  @keyframes acctPing {
-    0%   { transform: scale(1); opacity: 0.5; }
-    100% { transform: scale(3); opacity: 0; }
-  }
-  @keyframes acctRowPing {
-    0%        { transform: scale(1); opacity: 0.5; }
-    40%, 100% { transform: scale(2.8); opacity: 0; }
-  }
-
-  .acct-panel {
-    flex: 1;
-    display: flex; flex-direction: column;
-    gap: 10px;
-    padding: 0.75rem;
-    min-width: 0;
-  }
-
-  /* identity: whose account this is */
-  .acct-id {
-    display: grid;
-    grid-template-columns: 34px minmax(0, 1fr) auto;
-    gap: 10px; align-items: center;
-    padding: 10px;
-    border: 1px solid var(--rule);
-    border-radius: var(--dg-r-3);
-    background: var(--surface);
-  }
-  .acct-avatar {
-    width: 34px; height: 34px; border-radius: 50%;
-    background: var(--accent); color: var(--accent-ink);
-    display: grid; place-items: center;
-    font-size: 0.875rem; font-weight: 700;
-  }
-  .acct-idtext { display: grid; gap: 2px; min-width: 0; }
-  .acct-idtext strong {
-    font-size: 0.875rem; font-weight: 600; color: var(--ink);
-    letter-spacing: -0.01em;
-    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-  }
-  .acct-idtext em {
-    font-style: normal; font-size: 0.6875rem; color: var(--muted);
-    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-  }
-  .own-pill {
-    font-size: 0.625rem; font-weight: 700;
-    letter-spacing: 0.08em; text-transform: uppercase;
-    color: var(--accent); background: var(--accent-soft);
-    border-radius: var(--radius-pill);
-    padding: 4px 9px; flex: none; white-space: nowrap;
-  }
-
-
-
-  .acct-rows {
-    flex: 1;
-    display: grid; gap: 6px;
-    grid-auto-rows: 28px;
-    align-content: stretch;
-    min-height: 0;
-  }
-  .acct-row {
-    display: grid;
-    grid-template-columns: 7px minmax(0, 1fr) auto;
-    gap: 9px; align-items: center;
-    padding: 0 10px;
-    border-radius: var(--dg-r-4);
-    background: var(--surface);
-  }
-  .acct-row i { width: 7px; height: 7px; }
-  .acct-row b {
-    font-size: 0.75rem; font-weight: 500; line-height: 1; color: var(--ink);
-    white-space: nowrap;
-  }
-  /* the value is quiet; the green dot already says it is live */
-  .acct-row span {
-    font-size: 0.6875rem; font-weight: 600; line-height: 1; color: var(--muted);
-    white-space: nowrap;
-  }
-
-
   /* ---------- availability pill ---------- */
 
   /* replaces the hero eyebrow */
@@ -2015,8 +1629,8 @@
     input, textarea { cursor: text; }
     /* anything else filled with the accent gets the dark dot, so the cursor
        never disappears into it: the light button's arrow, the review
-       initials, the Ads Manager avatar, the "now taking" light */
-    .say-avatar, .acct-avatar, .avail i {
+       initials, the "now taking" light */
+    .say-avatar, .avail i {
       cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'%3E%3Ccircle cx='8' cy='8' r='8' fill='%230A1428'/%3E%3C/svg%3E") 8 8, auto;
     }
     /* solid buttons are accent, and the outline ones carry an accent arrow
@@ -2025,6 +1639,13 @@
     /* The cursor only shows while hovering, so it follows the hover state:
        a solid button empties under the pointer (accent dot) and an
        outline one fills (dark dot). */
+    /* the accent hero frame: dark dot, accent again over the video */
+    .hero {
+      cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'%3E%3Ccircle cx='8' cy='8' r='8' fill='%230A1428'/%3E%3C/svg%3E") 8 8, auto;
+    }
+    .hero-left, .hero-media {
+      cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'%3E%3Ccircle cx='8' cy='8' r='8' fill='%236E9BF7'/%3E%3C/svg%3E") 8 8, auto;
+    }
     .btn.outline {
       cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'%3E%3Ccircle cx='8' cy='8' r='8' fill='%230A1428'/%3E%3C/svg%3E") 8 8, auto;
     }
@@ -2053,19 +1674,6 @@
     .nav-links .nav-label > span:nth-child(2) { display: none; }
     /* purely decorative pulses, nothing to read in them */
     .avail i::after { animation: none; opacity: 0; }
-    .acct-live::after, .acct-row i::after { animation: none; opacity: 0; }
-    /* the drag-and-drop is the one loop that travels; rest it on the
-       finished state - three uploads sent, pointer and folder gone */
-    .prtl-zone, .prtl-hint, .prtl-drag, .prtl-up, .prtl-up-bar i, .prtl-sent,
-    .prtl-stack, .prtl-hand, .prtl-cursor { animation: none; }
-    .prtl-hand, .prtl-hint { opacity: 0; }
-    .prtl-stack { transform: none; }
-    .prtl-up, .prtl-sent { opacity: 1; }
-    .prtl-up-bar i { transform: scaleX(1); }
-    /* the placement morph rests on the reels frame, its label showing */
-    .rc-frame, .rc-tags span { animation: none; }
-    .rc-frame { width: 79px; height: 140px; }
-    .rc-tags span:first-child { opacity: 1; }
   }
 </style>
 <!-- With script off or blocked, nothing would ever lift the curtain or fade
@@ -2109,25 +1717,29 @@
 <main data-view="home">
 
 <!-- ============ HERO ============ -->
-<section class="hero center">
+<section class="hero">
+  <div class="hero-left">
   <div class="shell">
     <p class="avail"><i></i><span>Now taking on new clients</span></p>
-    <h1 tabindex="-1">Content for<br>Nelson businesses</h1>
-    <p class="lede">Kia ora, we're Tui Media, a small video studio in Nelson. We make monthly content and video ads for local businesses, filmed on site around your team and the work you do.</p>
+    <h1 tabindex="-1">Content <br>for Nelson <br>businesses</h1>
     <div class="btn-row">
       <a class="btn" href="#book" data-route="book">
-        <span class="btn-label"><span>Book my free call</span><span aria-hidden="true">Book my free call</span></span>
+        <span class="btn-label"><span>Book a free call</span><span aria-hidden="true">Book a free call</span></span>
+      </a>
+      <a class="btn outline hero-ghost" href="/work">
+        <span class="btn-label"><span>See our work</span><span aria-hidden="true">See our work</span></span>
       </a>
     </div>
-    <p class="cta-note">20 minutes, free, no hard sell.</p>
+  </div>
   </div>
 
+  <div class="hero-media" aria-hidden="true">
+    <video src="/media/hero-wide.mp4" poster="/media/hero-wide-poster.jpg" autoplay muted loop playsinline preload="auto"></video>
+  </div>
 </section>
 
-<!-- ============ LOGO STRIP ============
-     First thing under the fold on purpose: who Arlo has worked with earns
-     the right to the intro that follows it. One run of logos here; the JS
-     clones it once so the loop has an identical second half. -->
+
+<!-- ============ LOGOS ============ -->
 <section class="logos">
   <div class="logo-row">
   <p class="logo-title">Who we've <br>filmed for</p>
@@ -2156,9 +1768,9 @@
 <section class="intro">
   <div class="shell">
     <div class="intro-grid">
-      <h2 data-anim>Pretty isn't the point.</h2>
+      <h2 data-anim>Kia ora</h2>
       <div class="intro-body">
-        <p data-anim>A lot of video looks lovely and goes nowhere. We start with what your customers want to know before they get in touch, write a plan around it, and then film.</p>
+        <p data-anim>We're Tui Media, a small video studio in Nelson. We make monthly content and video ads for local businesses, filmed on site around your team and the work you do.</p>
 
         <div class="stat-row">
           <div class="stat-cell" data-anim><b data-count="60" data-suffix="+">60+</b><span>Videos made</span></div>
@@ -2313,92 +1925,6 @@
             <p>We set it up in your ad account and switch it on. Then the footage, the ads and the account are all yours.</p>
           </div>
         </div>
-    </div>
-  </div>
-</section>
-
-
-<!-- ============ WHAT YOU KEEP ============ -->
-<section id="keep">
-  <div class="shell">
-    <div class="section-head center" data-anim>
-      <h2>What you keep</h2>
-      <p class="lede">When an ad project wraps, you walk away with everything. Nothing held back, no account you can't get into, and we keep a backup of the raw files for 6 months.</p>
-    </div>
-
-    <div class="keep-grid">
-      <div class="keep-card" data-anim>
-        <div class="keep-stage" aria-hidden="true">
-          <div class="prtl">
-            <div class="prtl-bar">
-              <span class="prtl-lights"><i></i><i></i><i></i></span>
-              <span class="prtl-title">Your footage</span>
-            </div>
-            <div class="prtl-body">
-              <div class="prtl-zone">
-                <span class="prtl-hint">Drop footage here</span>
-                <div class="prtl-stack">
-                  <div class="prtl-up prtl-up-1"><span class="prtl-up-head"><svg class="pt-fold" viewBox="0 0 48 40" aria-hidden="true"><path class="fld-back" d="M3 10a5 5 0 0 1 5-5h10.7a3 3 0 0 1 2.1.9l3.4 3.3a3 3 0 0 0 2.1.9H40a5 5 0 0 1 5 5v2H3z"/><path class="fld-front" d="M3 16h42v14a5 5 0 0 1-5 5H8a5 5 0 0 1-5-5z"/></svg><b>B-roll</b><span class="prtl-sent">Sent</span></span><span class="prtl-up-bar"><i></i></span></div>
-                  <div class="prtl-up prtl-up-2"><span class="prtl-up-head"><svg class="pt-fold" viewBox="0 0 48 40" aria-hidden="true"><path class="fld-back" d="M3 10a5 5 0 0 1 5-5h10.7a3 3 0 0 1 2.1.9l3.4 3.3a3 3 0 0 0 2.1.9H40a5 5 0 0 1 5 5v2H3z"/><path class="fld-front" d="M3 16h42v14a5 5 0 0 1-5 5H8a5 5 0 0 1-5-5z"/></svg><b>Hero takes</b><span class="prtl-sent">Sent</span></span><span class="prtl-up-bar"><i></i></span></div>
-                  <div class="prtl-up prtl-up-3"><span class="prtl-up-head"><svg class="pt-fold" viewBox="0 0 48 40" aria-hidden="true"><path class="fld-back" d="M3 10a5 5 0 0 1 5-5h10.7a3 3 0 0 1 2.1.9l3.4 3.3a3 3 0 0 0 2.1.9H40a5 5 0 0 1 5 5v2H3z"/><path class="fld-front" d="M3 16h42v14a5 5 0 0 1-5 5H8a5 5 0 0 1-5-5z"/></svg><b>Interview</b><span class="prtl-sent">Sent</span></span><span class="prtl-up-bar"><i></i></span></div>
-                  <div class="prtl-up prtl-up-4"><span class="prtl-up-head"><svg class="pt-fold" viewBox="0 0 48 40" aria-hidden="true"><path class="fld-back" d="M3 10a5 5 0 0 1 5-5h10.7a3 3 0 0 1 2.1.9l3.4 3.3a3 3 0 0 0 2.1.9H40a5 5 0 0 1 5 5v2H3z"/><path class="fld-front" d="M3 16h42v14a5 5 0 0 1-5 5H8a5 5 0 0 1-5-5z"/></svg><b>Outtakes</b><span class="prtl-sent">Sent</span></span><span class="prtl-up-bar"><i></i></span></div>
-                </div>
-              </div>
-              <div class="prtl-hand">
-                <div class="prtl-drag"><svg class="pt-fold" viewBox="0 0 48 40" aria-hidden="true"><path class="fld-back" d="M3 10a5 5 0 0 1 5-5h10.7a3 3 0 0 1 2.1.9l3.4 3.3a3 3 0 0 0 2.1.9H40a5 5 0 0 1 5 5v2H3z"/><path class="fld-front" d="M3 16h42v14a5 5 0 0 1-5 5H8a5 5 0 0 1-5-5z"/></svg><b>B-roll</b></div>
-                <span class="prtl-cursor" aria-hidden="true"></span>
-              </div>
-            </div>
-          </div>
-        </div>
-        <h3>The raw footage</h3>
-        <p>Every take from the day, outtakes and all, in a folder with your name on it.</p>
-      </div>
-      <div class="keep-card" data-anim>
-        <div class="keep-stage" aria-hidden="true">
-          <div class="rc">
-            <div class="rc-stage">
-              <div class="rc-frame"></div>
-            </div>
-            <div class="rc-tags">
-              <span>Reels <i>9:16</i></span>
-              <span>Feed <i>4:5</i></span>
-              <span>Square <i>1:1</i></span>
-              <span>In-stream <i>16:9</i></span>
-            </div>
-          </div>
-        </div>
-        <h3>The final ads</h3>
-        <p>Cut for reels, feed, square and in-stream, so nobody's head gets cropped off.</p>
-      </div>
-      <div class="keep-card" data-anim>
-        <div class="keep-stage" aria-hidden="true">
-          <div class="acct">
-            <div class="acct-chrome">
-              <svg class="acct-mark" viewBox="0 0 288 191" role="img" aria-label="Meta"><defs><linearGradient id="metaMarkA" x1="61" y1="117" x2="259" y2="127" gradientUnits="userSpaceOnUse"><stop stop-color="#0064e1" offset="0"/><stop stop-color="#0064e1" offset=".4"/><stop stop-color="#0073ee" offset=".83"/><stop stop-color="#0082fb" offset="1"/></linearGradient><linearGradient id="metaMarkB" x1="45" y1="139" x2="45" y2="66" gradientUnits="userSpaceOnUse"><stop stop-color="#0082fb" offset="0"/><stop stop-color="#0064e0" offset="1"/></linearGradient></defs><path fill="#0081fb" d="m31.06,125.96c0,10.98 2.41,19.41 5.56,24.51 4.13,6.68 10.29,9.51 16.57,9.51 8.1,0 15.51-2.01 29.79-21.76 11.44-15.83 24.92-38.05 33.99-51.98l15.36-23.6c10.67-16.39 23.02-34.61 37.18-46.96 11.56-10.08 24.03-15.68 36.58-15.68 21.07,0 41.14,12.21 56.5,35.11 16.81,25.08 24.97,56.67 24.97,89.27 0,19.38-3.82,33.62-10.32,44.87-6.28,10.88-18.52,21.75-39.11,21.75l0-31.02c17.63,0 22.03-16.2 22.03-34.74 0-26.42-6.16-55.74-19.73-76.69-9.63-14.86-22.11-23.94-35.84-23.94-14.85,0-26.8,11.2-40.23,31.17-7.14,10.61-14.47,23.54-22.7,38.13l-9.06,16.05c-18.2,32.27-22.81,39.62-31.91,51.75-15.95,21.24-29.57,29.29-47.5,29.29-21.27,0-34.72-9.21-43.05-23.09-6.8-11.31-10.14-26.15-10.14-43.06z"/><path fill="url(#metaMarkA)" d="m24.49,37.3c14.24-21.95 34.79-37.3 58.36-37.3 13.65,0 27.22,4.04 41.39,15.61 15.5,12.65 32.02,33.48 52.63,67.81l7.39,12.32c17.84,29.72 27.99,45.01 33.93,52.22 7.64,9.26 12.99,12.02 19.94,12.02 17.63,0 22.03-16.2 22.03-34.74l27.4-.86c0,19.38-3.82,33.62-10.32,44.87-6.28,10.88-18.52,21.75-39.11,21.75-12.8,0-24.14-2.78-36.68-14.61-9.64-9.08-20.91-25.21-29.58-39.71l-25.79-43.08c-12.94-21.62-24.81-37.74-31.68-45.04-7.39-7.85-16.89-17.33-32.05-17.33-12.27,0-22.69,8.61-31.41,21.78z"/><path fill="url(#metaMarkB)" d="m82.35,31.23c-12.27,0-22.69,8.61-31.41,21.78-12.33,18.61-19.88,46.33-19.88,72.95 0,10.98 2.41,19.41 5.56,24.51l-26.48,17.44c-6.8-11.31-10.14-26.15-10.14-43.06 0-30.75 8.44-62.8 24.49-87.55 14.24-21.95 34.79-37.3 58.36-37.3z"/></svg>
-              <span class="acct-crumb">Ads Manager</span>
-              <span class="acct-status"><i class="acct-live"></i><span>Active</span></span>
-            </div>
-            <div class="acct-panel">
-              <div class="acct-id">
-                <span class="acct-avatar">Y</span>
-                <span class="acct-idtext">
-                  <strong>Your Business</strong>
-                  <em>Ad account &middot; act_&bull;&bull;&bull;&bull;</em>
-                </span>
-                <span class="own-pill">Owner</span>
-              </div>
-              <div class="acct-rows">
-                <div class="acct-row"><i></i><b>Pixel</b><span>Firing</span></div>
-                <div class="acct-row"><i></i><b>Conversion history</b><span>Kept</span></div>
-                <div class="acct-row"><i></i><b>People with access</b><span>You, admin</span></div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <h3>The ad account</h3>
-        <p>Set up in your name before a cent is spent. If we ever part ways, it stays with you, history and all.</p>
-      </div>
     </div>
   </div>
 </section>
@@ -2778,6 +2304,25 @@
     var barWrap = el.querySelector('.page-loader__progress');
     var bar = barWrap ? barWrap.querySelector('i') : null;
 
+    var hero = document.querySelector('.hero');
+    if (hero && !reduceMotion) hero.classList.add('hero-pre');
+    function heroIn() { if (hero) hero.classList.remove('hero-pre'); }
+    /* the hero clip is decorative: hold it on its poster for reduced motion */
+    var heroVid = hero && hero.querySelector('.hero-media video');
+    if (heroVid && reduceMotion) { heroVid.removeAttribute('autoplay'); heroVid.pause(); }
+
+    /* the nav goes flat while it is over the hero (CSS applies it on
+       desktop only), and back to the glass pill once the hero has gone */
+    var navWrap = document.querySelector('.nav-wrap');
+    if (hero && navWrap) {
+      var navOver = function () {
+        navWrap.classList.toggle('over-hero', hero.getBoundingClientRect().bottom > navWrap.offsetHeight);
+      };
+      navOver();
+      window.addEventListener('scroll', navOver, { passive: true });
+      window.addEventListener('resize', navOver);
+    }
+
     var MIN_MS = 420;
     var MAX_MS = 4000;
     var SNAP_MS = 180; // time the bar takes to finish its dash to the edge
@@ -2810,9 +2355,11 @@
         setTimeout(function () {
           el.classList.add('page-loader--exit');
           barWrap.style.display = 'none';
+          heroIn();
         }, SNAP_MS);
       } else {
         el.classList.add('page-loader--exit');
+        heroIn();
       }
     }
 
@@ -3720,163 +3267,6 @@
     availEl.textContent = 'Now booking for ' + MONTHS[m % 12];
   }
 
-  /* ---------- what you keep: idle the looping diagrams off screen -----
-     All three run on CSS animations gated by one inherited custom property,
-     so a single class on the grid starts and stops the lot. */
-
-  var keepGrid = document.querySelector('.keep-grid');
-  if (keepGrid) {
-    if ('IntersectionObserver' in window) {
-      new IntersectionObserver(function (entries) {
-        entries.forEach(function (e) {
-          keepGrid.classList.toggle('keep-live', e.isIntersecting);
-        });
-      }, { rootMargin: '150px 0px' }).observe(keepGrid);
-    } else {
-      keepGrid.classList.add('keep-live');
-    }
-  }
-
-  /* ---------- hero video trail ------------------------------------------
-     As the pointer moves across the hero, a clip drops in under it every
-     GAP px of travel, drifts a little the way the pointer was heading, then
-     fades and shrinks away. A fixed pool of tiles is reused round-robin, so
-     the DOM never grows however long the mouse is waved about.
-
-     Cost, in order of when it is paid:
-     - First load: nothing. The pool is only built, and the clips (~1MB for
-       the lot, from media/trail/) only requested, once the pointer first
-       enters the hero. With Save-Data on, tiles carry the poster only.
-     - Moving: pointermove just records where the pointer is; the drops are
-       worked out once per frame, against a hero rect cached on scroll and
-       resize rather than measured on every event.
-     - Idle: a tile's clip plays only while that tile is on screen, and every
-       clip is paused when the tab is hidden.
-
-     Mouse and trackpad only (touch has no hover to trail), and off for
-     reduced motion. The clips are listed below; each needs its trail cut
-     and poster in media/trail/. */
-  (function () {
-    var hero = document.querySelector('.hero');
-    if (!hero || reduceMotion || !Element.prototype.animate) return;
-    if (!window.matchMedia('(hover: hover) and (pointer: fine)').matches) return;
-
-    var saveData = !!(navigator.connection && navigator.connection.saveData);
-    var clips = ['johnson-residential-4', 'atk-detailing-3', 'johnson-residential-3',
-                 'johnson-residential-1', 'atk-detailing', 
-                 'johnson-residential-2', 'landscape-transformers-1'
-                ].map(function (slug) {
-      return { src: '/media/trail/' + slug + '.mp4?v=3', poster: '/media/trail/' + slug + '.webp?v=3' };
-    });
-    if (!clips.length) return;
-
-    var POOL = 14;     /* tiles alive at once, at most */
-    var GAP = 80;      /* px of pointer travel between drops */
-    var LIFE = 1100;   /* ms a tile lives */
-    var DRIFT = 26;    /* px a tile travels along the pointer's heading */
-    var MAX_PER_FRAME = 3;   /* a fast flick fills its gap, but never floods */
-
-    var layer = null, tiles = [], next = 0, z = 0;
-    var rect = null, tileW = 0, tileH = 0;
-    var px = null, py = null, lastX = null, lastY = null, raf = 0;
-
-    function measure() {
-      rect = hero.getBoundingClientRect();
-      if (tiles[0]) { tileW = tiles[0].offsetWidth; tileH = tiles[0].offsetHeight; }
-    }
-
-    function build() {
-      layer = document.createElement('div');
-      layer.className = 'hero-trail';
-      layer.setAttribute('aria-hidden', 'true');
-      /* start somewhere different each visit, so it isn't always ATK first */
-      var start = Math.floor(Math.random() * clips.length);
-      for (var i = 0; i < POOL; i++) {
-        var c = clips[(start + i) % clips.length];
-        var tile = document.createElement('div');
-        tile.className = 'trail-tile';
-        var v = document.createElement('video');
-        v.muted = true; v.loop = true; v.playsInline = true;
-        v.setAttribute('muted', ''); v.setAttribute('playsinline', '');
-        v.poster = c.poster;
-        if (!saveData) {
-          v.preload = 'auto';
-          v.src = c.src;
-          /* two tiles on the same clip should not play in lockstep */
-          v.addEventListener('loadedmetadata', function () {
-            if (this.duration) this.currentTime = Math.random() * this.duration;
-          }, { once: true });
-        }
-        tile.appendChild(v);
-        tile._video = v; tile._anim = null;
-        layer.appendChild(tile);
-        tiles.push(tile);
-      }
-      hero.insertBefore(layer, hero.firstChild);
-      measure();
-    }
-
-    function drop(x, y, ux, uy) {
-      var tile = tiles[next];
-      next = (next + 1) % tiles.length;
-      var v = tile._video;
-      if (tile._anim) tile._anim.cancel();
-
-      var x0 = x - tileW / 2, y0 = y - tileH / 2;
-      var x1 = x0 + ux * DRIFT, y1 = y0 + uy * DRIFT;
-      var turn = ' rotate(' + (Math.random() * 16 - 8).toFixed(1) + 'deg)';
-      var a = 'translate(' + x0.toFixed(1) + 'px,' + y0.toFixed(1) + 'px)' + turn;
-      var b = 'translate(' + x1.toFixed(1) + 'px,' + y1.toFixed(1) + 'px)' + turn;
-      tile.style.zIndex = ++z;
-
-      if (!saveData && v.paused) { var p = v.play(); if (p) p.catch(function () {}); }
-      tile._anim = tile.animate([
-        { opacity: 0, transform: a + ' scale(0.6)' },
-        { opacity: 1, transform: a + ' scale(1)', offset: 0.14 },
-        { opacity: 1, transform: b + ' scale(0.9)', offset: 0.6 },
-        { opacity: 0, transform: b + ' scale(0.5)' }
-      ], { duration: LIFE, easing: 'cubic-bezier(0.23, 1, 0.32, 1)', fill: 'forwards' });
-      tile._anim.onfinish = function () { v.pause(); };
-    }
-
-    function frame() {
-      raf = 0;
-      if (px === null || !rect) return;
-      var x = px - rect.left, y = py - rect.top;
-      if (lastX === null) { lastX = x; lastY = y; drop(x, y, 0, 0); return; }
-      var dx = x - lastX, dy = y - lastY;
-      var dist = Math.sqrt(dx * dx + dy * dy);
-      if (dist < GAP) return;
-      var ux = dx / dist, uy = dy / dist;
-      /* lay the drops out along the path at GAP intervals, so a quick sweep
-         leaves an even trail rather than one tile at each end of it */
-      var steps = Math.min(MAX_PER_FRAME, Math.floor(dist / GAP));
-      for (var i = 1; i <= steps; i++) {
-        var t = (GAP * i) / dist;
-        drop(lastX + dx * t, lastY + dy * t, ux, uy);
-      }
-      lastX = x; lastY = y;
-    }
-
-    hero.addEventListener('pointerenter', function (e) {
-      if (e.pointerType && e.pointerType !== 'mouse') return;
-      if (!layer) build(); else measure();
-    });
-    hero.addEventListener('pointermove', function (e) {
-      if (e.pointerType && e.pointerType !== 'mouse') return;
-      if (!layer) build();
-      px = e.clientX; py = e.clientY;
-      if (!raf) raf = requestAnimationFrame(frame);
-    }, { passive: true });
-    hero.addEventListener('pointerleave', function () { px = py = lastX = lastY = null; });
-
-    window.addEventListener('scroll', function () { if (layer) rect = hero.getBoundingClientRect(); }, { passive: true });
-    window.addEventListener('resize', function () { if (layer) measure(); });
-    document.addEventListener('visibilitychange', function () {
-      if (document.hidden) tiles.forEach(function (t) { t._video.pause(); });
-    });
-  })();
-
   /* The logo copy is hidden from assistive tech, so the names are read once.
      The strip is a third of the page wide and one run is several times
      that, so a single copy always covers the frame. */
@@ -3893,7 +3283,7 @@
 <script defer src="/js/lenis.min.js"></script>
 <script defer src="/js/smooth-scroll.js"></script>
 <script defer src="/js/page-transition.js"></script>
-<script defer src="/js/nav.js?v=2"></script>
+<script defer src="/js/nav.js?v=4"></script>
 <script defer src="/_vercel/insights/script.js"></script>
 
 </body>
