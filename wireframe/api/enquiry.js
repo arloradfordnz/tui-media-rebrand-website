@@ -27,7 +27,7 @@ const REQUIRED = ['name', 'business', 'email', 'sell', 'when', 'decision', 'capa
 // hides them for monthly content and "not sure yet"; an enquiry with no
 // interest at all comes from an older tab that always asked them.
 const AD_FIELDS = ['value', 'spend'];
-const AD_INTERESTS = ['A video ad project', 'Both'];
+const AD_INTERESTS = ['A video ad project']; // no longer offered; kept for tabs opened before the change
 function requiredFor(data) {
   const interest = String(data.interest || '').trim();
   return !interest || AD_INTERESTS.includes(interest) ? REQUIRED.concat(AD_FIELDS) : REQUIRED;

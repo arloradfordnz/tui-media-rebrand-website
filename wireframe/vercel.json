@@ -79,6 +79,11 @@
   ],
   "redirects": [
     {
+      "source": "/video-ads",
+      "destination": "/events",
+      "permanent": false
+    },
+    {
       "source": "/summer",
       "destination": "/",
       "permanent": false

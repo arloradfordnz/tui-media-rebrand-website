@@ -3,23 +3,23 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Video ad projects | Tui Media</title>
-<meta name="description" content="Video ad projects for Nelson businesses. Research, script, filming and several ad versions, launched in an ad account in your name. One fee, quoted per project.">
-<link rel="canonical" href="https://www.tuimedia.nz/video-ads">
+<title>Event video | Tui Media</title>
+<meta name="description" content="Event video in Nelson. Your event filmed on the day and cut into a highlight film. $1,000 for up to four hours, $1,400 for a full day.">
+<link rel="canonical" href="https://www.tuimedia.nz/events">
 <meta name="robots" content="index, follow, max-image-preview:large">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Tui Media">
-<meta property="og:url" content="https://www.tuimedia.nz/video-ads">
-<meta property="og:title" content="Video ad projects | Tui Media">
-<meta property="og:description" content="Video ad projects for Nelson businesses. Research, script, filming and several ad versions, launched in an ad account in your name. One fee, quoted per project.">
+<meta property="og:url" content="https://www.tuimedia.nz/events">
+<meta property="og:title" content="Event video | Tui Media">
+<meta property="og:description" content="Event video in Nelson. Your event filmed on the day and cut into a highlight film. $1,000 for up to four hours, $1,400 for a full day.">
 <meta property="og:locale" content="en_NZ">
 <meta property="og:image" content="https://www.tuimedia.nz/og.jpg">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta property="og:image:alt" content="The Tui Media logo, white on navy.">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Video ad projects | Tui Media">
-<meta name="twitter:description" content="Video ad projects for Nelson businesses. Research, script, filming and several ad versions, launched in an ad account in your name. One fee, quoted per project.">
+<meta name="twitter:title" content="Event video | Tui Media">
+<meta name="twitter:description" content="Event video in Nelson. Your event filmed on the day and cut into a highlight film. $1,000 for up to four hours, $1,400 for a full day.">
 <meta name="twitter:image" content="https://www.tuimedia.nz/og.jpg">
 <meta name="theme-color" content="#060D1A">
 <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
@@ -28,15 +28,39 @@
 <script>document.documentElement.classList.add('js');</script>
 <link rel="stylesheet" href="/css/service.css">
 <link rel="stylesheet" href="/css/loader.css">
+<style>
+  /* the event film: one 16:9 frame under the page head, the browser's own
+     controls, nothing downloads until play is pressed */
+  .event-film { max-width: 960px; margin-inline: auto; }
+  .event-film video {
+    display: block; width: 100%; aspect-ratio: 16 / 9; height: auto;
+    border-radius: var(--radius-sm); background: var(--slot-1); object-fit: cover;
+  }
+  .event-film figcaption { margin-top: var(--s-2); text-align: center; font-size: var(--t-small); color: var(--muted); }
+</style>
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
   "@graph": [
     {
-      "name": "Video ad project",
-      "description": "Research, script and hooks, filming on site, and several ad versions in every format, launched in an ad account in the client's name and handed over. One fee, quoted per project.",
       "@type": "Service",
-      "url": "https://www.tuimedia.nz/video-ads",
+      "name": "Event video",
+      "description": "An event filmed on the day and cut into a highlight film.",
+      "url": "https://www.tuimedia.nz/events",
+      "offers": [
+        {
+          "@type": "Offer",
+          "name": "Highlight film, up to four hours",
+          "price": "1000",
+          "priceCurrency": "NZD"
+        },
+        {
+          "@type": "Offer",
+          "name": "Highlight film, full day",
+          "price": "1400",
+          "priceCurrency": "NZD"
+        }
+      ],
       "provider": {
         "@id": "https://www.tuimedia.nz/#business"
       },
@@ -53,47 +77,47 @@
           "name": "How much does it cost?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "Ad projects are one fee, quoted on the call, because it depends on what you need filmed. Ad spend is separate and goes straight to Meta, with no markup."
+            "text": "A highlight film from up to four hours of filming is $1,000. A full day is $1,400. Short clips for social are $150 each or three for $400, and a second camera is $400."
           }
         },
         {
           "@type": "Question",
-          "name": "How long until my ads are live?",
+          "name": "Do we need a second camera?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "Usually about three weeks. Planning and the script take the first week, we film in a day, edit in week two and switch it on in week three."
+            "text": "Only if two things happen at once, like a stage show with a crowd worth filming. For most events one camera is plenty."
           }
         },
         {
           "@type": "Question",
-          "name": "Do you manage the ads after launch?",
+          "name": "Can we get short clips for social?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "Not at the moment. We build it, switch it on and hand it over, so you or whoever does your marketing can run it from there. Full plans also come with ad-ready cuts of your monthly content."
+            "text": "Yes. Short vertical clips cut from the same footage are $150 each, or three for $400."
           }
         },
         {
           "@type": "Question",
-          "name": "Can you promise results?",
+          "name": "How far ahead should we book?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "No, and be wary of anyone who does. What we can do is look at what's already working in your industry, build around it, and give you a few versions so you're not betting on one."
+            "text": "As early as you can. Summer weekends go first. Half the fee holds your date."
           }
         },
         {
           "@type": "Question",
-          "name": "Do I keep the footage and ad account?",
+          "name": "Do you live stream?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "Yes. You own all final content once it's paid for, and the ad account is set up in your name from day one."
+            "text": "No. We film and edit, we don't live stream."
           }
         },
         {
           "@type": "Question",
-          "name": "Do I have to be on camera?",
+          "name": "Who owns the film?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "No, though it usually helps. If you'd rather stay behind the camera, we can build it around your team, your customers, the work or a voiceover."
+            "text": "You do, once it's paid for. Use it wherever you like."
           }
         }
       ]
@@ -115,11 +139,11 @@
     <a class="wordmark" href="/" aria-label="Tui Media, home"><i></i></a>
     <nav class="nav-links">
       <a href="/monthly-content"><span class="nav-label"><span>Monthly content</span><span aria-hidden="true">Monthly content</span></span></a>
-      <a href="/video-ads" aria-current="page"><span class="nav-label"><span>Video ads</span><span aria-hidden="true">Video ads</span></span></a>
+      <a href="/events" aria-current="page"><span class="nav-label"><span>Events</span><span aria-hidden="true">Events</span></span></a>
       <a href="/work"><span class="nav-label"><span>Case studies</span><span aria-hidden="true">Case studies</span></span></a>
       <a href="/about"><span class="nav-label"><span>About</span><span aria-hidden="true">About</span></span></a>
     </nav>
-    <a class="btn" href="/?interest=ad#book">
+    <a class="btn" href="/?interest=event#book">
       <span class="btn-label"><span>Book a free call</span><span aria-hidden="true">Book a free call</span></span>
     </a>
   </div>
@@ -128,32 +152,114 @@
 <main>
 <div class="wrap">
   <div class="page-head">
-    <p class="avail"><i></i><span>Video ads</span></p>
-    <h1>From a blank page to a live ad</h1>
-    <p class="lede">We work out what to say, write it, film it and cut it, then switch it on in your own ad account and hand the whole lot over. One fee, quoted per project.</p>
+    <p class="avail"><i></i><span>Events in Nelson Tasman</span></p>
+    <h1>Your event, on film</h1>
+    <p class="lede">Festivals, expos, launches and community days. We film it on the day and send back a highlight film you can show sponsors, funders and next year's crowd.</p>
     <div class="btn-row">
-      <a class="btn" href="/?interest=ad#book">
-        <span class="btn-label"><span>Talk about an ad project</span><span aria-hidden="true">Talk about an ad project</span></span>
+      <a class="btn" href="/?interest=event#book">
+        <span class="btn-label"><span>Talk about an event</span><span aria-hidden="true">Talk about an event</span></span>
       </a>
     </div>
   </div>
 </div>
 
-<section>
+<section class="film-sec">
+  <div class="wrap">
+    <figure class="event-film">
+      <video controls playsinline preload="none" poster="/media/events/fishing-hunting-4x4-expo-cover.webp?v=1" width="1920" height="1080">
+        <source src="/media/events/fishing-hunting-4x4-expo.mp4?v=2" type="video/mp4">
+      </video>
+      <figcaption>NZ Fishing Hunting 4X4 Expo, Trafalgar Centre, for Intrinsic Events</figcaption>
+    </figure>
+  </div>
+</section>
+
+<section id="packages">
   <div class="wrap">
     <div class="section-head center">
-      <h2>What's included</h2>
-      <p class="lede">Everything it takes to get an ad running, and then it's all yours.</p>
+      <h2>Pick what you need</h2>
+      <p class="lede">One fee per event, agreed before the day.</p>
     </div>
-    <div class="panel">
-      <ul class="ticks two-col">
-        <li><span class="fit-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5 9.5 18 20 6.5"/></svg></span>A look at what's already working in your industry</li>
-        <li><span class="fit-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5 9.5 18 20 6.5"/></svg></span>The script and opening lines, written for you</li>
-        <li><span class="fit-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5 9.5 18 20 6.5"/></svg></span>Filming on site, with our own gear</li>
-        <li><span class="fit-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5 9.5 18 20 6.5"/></svg></span>A few versions that open differently, cut for every format</li>
-        <li><span class="fit-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5 9.5 18 20 6.5"/></svg></span>Everything set up in an ad account in your name</li>
-        <li><span class="fit-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5 9.5 18 20 6.5"/></svg></span>Switched on, then handed over</li>
-      </ul>
+    <div class="three-up">
+      <article class="way-card">
+        <div class="pack-head">
+          <h3>Highlight film</h3>
+          <span class="way-tag">Most popular</span>
+        </div>
+        <div>
+          <p class="way-price big">$1,000</p>
+          <p class="pack-who">Up to four hours of filming.</p>
+        </div>
+        <div class="way-body">
+          <ul class="ticks">
+            <li><span class="fit-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5 9.5 18 20 6.5"/></svg></span>One highlight film, 1 to 3 minutes</li>
+            <li><span class="fit-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5 9.5 18 20 6.5"/></svg></span>A plan before the day</li>
+            <li><span class="fit-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5 9.5 18 20 6.5"/></svg></span>Filmed wide and vertical</li>
+            <li><span class="fit-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5 9.5 18 20 6.5"/></svg></span>Two rounds of changes</li>
+          </ul>
+        </div>
+        <div class="way-foot">
+          <div class="btn-row">
+            <a class="btn" href="/?interest=event#book">
+              <span class="btn-label"><span>Talk about an event</span><span aria-hidden="true">Talk about an event</span></span>
+            </a>
+          </div>
+        </div>
+      </article>
+      <article class="way-card">
+        <div class="pack-head">
+          <h3>Full day</h3>
+          
+        </div>
+        <div>
+          <p class="way-price big">$1,400</p>
+          <p class="pack-who">For festivals and anything that runs all day.</p>
+        </div>
+        <div class="way-body">
+          <ul class="ticks">
+            <li><span class="fit-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5 9.5 18 20 6.5"/></svg></span>One highlight film, 2 to 4 minutes</li>
+            <li><span class="fit-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5 9.5 18 20 6.5"/></svg></span>A full day on site</li>
+            <li><span class="fit-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5 9.5 18 20 6.5"/></svg></span>A plan before the day</li>
+            <li><span class="fit-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5 9.5 18 20 6.5"/></svg></span>Filmed wide and vertical</li>
+            <li><span class="fit-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5 9.5 18 20 6.5"/></svg></span>Two rounds of changes</li>
+          </ul>
+        </div>
+        <div class="way-foot">
+          <div class="btn-row">
+            <a class="btn outline" href="/?interest=event#book">
+              <span class="btn-label"><span>Talk about a full day</span><span aria-hidden="true">Talk about a full day</span></span>
+            </a>
+          </div>
+        </div>
+      </article>
+      <article class="way-card">
+        <div class="pack-head">
+          <h3>Add to either</h3>
+          
+        </div>
+        <div>
+          <p class="way-price big">From $150</p>
+          <p class="pack-who">Extras, agreed before the day.</p>
+        </div>
+        <div class="way-body">
+          <ul class="ticks">
+            <li><span class="fit-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5 9.5 18 20 6.5"/></svg></span>A short clip for social, $150</li>
+            <li><span class="fit-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5 9.5 18 20 6.5"/></svg></span>Three short clips, $400</li>
+            <li><span class="fit-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5 9.5 18 20 6.5"/></svg></span>A second camera, $400</li>
+          </ul>
+        </div>
+        <div class="way-foot">
+          <div class="btn-row">
+            <a class="btn outline" href="/?interest=event#book">
+              <span class="btn-label"><span>Ask about extras</span><span aria-hidden="true">Ask about extras</span></span>
+            </a>
+          </div>
+        </div>
+      </article>
+    </div>
+    <div class="small-print">
+      <p>Half the fee holds your date, and the rest is due when the film is delivered.</p>
+      <p>You own the final film once it's paid for.</p>
     </div>
   </div>
 </section>
@@ -162,17 +268,15 @@
   <div class="wrap">
     <div class="section-head center">
       <h2>How it works</h2>
-      <p class="lede">From our first call to your ads going live in about three weeks.</p>
+      <p class="lede">One person plans it, films it and edits it.</p>
     </div>
       <div class="steps" data-steps>
         <span class="spine" aria-hidden="true"><i data-spine></i></span>
-        <div class="step" data-anim><div><span class="step-when">20 minutes</span><h3>Fit call</h3><p>A quick chat to see if we suit each other. If we don't, we'll say so.</p></div></div>
-        <div class="step" data-anim><div><span class="step-when">Week one</span><h3>Plan</h3><p>We learn how your business works, who buys from you and what they need to hear first. Then we agree on a plan together.</p></div></div>
-        <div class="step" data-anim><div><span class="step-when">Week one</span><h3>Script</h3><p>We write the script, the opening lines and the shot list, so everyone knows what's being filmed.</p></div></div>
-        <div class="step" data-anim><div><span class="step-when">One day on site</span><h3>Film</h3><p>We bring our own gear. We shoot wide as well as vertical, so it works everywhere it runs.</p></div></div>
-        <div class="step" data-anim><div><span class="step-when">Week two</span><h3>Edit</h3><p>We cut a few versions, each opening a different way and sized for where it'll run.</p></div></div>
-        <div class="step" data-anim><div><span class="step-when">Week three</span><h3>Launch</h3><p>We set it up in your ad account and switch it on.</p></div></div>
-        <div class="step" data-anim><div><span class="step-when">Week three</span><h3>Handover</h3><p>You get the footage, the ads and the ad account. It's all yours.</p></div></div>
+        <div class="step" data-anim><div><span class="step-when">20 minutes</span><h3>Fit call</h3><p>A quick chat about the event and what you want the film to do. If we're not the right fit, we'll say so.</p></div></div>
+        <div class="step" data-anim><div><span class="step-when">Before the day</span><h3>Plan</h3><p>We go through the run sheet together and agree on the moments that can't be missed.</p></div></div>
+        <div class="step" data-anim><div><span class="step-when">On the day</span><h3>Film</h3><p>We turn up early with our own gear and stay out of the way.</p></div></div>
+        <div class="step" data-anim><div><span class="step-when">After the event</span><h3>Edit</h3><p>You get a first cut to watch, with two rounds of changes.</p></div></div>
+        <div class="step" data-anim><div><span class="step-when">Yours</span><h3>Deliver</h3><p>The finished film, ready to post and send to sponsors.</p></div></div>
       </div>
   </div>
 </section>
@@ -180,41 +284,19 @@
 <section>
   <div class="wrap">
     <div class="section-head center">
-      <h2>What you keep</h2>
-      <p class="lede">When the project wraps, you walk away with everything. Nothing held back, and no account you can't get into.</p>
-    </div>
-    <div class="three-up">
-      <article class="way-card">
-        <h3>The raw footage</h3>
-        <p>Every take from the day, outtakes and all, in a folder with your name on it. We keep a copy of the raw files for 6 months too.</p>
-      </article>
-      <article class="way-card">
-        <h3>The final ads</h3>
-        <p>Cut for reels, feed, square and in-stream, so nobody's head gets cropped off.</p>
-      </article>
-      <article class="way-card">
-        <h3>The ad account</h3>
-        <p>Set up in your name before a cent is spent. It stays with you, history and all.</p>
-      </article>
-    </div>
-  </div>
-</section>
-
-<section>
-  <div class="wrap">
-    <div class="section-head center">
-      <h2>Good to know</h2>
+      <h2>Events we've filmed</h2>
+      <p class="lede">Nelson City Council's New Year's Eve, the Tasman Bay Blues Festival, the Motueka Kai Festival and the NZ Fishing Hunting 4X4 Expo.</p>
     </div>
     <div class="two-up">
       <article class="way-card">
-        <span class="way-tag">Pricing</span>
-        <h3>One fee, quoted per project</h3>
-        <p class="way-body">It depends on what we're filming, so we'll quote you on the call. Ad spend is separate and goes straight from you to Meta. We don't add anything on top.</p>
+        <span class="way-tag">Nelson City Council</span>
+        <p class="way-body">Tui Media were a pleasure to work with on the Nelson City Council New Year's Eve celebrations, with Arlo delivering a polished and engaging highlight reel that perfectly captured the energy and atmosphere of the event.</p>
+        <p class="way-price">Stu Dalton</p>
       </article>
       <article class="way-card">
-        <span class="way-tag">After launch</span>
-        <h3>Yours to run</h3>
-        <p class="way-body">We don't run or manage the ads after launch. You or your marketing person take it from there, with everything set up and in your name.</p>
+        <span class="way-tag">Mac Hops</span>
+        <p class="way-body">Arlo was recommended to us by a friend. So we had a very big event coming up and thought let's do it. Arlo floated around the event seamlessly and captured everything absolutely spot on. We are absolutely stoked with what he produced for us. He put in a tremendous amount of work and has created a stunning memory that we are over the moon we got him to capture for us.</p>
+        <p class="way-price">Brent McGlashen</p>
       </article>
     </div>
   </div>
@@ -229,42 +311,42 @@
             <span class="faq-q">How much does it cost?</span>
             <span class="faq-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></span>
           </button>
-          <div class="faq-panel" id="faq-a1" role="region" aria-labelledby="faq-q1" inert><div><p class="faq-a">Ad projects are one fee, quoted on the call, because it depends on what you need filmed. Ad spend is separate and goes straight to Meta, with no markup.</p></div></div>
+          <div class="faq-panel" id="faq-a1" role="region" aria-labelledby="faq-q1" inert><div><p class="faq-a">A highlight film from up to four hours of filming is $1,000. A full day is $1,400. Short clips for social are $150 each or three for $400, and a second camera is $400.</p></div></div>
         </div>
         <div class="faq-item">
           <button class="faq-row" type="button" id="faq-q2" aria-expanded="false" aria-controls="faq-a2">
-            <span class="faq-q">How long until my ads are live?</span>
+            <span class="faq-q">Do we need a second camera?</span>
             <span class="faq-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></span>
           </button>
-          <div class="faq-panel" id="faq-a2" role="region" aria-labelledby="faq-q2" inert><div><p class="faq-a">Usually about three weeks. Planning and the script take the first week, we film in a day, edit in week two and switch it on in week three.</p></div></div>
+          <div class="faq-panel" id="faq-a2" role="region" aria-labelledby="faq-q2" inert><div><p class="faq-a">Only if two things happen at once, like a stage show with a crowd worth filming. For most events one camera is plenty.</p></div></div>
         </div>
         <div class="faq-item">
           <button class="faq-row" type="button" id="faq-q3" aria-expanded="false" aria-controls="faq-a3">
-            <span class="faq-q">Do you manage the ads after launch?</span>
+            <span class="faq-q">Can we get short clips for social?</span>
             <span class="faq-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></span>
           </button>
-          <div class="faq-panel" id="faq-a3" role="region" aria-labelledby="faq-q3" inert><div><p class="faq-a">Not at the moment. We build it, switch it on and hand it over, so you or whoever does your marketing can run it from there. Full plans also come with ad-ready cuts of your monthly content.</p></div></div>
+          <div class="faq-panel" id="faq-a3" role="region" aria-labelledby="faq-q3" inert><div><p class="faq-a">Yes. Short vertical clips cut from the same footage are $150 each, or three for $400.</p></div></div>
         </div>
         <div class="faq-item">
           <button class="faq-row" type="button" id="faq-q4" aria-expanded="false" aria-controls="faq-a4">
-            <span class="faq-q">Can you promise results?</span>
+            <span class="faq-q">How far ahead should we book?</span>
             <span class="faq-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></span>
           </button>
-          <div class="faq-panel" id="faq-a4" role="region" aria-labelledby="faq-q4" inert><div><p class="faq-a">No, and be wary of anyone who does. What we can do is look at what's already working in your industry, build around it, and give you a few versions so you're not betting on one.</p></div></div>
+          <div class="faq-panel" id="faq-a4" role="region" aria-labelledby="faq-q4" inert><div><p class="faq-a">As early as you can. Summer weekends go first. Half the fee holds your date.</p></div></div>
         </div>
         <div class="faq-item">
           <button class="faq-row" type="button" id="faq-q5" aria-expanded="false" aria-controls="faq-a5">
-            <span class="faq-q">Do I keep the footage and ad account?</span>
+            <span class="faq-q">Do you live stream?</span>
             <span class="faq-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></span>
           </button>
-          <div class="faq-panel" id="faq-a5" role="region" aria-labelledby="faq-q5" inert><div><p class="faq-a">Yes. You own all final content once it's paid for, and the ad account is set up in your name from day one.</p></div></div>
+          <div class="faq-panel" id="faq-a5" role="region" aria-labelledby="faq-q5" inert><div><p class="faq-a">No. We film and edit, we don't live stream.</p></div></div>
         </div>
         <div class="faq-item">
           <button class="faq-row" type="button" id="faq-q6" aria-expanded="false" aria-controls="faq-a6">
-            <span class="faq-q">Do I have to be on camera?</span>
+            <span class="faq-q">Who owns the film?</span>
             <span class="faq-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></span>
           </button>
-          <div class="faq-panel" id="faq-a6" role="region" aria-labelledby="faq-q6" inert><div><p class="faq-a">No, though it usually helps. If you'd rather stay behind the camera, we can build it around your team, your customers, the work or a voiceover.</p></div></div>
+          <div class="faq-panel" id="faq-a6" role="region" aria-labelledby="faq-q6" inert><div><p class="faq-a">You do, once it's paid for. Use it wherever you like.</p></div></div>
         </div>
       </div>
   </div>
@@ -272,11 +354,11 @@
 </main>
 
 <div class="closing center" id="contact">
-  <h2>Talk about an ad project.</h2>
+  <h2>Talk about your event.</h2>
   <p class="lede">It's free. If we're not the right fit, we'll tell you on the call, before you've spent a cent.</p>
 
   <div class="btn-row">
-    <a class="btn" href="/?interest=ad#book">
+    <a class="btn" href="/?interest=event#book">
       <span class="btn-label"><span>Book my free call</span><span aria-hidden="true">Book my free call</span></span>
     </a>
   </div>
@@ -287,7 +369,7 @@
     <div class="foot-right">
       <a href="/">Back to site</a>
       <a href="/monthly-content">Monthly content</a>
-      <a href="/video-ads">Video ads</a>
+      <a href="/events">Events</a>
       <a href="/work">Case studies</a>
       <a href="/about">About</a>
       <span>Nelson, New Zealand</span>

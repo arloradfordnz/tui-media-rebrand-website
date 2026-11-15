@@ -206,7 +206,7 @@ h1 { margin: 0; font-weight: 500; letter-spacing: -0.035em; line-height: 0.98; t
 
 /* ---------- sections ---------- */
 
-section { padding-block: var(--s-6); }
+section { padding-block: 3.5rem; }
 h2, h3 { margin: 0; font-weight: 500; letter-spacing: -0.035em; line-height: 0.98; text-wrap: balance; }
 h2 { font-size: var(--t-h2); }
 h3 { font-size: clamp(1.125rem, 1.45vw, 1.375rem); line-height: 1.15; letter-spacing: -0.02em; }
