@@ -46,6 +46,10 @@
     +   '.nav.is-open .nav-links a{display:flex;align-items:center;min-height:48px;padding:0 18px;border-radius:16px;color:var(--ink)}'
     +   '.nav.is-open .nav-links a[aria-current="page"]{background:var(--paper);color:var(--accent)}'
     +   '.nav.is-open .nav-links .nav-label>span:nth-child(2){display:none}'
+    /* the desktop hover rolls the label up and a copy in from below; the copy
+       is hidden here, so the label must stay put and only change colour */
+    +   '.nav.is-open .nav-links a:hover .nav-label>span:nth-child(1),.nav.is-open .nav-links a:focus-visible .nav-label>span:nth-child(1){transform:none;color:inherit}'
+    +   '.nav.is-open .nav-links a:not(.btn):hover{background:var(--paper);color:var(--accent)}'
     + '}'
     /* revealed downwards rather than faded, so the page never shows through
        the panel while it opens */
