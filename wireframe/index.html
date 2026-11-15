@@ -698,7 +698,9 @@
   @media (max-width: 960px) {
     .hero { grid-template-columns: 1fr; padding: var(--nav-space) var(--frame) var(--frame); gap: var(--frame); }
     .hero-left > .shell { padding-inline: var(--frame); padding-block: var(--s-4) var(--s-2); }
-    .hero-media { aspect-ratio: 4 / 5; max-height: 78svh; border-radius: calc(var(--hero-radius) - var(--frame)); }
+    /* the height cap can leave it narrower than the column (tablets, short
+       windows), so it is centred rather than left on the left edge */
+    .hero-media { aspect-ratio: 4 / 5; max-height: 78svh; width: 100%; justify-self: center; margin-inline: auto; border-radius: calc(var(--hero-radius) - var(--frame)); }
   }
   @media (max-width: 620px) {
     .hero .btn-row { justify-content: center; }
