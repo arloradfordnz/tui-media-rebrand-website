@@ -35,18 +35,21 @@
     +   '.nav-menu i::before,.nav-menu i::after{content:"";position:absolute;left:0;right:0;height:2px;border-radius:2px;background:currentColor;'
     +     'transition:transform 220ms var(--ease-out,ease),top 220ms var(--ease-out,ease)}'
     +   '.nav-menu i::before{top:0}.nav-menu i::after{top:8px}'
-    +   '.nav.is-open .nav-menu{border-color:var(--accent);color:var(--accent)}'
+    +   '.nav.is-open .nav-menu{position:relative;z-index:61;border-color:var(--accent);color:var(--accent)}'
     +   '.nav.is-open .nav-menu i::before{top:4px;transform:rotate(45deg)}'
     +   '.nav.is-open .nav-menu i::after{top:4px;transform:rotate(-45deg)}'
     +   '.nav.is-open .nav-links{display:flex;flex-direction:column;gap:2px;position:absolute;z-index:60;'
     +     'top:calc(100% + 8px);left:0;right:0;transform:none;margin:0;padding:8px;'
-    +     'border-radius:24px;background:var(--surface);box-shadow:0 18px 40px -12px rgba(0,0,0,.6);'
-    +     'font-size:1.0625rem;font-weight:500;animation:navMenuIn 180ms var(--ease-out,ease)}'
+    +     'border-radius:24px;background:var(--surface);border:1px solid var(--hairline,rgba(239,242,248,.14));'
+    +     'box-shadow:0 0 0 100vmax rgba(3,7,15,.55),0 24px 48px -12px rgba(0,0,0,.7);'
+    +     'font-size:1.0625rem;font-weight:500;animation:navMenuIn 220ms var(--ease-out,ease)}'
     +   '.nav.is-open .nav-links a{display:flex;align-items:center;min-height:48px;padding:0 18px;border-radius:16px;color:var(--ink)}'
     +   '.nav.is-open .nav-links a[aria-current="page"]{background:var(--paper);color:var(--accent)}'
     +   '.nav.is-open .nav-links .nav-label>span:nth-child(2){display:none}'
     + '}'
-    + '@keyframes navMenuIn{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}'
+    /* revealed downwards rather than faded, so the page never shows through
+       the panel while it opens */
+    + '@keyframes navMenuIn{from{clip-path:inset(0 0 100% 0 round 24px)}to{clip-path:inset(0 0 0 0 round 24px)}}'
     + '@media (prefers-reduced-motion:reduce){.nav.is-open .nav-links{animation:none}}'
     + '.nav-menu:focus-visible{outline:2px solid var(--accent);outline-offset:3px}';
   var style = document.createElement('style');
@@ -99,6 +102,14 @@
   var onWide = function () { placeCta(); if (wide.matches) set(false); };
   if (wide.addEventListener) wide.addEventListener('change', onWide);
   else if (wide.addListener) wide.addListener(onWide);
+  /* The bar isn't fixed, so an open panel would scroll off half-cut and
+     still be open on the way back up. Close it once the page has moved a
+     little. */
+  var openedAt = 0;
+  btn.addEventListener('click', function () { openedAt = window.scrollY; });
+  window.addEventListener('scroll', function () {
+    if (nav.classList.contains('is-open') && Math.abs(window.scrollY - openedAt) > 40) set(false);
+  }, { passive: true });
   /* back from another page through the back/forward cache: closed */
   window.addEventListener('pageshow', function (e) { if (e.persisted) set(false); });
 })();
