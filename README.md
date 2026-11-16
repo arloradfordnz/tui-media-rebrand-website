@@ -274,6 +274,17 @@ One easing token, `--ease-out: cubic-bezier(0.23, 1, 0.32, 1)`. No libraries.
   domain in Vercel is ever switched to the apex, all four have to move with it.
 - The JSON-LD graph is ProfessionalService, Person, WebSite, WebPage and FAQPage.
   The FAQ answers there are duplicated in the markup and have to stay in step.
+- Inner pages carry their own full graph (Google reads each page alone, so an
+  `@id` pointing at the home page is not enough): WebPage or AboutPage,
+  BreadcrumbList, then Service (with the business inlined as provider) or Person.
+  `/events` also has a VideoObject for the expo film, mirrored in `sitemap.xml`
+  as a video entry. Change the film and both have to move.
+- Titles lead with the search phrase, then `| Tui Media`. Keep them under 60
+  characters and descriptions under 160. Title, `og:title`, `twitter:title` and
+  the JSON-LD page name match.
+- `llms.txt` is a plain summary for AI search tools. Its prices must match the
+  service pages. `404.html` is served by Vercel for any missing path and is
+  `noindex`. `robots.txt` keeps crawlers out of `/api/`.
 - There is deliberately no `aggregateRating`. Google does not allow a business to
   mark up reviews of itself on its own site, and the "5.0 from 14 Google reviews"
   line stays as plain text for that reason.
