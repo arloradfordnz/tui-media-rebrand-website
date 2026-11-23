@@ -31,6 +31,21 @@
 <script>document.documentElement.classList.add('js');</script>
 <link rel="stylesheet" href="/css/service.css">
 <link rel="stylesheet" href="/css/loader.css">
+<style>
+  /* ---- who you'll work with: same as /monthly-content ---- */
+  .team-body h2 { margin-top: var(--s-3); }
+  .team-body .lede { color: var(--ink); margin-top: var(--s-3); max-width: 52ch; }
+  .team-facts {
+    list-style: none; margin: var(--s-4) 0 0; padding: 0;
+    display: flex; flex-wrap: wrap; gap: 10px;
+  }
+  .team-facts li {
+    padding: 9px 16px; border-radius: var(--radius-pill);
+    border: 1px solid var(--rule-2);
+    font-size: 0.875rem; color: var(--muted);
+  }
+  .team-facts b { color: var(--ink); font-weight: 600; }
+</style>
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -154,6 +169,52 @@
           "availability": "https://schema.org/InStock"
         }
       ]
+    },
+    {
+      "@type": "FAQPage",
+      "@id": "https://www.tuimedia.nz/testimonial-films#faq",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Why does the first one cost more?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Because the first film covers working out the questions, the look and the music. Once that's sorted, each film after it follows the same plan, which is why they're $750 each."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What if I can't line up customers quickly?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "That's fine. I know it's hard to line up a lot of customers at once, so you've got 6 months to film them and you only pay for each one when it's shot."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Is it cheaper if I'm on monthly content?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes. If you're on monthly content, every testimonial film is $650. It's also $650 each if I film two on the same day."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Where should I use them?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "On your website or alongside a quote, because people trust what your customers say more than what you say about yourself."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Who owns the films?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "You do, once they're paid for, so you can use them wherever you like."
+          }
+        }
+      ]
     }
   ]
 }
@@ -200,6 +261,7 @@
   <div class="wrap">
     <div class="section-head center">
       <h2>Pricing</h2>
+      <p class="lede">You only pay for each film when it's shot, and you've got 6 months to film them.</p>
     </div>
     <div class="three-up">
       <article class="way-card">
@@ -210,6 +272,20 @@
           <p class="way-price big">$1,000</p>
           <p class="pack-who">Which covers working out the questions, the look and the music.</p>
         </div>
+        <div class="way-body">
+          <ul class="ticks">
+            <li><span class="fit-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5 9.5 18 20 6.5"/></svg></span>Questions worked out with you</li>
+            <li><span class="fit-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5 9.5 18 20 6.5"/></svg></span>The look and music sorted</li>
+            <li><span class="fit-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5 9.5 18 20 6.5"/></svg></span>Paid when it's shot</li>
+          </ul>
+        </div>
+        <div class="way-foot">
+          <div class="btn-row">
+            <a class="btn" href="/#book">
+              <span class="btn-label"><span>Book a free call</span><span aria-hidden="true">Book a free call</span></span>
+            </a>
+          </div>
+        </div>
       </article>
       <article class="way-card">
         <div class="pack-head">
@@ -218,6 +294,20 @@
         <div>
           <p class="way-price big">$750 each</p>
           <p class="pack-who">Or $650 each if I film two on the same day.</p>
+        </div>
+        <div class="way-body">
+          <ul class="ticks">
+            <li><span class="fit-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5 9.5 18 20 6.5"/></svg></span>Uses the same plan as the first</li>
+            <li><span class="fit-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5 9.5 18 20 6.5"/></svg></span>$650 each when two are filmed on one day</li>
+            <li><span class="fit-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5 9.5 18 20 6.5"/></svg></span>Paid when each one is shot</li>
+          </ul>
+        </div>
+        <div class="way-foot">
+          <div class="btn-row">
+            <a class="btn outline" href="/#book">
+              <span class="btn-label"><span>Book a free call</span><span aria-hidden="true">Book a free call</span></span>
+            </a>
+          </div>
         </div>
       </article>
       <article class="way-card">
@@ -228,11 +318,90 @@
           <p class="way-price big">$650 each</p>
           <p class="pack-who">If you're on monthly content, they're always $650.</p>
         </div>
+        <div class="way-body">
+          <ul class="ticks">
+            <li><span class="fit-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5 9.5 18 20 6.5"/></svg></span>Always $650</li>
+            <li><span class="fit-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5 9.5 18 20 6.5"/></svg></span>6 months to film them</li>
+            <li><span class="fit-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5 9.5 18 20 6.5"/></svg></span>Paid when each one is shot</li>
+          </ul>
+        </div>
+        <div class="way-foot">
+          <div class="btn-row">
+            <a class="btn outline" href="/#book">
+              <span class="btn-label"><span>Book a free call</span><span aria-hidden="true">Book a free call</span></span>
+            </a>
+          </div>
+        </div>
       </article>
     </div>
     <div class="small-print">
-      <p>I know it's hard to line up a lot of customers at once, so you've got 6 months to film them and you only pay for each one when it's shot.</p>
+      <p>You own every film once it's paid for.</p>
     </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="team">
+      <div class="team-photo"><img src="/img/arlo-radford.webp?v=4" alt="Arlo Radford, founder of Tui Media" width="1800" height="1200" loading="lazy" decoding="async"></div>
+      <div class="team-body">
+        <h2>Who you'll work with</h2>
+        <p class="lede">I'm Arlo. I plan your shoot, film it and edit every video myself, here in Nelson. Nothing gets passed along to someone you've never met.</p>
+        <ul class="team-facts">
+          <li><b>30+</b> Nelson businesses</li>
+          <li><b>60+</b> videos made</li>
+          <li><b>5.0</b> from 14 Google reviews</li>
+        </ul>
+        <div class="btn-row">
+          <a class="btn" href="/about">
+            <span class="btn-label"><span>More about me</span><span aria-hidden="true">More about me</span></span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="section-head center"><h2>Good questions</h2></div>
+      <div class="faq" data-faq>
+        <div class="faq-item">
+          <button class="faq-row" type="button" id="faq-q1" aria-expanded="false" aria-controls="faq-a1">
+            <span class="faq-q">Why does the first one cost more?</span>
+            <span class="faq-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></span>
+          </button>
+          <div class="faq-panel" id="faq-a1" role="region" aria-labelledby="faq-q1" inert><div><p class="faq-a">Because the first film covers working out the questions, the look and the music. Once that's sorted, each film after it follows the same plan, which is why they're $750 each.</p></div></div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-row" type="button" id="faq-q2" aria-expanded="false" aria-controls="faq-a2">
+            <span class="faq-q">What if I can't line up customers quickly?</span>
+            <span class="faq-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></span>
+          </button>
+          <div class="faq-panel" id="faq-a2" role="region" aria-labelledby="faq-q2" inert><div><p class="faq-a">That's fine. I know it's hard to line up a lot of customers at once, so you've got 6 months to film them and you only pay for each one when it's shot.</p></div></div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-row" type="button" id="faq-q3" aria-expanded="false" aria-controls="faq-a3">
+            <span class="faq-q">Is it cheaper if I'm on monthly content?</span>
+            <span class="faq-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></span>
+          </button>
+          <div class="faq-panel" id="faq-a3" role="region" aria-labelledby="faq-q3" inert><div><p class="faq-a">Yes. If you're on monthly content, every testimonial film is $650. It's also $650 each if I film two on the same day.</p></div></div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-row" type="button" id="faq-q4" aria-expanded="false" aria-controls="faq-a4">
+            <span class="faq-q">Where should I use them?</span>
+            <span class="faq-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></span>
+          </button>
+          <div class="faq-panel" id="faq-a4" role="region" aria-labelledby="faq-q4" inert><div><p class="faq-a">On your website or alongside a quote, because people trust what your customers say more than what you say about yourself.</p></div></div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-row" type="button" id="faq-q5" aria-expanded="false" aria-controls="faq-a5">
+            <span class="faq-q">Who owns the films?</span>
+            <span class="faq-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></span>
+          </button>
+          <div class="faq-panel" id="faq-a5" role="region" aria-labelledby="faq-q5" inert><div><p class="faq-a">You do, once they're paid for, so you can use them wherever you like.</p></div></div>
+        </div>
+      </div>
   </div>
 </section>
 </main>

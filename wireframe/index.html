@@ -720,6 +720,20 @@
   .hero h1 { margin-inline: auto; }
   .hero .btn-row { justify-content: center; }
 
+  /* everything in the hero sits bottom left: the "now booking" tag (just a
+     dot and text, no outline) on top, then the headline, subline and buttons.
+     This comes after the centred rules above so it wins. */
+  .hero, .hero-left > .shell { text-align: left; }
+  .hero-left > .shell { align-items: flex-start; }
+  .hero h1 { margin-inline: 0; }
+  .hero .lede { margin-inline: 0; }
+  .hero .btn-row { justify-content: flex-start; }
+  .hero .avail { border: 0; padding: 0; margin: 0 0 var(--s-3); }
+  @media (min-width: 961px) {
+    .hero-left > .shell { justify-content: flex-end; }
+    .hero .avail { color: rgb(255 255 255 / 0.85); }
+  }
+
   /* the nav keeps its glass pill over the hero too (the old flat
      over-hero mode is gone; JS still toggles .over-hero but nothing uses it) */
   .nav { transition: background-color 300ms ease, box-shadow 300ms ease, -webkit-backdrop-filter 300ms ease, backdrop-filter 300ms ease; }
@@ -838,6 +852,12 @@
     max-width: 640px;
     margin-inline: auto;
   }
+  /* the merged Kia ora / About: reads left to right beside the photo */
+  .intro-team .intro-body { text-align: left; }
+  .intro-team .intro-body h2 { margin-bottom: var(--s-3); }
+  .intro-team .intro-body > p { margin-inline: 0; }
+  .intro-team .stat-row { margin-inline: 0; margin-top: var(--s-4); }
+  .intro-team .block { min-height: 420px; }
 
   /* ---------- two ways to work together ----------
      Same card as the fit section. The grid stretches both cards to one
@@ -1570,6 +1590,7 @@
   @media (max-width: 900px) {
     .team { grid-template-columns: 1fr; gap: var(--s-4); }
     .team .block { aspect-ratio: 1 / 1; min-height: 0; }
+    .intro-team .block { min-height: 0; }
     /* the spine moves to the left edge and every step reads from it */
     .step { grid-template-columns: 3px 1fr; column-gap: var(--s-3); }
     .spine { left: 1.5px; margin-left: 0; }
@@ -1769,18 +1790,28 @@
 </section>
 
 <!-- ============ INTRO ============
-     Headline left, the reading copy and the numbers right. -->
+     Kia ora and the About in one: Arlo's photo on the left, the intro, a
+     line about working with him, the numbers and a link to /about on the
+     right. Stacks under 900px, photo first. -->
 <section class="intro">
   <div class="shell">
-    <div class="intro-grid">
-      <h2 data-anim>Kia ora</h2>
-      <div class="intro-body">
+    <div class="team intro-team">
+      <div class="block" data-anim><img src="/img/arlo-radford.webp?v=4" alt="Arlo Radford, founder of Tui Media" width="1800" height="1200" loading="lazy" decoding="async"></div>
+      <div class="team-body intro-body">
+        <h2 data-anim>Kia ora</h2>
         <p data-anim>Tui Media is a small video studio in Nelson. I work with builders, landscapers and the trades around them. Most of the good work you do gets hidden once a job is finished, so I film it while it's happening. That way people can see what actually goes into one of your builds, which is what gets you the next one.</p>
+        <p data-anim>I'm Arlo, and I run Tui Media on my own, so you'll work directly with me and nothing gets lost along the way.</p>
 
         <div class="stat-row">
           <div class="stat-cell" data-anim><b data-count="60" data-suffix="+">60+</b><span>Videos made</span></div>
           <div class="stat-cell" data-anim><b data-count="30" data-suffix="+">30+</b><span>Local businesses</span></div>
           <div class="stat-cell" data-anim><b data-count="4" data-suffix="+">4+</b><span>Years behind the camera</span></div>
+        </div>
+
+        <div class="btn-row" data-anim>
+          <a class="btn outline" href="/about">
+            <span class="btn-label"><span>More about me</span><span aria-hidden="true">More about me</span></span>
+          </a>
         </div>
       </div>
     </div>
@@ -1795,7 +1826,7 @@
 <section id="services">
   <div class="shell">
     <div class="section-head center" data-anim>
-      <h2>Two ways in</h2>
+      <h2>What I offer</h2>
     </div>
 
     <div class="two-up">
@@ -1843,7 +1874,7 @@
   <div class="shell">
     <div class="section-head center" data-anim>
       <h2>Who I work with</h2>
-      <p class="lede">Most of my clients are builders and landscapers, as well as joiners, and kitchen and bathroom companies. This kind of work suits video because there's always something new to show each time I come out. I still work with other local businesses too, like tourism and accommodation, so get in touch if that's you.</p>
+      <p class="lede">Mostly builders and landscapers, because there's always something new to film each time I come out.</p>
     </div>
 
     <div class="two-up">
@@ -1997,27 +2028,6 @@
         <blockquote><p>Arlo was recommended to us by a friend. So we had a very big event coming up and thought let's do it. Arlo floated around the event seamlessly and captured everything absolutely spot on. We are absolutely stoked with what he produced for us. He put in a tremendous amount of work and has created a stunning memory that we are over the moon we got him to capture for us.</p></blockquote>
         <figcaption><span class="say-avatar" aria-hidden="true">BM</span><span class="say-who"><b>Brent McGlashen</b><span>Mac Hops</span></span></figcaption>
       </figure>
-    </div>
-  </div>
-</section>
-
-<!-- ============ ABOUT ============ -->
-<section id="about">
-  <div class="shell">
-    <div class="section-head center" data-anim><h2>About</h2></div>
-    <div class="team">
-      <div class="block" data-anim><img src="/img/arlo-radford.webp?v=4" alt="Arlo Radford, founder of Tui Media" width="1800" height="1200" loading="lazy" decoding="async"></div>
-      <div class="team-body" data-anim>
-        <p class="measure">Kia ora, I'm Arlo, the founder and creative director of Tui Media. I grew up with a passion for photography and filmmaking, and I now have over five years of experience in the industry.</p>
-        <p class="measure">I'm a one-man team, so you'll work directly alongside me and nothing gets lost along the way.</p>
-        <p class="measure">Over thirty Nelson businesses have trusted me with their content, from builders and detailers to a wildlife sanctuary and the Nelson Marlborough Rescue Helicopter Trust, plus a project with Nikon New Zealand for the launch of one of their cinema cameras.</p>
-        <p class="measure">I'd love to hear from you if you want more people to see the work that goes into your jobs.</p>
-        <div class="btn-row">
-          <a class="btn" href="#book" data-route="book">
-            <span class="btn-label"><span>Get in touch</span><span aria-hidden="true">Get in touch</span></span>
-          </a>
-        </div>
-      </div>
     </div>
   </div>
 </section>
