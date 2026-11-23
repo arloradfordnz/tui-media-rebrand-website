@@ -80,7 +80,7 @@
   "redirects": [
     {
       "source": "/video-ads",
-      "destination": "/events",
+      "destination": "/",
       "permanent": false
     },
     {

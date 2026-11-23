@@ -4,30 +4,23 @@
         xmlns:video="http://www.google.com/schemas/sitemap-video/1.1">
   <url>
     <loc>https://www.tuimedia.nz/</loc>
-    <lastmod>2026-11-17</lastmod>
-    <image:image><image:loc>https://www.tuimedia.nz/media/hero-wide-poster.jpg</image:loc></image:image>
+    <lastmod>2026-11-23</lastmod>
+    <image:image><image:loc>https://www.tuimedia.nz/media/hero-build-poster.jpg</image:loc></image:image>
   </url>
   <url>
     <loc>https://www.tuimedia.nz/monthly-content</loc>
-    <lastmod>2026-11-17</lastmod>
+    <lastmod>2026-11-23</lastmod>
     <image:image><image:loc>https://www.tuimedia.nz/media/work/johnson-residential-4-cover.webp?v=3</image:loc></image:image>
     <image:image><image:loc>https://www.tuimedia.nz/media/work/atk-detailing-3-cover.webp?v=3</image:loc></image:image>
     <image:image><image:loc>https://www.tuimedia.nz/media/work/landscape-transformers-1-cover.webp?v=3</image:loc></image:image>
   </url>
   <url>
-    <loc>https://www.tuimedia.nz/events</loc>
-    <lastmod>2026-11-17</lastmod>
-    <video:video>
-      <video:thumbnail_loc>https://www.tuimedia.nz/media/events/fishing-hunting-4x4-expo-cover.webp?v=1</video:thumbnail_loc>
-      <video:title>NZ Fishing Hunting 4X4 Expo highlight film</video:title>
-      <video:description>Highlight film from the NZ Fishing Hunting 4X4 Expo at the Trafalgar Centre in Nelson, filmed and edited by Tui Media for Intrinsic Events.</video:description>
-      <video:content_loc>https://www.tuimedia.nz/media/events/fishing-hunting-4x4-expo.mp4?v=2</video:content_loc>
-      <video:duration>57</video:duration>
-    </video:video>
+    <loc>https://www.tuimedia.nz/testimonial-films</loc>
+    <lastmod>2026-11-23</lastmod>
   </url>
   <url>
     <loc>https://www.tuimedia.nz/about</loc>
-    <lastmod>2026-11-17</lastmod>
+    <lastmod>2026-11-23</lastmod>
     <image:image><image:loc>https://www.tuimedia.nz/img/arlo-radford.webp</image:loc></image:image>
   </url>
 </urlset>

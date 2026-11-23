@@ -50,10 +50,13 @@ deployed on Vercel.
     to site" on the form). On a wide screen it goes back to the end of the bar. The
     script adds the button and its styles, so a page with script off keeps the
     plain bar with the booking button in it.
-  - `video-ads/index.html` and `monthly-content/index.html` — the two service
-    pages at `/video-ads` and `/monthly-content`, linked from the cards in
-    "Two ways to work together" and from the menu. Their book buttons go to `/?interest=ad#book`
-    or `/?interest=monthly#book`, which opens the form with that option picked.
+  - `monthly-content/index.html` and `testimonial-films/index.html` — the two
+    service pages, linked from the cards in "Two ways in" and from the menu.
+    Monthly content's book buttons go to `/?interest=monthly#book`, which opens
+    the form with that option picked; testimonial films go to plain `/#book`.
+    `/video-ads` redirects to `/` (vercel.json).
+  - `events/index.html` — a short noindex note saying event films have moved to
+    arloradford.nz (Nov 2026), along with weddings. Every footer also links there.
   - `/monthly-content` runs: the packages, real client clips, who's filming,
     then the questions. Keep the page's wording and order our own: it was
     reworked in Nov 2026 because it had drifted too close to another
@@ -277,8 +280,6 @@ One easing token, `--ease-out: cubic-bezier(0.23, 1, 0.32, 1)`. No libraries.
 - Inner pages carry their own full graph (Google reads each page alone, so an
   `@id` pointing at the home page is not enough): WebPage or AboutPage,
   BreadcrumbList, then Service (with the business inlined as provider) or Person.
-  `/events` also has a VideoObject for the expo film, mirrored in `sitemap.xml`
-  as a video entry. Change the film and both have to move.
 - Titles lead with the search phrase, then `| Tui Media`. Keep them under 60
   characters and descriptions under 160. Title, `og:title`, `twitter:title` and
   the JSON-LD page name match.
